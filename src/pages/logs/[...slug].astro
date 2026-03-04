@@ -3,14 +3,14 @@ import { getCollection, render } from 'astro:content';
 import PostLayout from '../../layouts/PostLayout.astro';
 
 export async function getStaticPaths() {
-  const logs = await getCollection('logs');
-  return logs.map((entry) => ({
+  const logs = (await getCollection('logs')).sort((a, b) => a.data.date.getTime() - b.data.date.getTime());
+  return logs.map((entry, i) => ({
     params: { slug: entry.id },
-    props: { entry },
+    props: { entry, number: i + 1 },
   }));
 }
 
-const { entry } = Astro.props;
+const { entry, number } = Astro.props;
 const { Content } = await render(entry);
 ---
 
@@ -20,7 +20,7 @@ const { Content } = await render(entry);
   date={entry.data.date}
   type="log"
   subtitle={entry.data.subtitle}
-  number={entry.data.number}
+  number={number}
 >
   <Content />
 </PostLayout>

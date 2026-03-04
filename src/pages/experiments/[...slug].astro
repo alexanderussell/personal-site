@@ -4,14 +4,14 @@ import PostLayout from '../../layouts/PostLayout.astro';
 import ExperimentRenderer from '../../components/ExperimentRenderer.astro';
 
 export async function getStaticPaths() {
-  const experiments = await getCollection('experiments');
-  return experiments.map((entry) => ({
+  const experiments = (await getCollection('experiments')).sort((a, b) => a.data.date.getTime() - b.data.date.getTime());
+  return experiments.map((entry, i) => ({
     params: { slug: entry.id },
-    props: { entry },
+    props: { entry, number: i + 1 },
   }));
 }
 
-const { entry } = Astro.props;
+const { entry, number } = Astro.props;
 const { Content } = await render(entry);
 ---
 
@@ -21,7 +21,7 @@ const { Content } = await render(entry);
   date={entry.data.date}
   type="experiment"
   subtitle={entry.data.subtitle}
-  number={entry.data.number}
+  number={number}
 >
   <ExperimentRenderer id={entry.id} />
   <Content />

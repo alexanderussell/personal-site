@@ -364,12 +364,16 @@
     opacity: 0.4;
   }
 
+  .prose {
+    font-size: 1rem;
+  }
+
   .prose pre,
   .prose .astro-code {
     border-radius: 12px;
     background: color-mix(in srgb, var(--color-bg-secondary) 80%, transparent) !important;
     padding: 1rem 1.125rem;
-    font-size: 1rem;
+    font-size: 14px;
     line-height: 1.6;
     overflow-x: auto;
   }
