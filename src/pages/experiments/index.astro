@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import TimelineItem from '../../components/TimelineItem.astro';
+
+const experiments = (await getCollection('experiments', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<BaseLayout title="Experiments — Alex Russell" description="Small interactive prototypes and technical spikes.">
+  <section class="py-16">
+    <p class="font-mono text-sm font-semibold tracking-tight uppercase text-text-secondary">Experiments</p>
+    <h1 class="font-heading mt-3 text-xl leading-snug sm:text-2xl sm:leading-[1.35]">
+      Lightweight prototypes and exploratory builds I use to test ideas quickly.
+    </h1>
+
+    <div class="mt-12">
+      {experiments.map((experiment, index) => (
+        <TimelineItem
+          href={`/experiments/${experiment.id}`}
+          type="experiment"
+          date={experiment.data.date}
+          isLast={index === experiments.length - 1}
+          showTypeLabel={false}
+          experimentId={experiment.id}
+        />
+      ))}
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,348 @@
+---
+import ExperimentRenderer from './ExperimentRenderer.astro';
+
+interface Props {
+  href: string;
+  type: 'log' | 'guide' | 'experiment';
+  title?: string;
+  description?: string;
+  date: Date;
+  isLast?: boolean;
+  showTypeLabel?: boolean;
+  experimentId?: string;
+}
+
+const {
+  href,
+  type,
+  title,
+  description,
+  date,
+  isLast = false,
+  showTypeLabel = true,
+  experimentId,
+} = Astro.props;
+---
+
+{
+  type === 'experiment' && experimentId ? (
+    <article class={`timeline-item timeline-item--${type} group grid grid-cols-[2rem_1fr] gap-4`}>
+      <div class="timeline-rail">
+        <span class="timeline-icon" aria-hidden="true">
+          <svg viewBox="0 0 20 20" class="size-5" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Bubbles -->
+            <rect x="9" y="0" width="1" height="1" fill="currentColor" />
+            <rect x="5" y="2" width="2" height="2" fill="currentColor" />
+            <rect x="13" y="1" width="2" height="2" fill="currentColor" />
+            <!-- Rim -->
+            <rect x="2" y="5" width="16" height="1" fill="currentColor" />
+            <!-- Body -->
+            <rect x="3" y="6" width="14" height="1" fill="currentColor" />
+            <rect x="2" y="7" width="16" height="1" fill="currentColor" />
+            <rect x="1" y="8" width="18" height="1" fill="currentColor" />
+            <rect x="0" y="9" width="20" height="3" fill="currentColor" />
+            <!-- Legs + body -->
+            <rect x="0" y="12" width="2" height="4" fill="currentColor" />
+            <rect x="3" y="12" width="17" height="3" fill="currentColor" />
+            <rect x="2" y="15" width="18" height="1" fill="currentColor" />
+            <rect x="1" y="16" width="3" height="1" fill="currentColor" />
+            <rect x="5" y="16" width="14" height="1" fill="currentColor" />
+            <rect x="1" y="17" width="18" height="1" fill="currentColor" />
+            <rect x="2" y="18" width="16" height="1" fill="currentColor" />
+            <rect x="3" y="19" width="14" height="1" fill="currentColor" />
+          </svg>
+        </span>
+        {!isLast && <span class="timeline-line" aria-hidden="true"></span>}
+      </div>
+
+      <div class="timeline-content">
+        <a href={href} class="timeline-heading-link flex items-baseline gap-3 mb-2">
+          <div class="flex items-baseline gap-3">
+            {showTypeLabel && (
+              <span class="text-text-secondary font-mono text-[11px] font-semibold uppercase tracking-[0.08em]">
+                {type}
+              </span>
+            )}
+            <time class="text-text-secondary font-mono text-[13px]" datetime={date.toISOString()}>
+              {date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+            </time>
+          </div>
+        </a>
+
+        <!-- Mobile: icon above container, right-aligned -->
+        <div class="flex justify-end sm:hidden mb-2">
+          <button
+            type="button"
+            class="experiment-maximize"
+            aria-label="Open experiment in lightbox"
+            data-experiment-maximize
+          >
+            <svg viewBox="0 0 16 16" class="size-4" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Top-left corner -->
+              <rect x="0" y="0" width="6" height="2" fill="currentColor" />
+              <rect x="0" y="2" width="2" height="4" fill="currentColor" />
+              <!-- Top-right corner -->
+              <rect x="10" y="0" width="6" height="2" fill="currentColor" />
+              <rect x="14" y="2" width="2" height="4" fill="currentColor" />
+              <!-- Bottom-left corner -->
+              <rect x="0" y="10" width="2" height="4" fill="currentColor" />
+              <rect x="0" y="14" width="6" height="2" fill="currentColor" />
+              <!-- Bottom-right corner -->
+              <rect x="14" y="10" width="2" height="4" fill="currentColor" />
+              <rect x="10" y="14" width="6" height="2" fill="currentColor" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Desktop: experiment + icon side by side -->
+        <div class="flex items-start gap-3">
+          <div class="experiment-container w-fit max-w-lg" data-experiment-home data-experiment-href={href}>
+            <ExperimentRenderer id={experimentId} />
+          </div>
+          <button
+            type="button"
+            class="experiment-maximize hidden sm:block shrink-0 mt-1"
+            aria-label="Open experiment in lightbox"
+            data-experiment-maximize
+          >
+            <svg viewBox="0 0 16 16" class="size-4" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Top-left corner -->
+              <rect x="0" y="0" width="6" height="2" fill="currentColor" />
+              <rect x="0" y="2" width="2" height="4" fill="currentColor" />
+              <!-- Top-right corner -->
+              <rect x="10" y="0" width="6" height="2" fill="currentColor" />
+              <rect x="14" y="2" width="2" height="4" fill="currentColor" />
+              <!-- Bottom-left corner -->
+              <rect x="0" y="10" width="2" height="4" fill="currentColor" />
+              <rect x="0" y="14" width="6" height="2" fill="currentColor" />
+              <!-- Bottom-right corner -->
+              <rect x="14" y="10" width="2" height="4" fill="currentColor" />
+              <rect x="10" y="14" width="6" height="2" fill="currentColor" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </article>
+  ) : (
+    <a href={href} class={`timeline-item timeline-item--${type} group grid grid-cols-[2rem_1fr] gap-4`}>
+      <div class="timeline-rail">
+        <span class="timeline-icon" aria-hidden="true">
+          {type === 'log' && (
+            <svg viewBox="0 0 20 20" class="size-5" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Top edge + dog-ear -->
+              <rect x="4" y="1" width="10" height="1" fill="currentColor" />
+              <rect x="3" y="2" width="2" height="1" fill="currentColor" />
+              <rect x="13" y="2" width="2" height="1" fill="currentColor" />
+              <rect x="3" y="3" width="1" height="1" fill="currentColor" />
+              <rect x="14" y="3" width="2" height="1" fill="currentColor" />
+              <rect x="3" y="4" width="1" height="1" fill="currentColor" />
+              <rect x="15" y="4" width="2" height="1" fill="currentColor" />
+              <!-- Left/right edges -->
+              <rect x="3" y="5" width="1" height="12" fill="currentColor" />
+              <rect x="16" y="5" width="1" height="12" fill="currentColor" />
+              <!-- Text lines -->
+              <rect x="5" y="4" width="4" height="1" fill="currentColor" />
+              <rect x="10" y="4" width="1" height="1" fill="currentColor" />
+              <rect x="5" y="6" width="7" height="1" fill="currentColor" />
+              <rect x="5" y="8" width="6" height="1" fill="currentColor" />
+              <rect x="12" y="8" width="3" height="1" fill="currentColor" />
+              <rect x="5" y="10" width="3" height="1" fill="currentColor" />
+              <rect x="9" y="10" width="6" height="1" fill="currentColor" />
+              <rect x="5" y="12" width="9" height="1" fill="currentColor" />
+              <rect x="5" y="14" width="6" height="1" fill="currentColor" />
+              <rect x="12" y="14" width="3" height="1" fill="currentColor" />
+              <!-- Bottom -->
+              <rect x="3" y="17" width="14" height="1" fill="currentColor" />
+              <rect x="4" y="18" width="12" height="1" fill="currentColor" />
+            </svg>
+          )}
+          {type === 'guide' && (
+            <svg viewBox="0 0 20 20" class="size-5" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Top bar -->
+              <rect x="5" y="0" width="13" height="1" fill="currentColor" />
+              <rect x="4" y="1" width="1" height="1" fill="currentColor" />
+              <rect x="18" y="1" width="1" height="1" fill="currentColor" />
+              <!-- Curl -->
+              <rect x="16" y="2" width="1" height="1" fill="currentColor" />
+              <rect x="18" y="2" width="1" height="1" fill="currentColor" />
+              <rect x="16" y="3" width="3" height="1" fill="currentColor" />
+              <rect x="16" y="4" width="2" height="1" fill="currentColor" />
+              <!-- Left edge -->
+              <rect x="3" y="2" width="1" height="14" fill="currentColor" />
+              <!-- Right edge -->
+              <rect x="16" y="5" width="1" height="12" fill="currentColor" />
+              <!-- Text lines -->
+              <rect x="6" y="4" width="9" height="1" fill="currentColor" />
+              <rect x="5" y="6" width="6" height="1" fill="currentColor" />
+              <rect x="12" y="6" width="3" height="1" fill="currentColor" />
+              <rect x="5" y="8" width="8" height="1" fill="currentColor" />
+              <rect x="5" y="10" width="4" height="1" fill="currentColor" />
+              <rect x="5" y="12" width="7" height="1" fill="currentColor" />
+              <!-- Bottom roll -->
+              <rect x="2" y="16" width="13" height="1" fill="currentColor" />
+              <rect x="1" y="17" width="1" height="1" fill="currentColor" />
+              <rect x="13" y="17" width="1" height="1" fill="currentColor" />
+              <rect x="1" y="18" width="1" height="1" fill="currentColor" />
+              <rect x="14" y="18" width="2" height="1" fill="currentColor" />
+              <rect x="2" y="19" width="14" height="1" fill="currentColor" />
+            </svg>
+          )}
+          {type === 'experiment' && (
+            <svg viewBox="0 0 20 20" class="size-5" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Bubbles -->
+              <rect x="9" y="0" width="1" height="1" fill="currentColor" />
+              <rect x="5" y="2" width="2" height="2" fill="currentColor" />
+              <rect x="13" y="1" width="2" height="2" fill="currentColor" />
+              <!-- Rim -->
+              <rect x="2" y="5" width="16" height="1" fill="currentColor" />
+              <!-- Body -->
+              <rect x="3" y="6" width="14" height="1" fill="currentColor" />
+              <rect x="2" y="7" width="16" height="1" fill="currentColor" />
+              <rect x="1" y="8" width="18" height="1" fill="currentColor" />
+              <rect x="0" y="9" width="20" height="3" fill="currentColor" />
+              <!-- Legs + body -->
+              <rect x="0" y="12" width="2" height="4" fill="currentColor" />
+              <rect x="3" y="12" width="17" height="3" fill="currentColor" />
+              <rect x="2" y="15" width="18" height="1" fill="currentColor" />
+              <rect x="1" y="16" width="3" height="1" fill="currentColor" />
+              <rect x="5" y="16" width="14" height="1" fill="currentColor" />
+              <rect x="1" y="17" width="18" height="1" fill="currentColor" />
+              <rect x="2" y="18" width="16" height="1" fill="currentColor" />
+              <rect x="3" y="19" width="14" height="1" fill="currentColor" />
+            </svg>
+          )}
+        </span>
+        {!isLast && <span class="timeline-line" aria-hidden="true"></span>}
+      </div>
+
+      <div class="timeline-content">
+        <div class="flex items-baseline gap-3">
+          {showTypeLabel && (
+            <span class="text-text-secondary font-mono text-[11px] font-semibold uppercase tracking-[0.08em]">
+              {type}
+            </span>
+          )}
+          <time class="text-text-secondary font-mono text-[13px]" datetime={date.toISOString()}>
+            {date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+          </time>
+        </div>
+        <h3 class="text-text-primary mt-1 text-lg font-semibold transition-colors">{title}</h3>
+        <p class="text-text-secondary mt-1 text-sm leading-relaxed">{description}</p>
+      </div>
+    </a>
+  )
+}
+
+<script>
+  /*
+  // TODO: Screen/code toggle icons — re-enable when ready
+  const ICON_SCREEN = `<svg viewBox="0 0 16 16" width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="1" y="2" width="14" height="2" fill="currentColor" />
+    <rect x="0" y="4" width="16" height="7" fill="currentColor" />
+    <rect x="1" y="11" width="14" height="1" fill="currentColor" />
+    <rect x="2" y="3" width="12" height="1" fill="var(--color-bg-primary, #111)" />
+    <rect x="1" y="4" width="14" height="6" fill="var(--color-bg-primary, #111)" />
+    <rect x="6" y="12" width="4" height="1" fill="currentColor" />
+    <rect x="5" y="13" width="6" height="1" fill="currentColor" />
+  </svg>`;
+
+  const ICON_CODE = `<svg viewBox="0 0 16 16" width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="4" y="1" width="2" height="2" fill="currentColor" />
+    <rect x="2" y="3" width="2" height="2" fill="currentColor" />
+    <rect x="0" y="5" width="2" height="2" fill="currentColor" />
+    <rect x="0" y="7" width="2" height="2" fill="currentColor" />
+    <rect x="2" y="9" width="2" height="2" fill="currentColor" />
+    <rect x="2" y="11" width="2" height="2" fill="currentColor" />
+    <rect x="4" y="13" width="2" height="2" fill="currentColor" />
+    <rect x="10" y="1" width="2" height="2" fill="currentColor" />
+    <rect x="12" y="3" width="2" height="2" fill="currentColor" />
+    <rect x="14" y="5" width="2" height="2" fill="currentColor" />
+    <rect x="14" y="7" width="2" height="2" fill="currentColor" />
+    <rect x="12" y="9" width="2" height="2" fill="currentColor" />
+    <rect x="12" y="11" width="2" height="2" fill="currentColor" />
+    <rect x="10" y="13" width="2" height="2" fill="currentColor" />
+  </svg>`;
+  */
+
+  const ICON_CLOSE = `<svg viewBox="0 0 16 16" width="20" height="20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="2" y="2" width="2" height="2" fill="currentColor" />
+    <rect x="4" y="4" width="2" height="2" fill="currentColor" />
+    <rect x="6" y="6" width="4" height="4" fill="currentColor" />
+    <rect x="10" y="4" width="2" height="2" fill="currentColor" />
+    <rect x="12" y="2" width="2" height="2" fill="currentColor" />
+    <rect x="2" y="12" width="2" height="2" fill="currentColor" />
+    <rect x="4" y="10" width="2" height="2" fill="currentColor" />
+    <rect x="10" y="10" width="2" height="2" fill="currentColor" />
+    <rect x="12" y="12" width="2" height="2" fill="currentColor" />
+  </svg>`;
+
+  const ICON_OPEN = `<svg viewBox="0 0 16 16" width="16" height="16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect x="1" y="3" width="10" height="2" fill="currentColor" />
+    <rect x="0" y="5" width="12" height="8" fill="currentColor" />
+    <rect x="1" y="13" width="10" height="1" fill="currentColor" />
+    <rect x="1" y="5" width="10" height="7" fill="var(--color-bg-primary, #111)" />
+    <rect x="10" y="1" width="2" height="2" fill="currentColor" />
+    <rect x="12" y="1" width="4" height="2" fill="currentColor" />
+    <rect x="14" y="1" width="2" height="6" fill="currentColor" />
+    <rect x="12" y="3" width="2" height="2" fill="currentColor" />
+    <rect x="10" y="5" width="2" height="2" fill="currentColor" />
+  </svg>`;
+
+  function openLightbox(experimentHome: HTMLElement) {
+    const href = experimentHome.dataset.experimentHref || '';
+    const overlay = document.createElement('div');
+    overlay.className = 'experiment-lightbox';
+    overlay.innerHTML = `
+      <div class="experiment-lightbox-backdrop"></div>
+      <div class="experiment-lightbox-content">
+        <div class="experiment-lightbox-actions">
+          ${href ? `<a href="${href}" class="experiment-lightbox-open" aria-label="Open experiment page">${ICON_OPEN}</a>` : ''}
+          <button type="button" class="experiment-lightbox-close" aria-label="Close lightbox">
+            ${ICON_CLOSE}
+          </button>
+        </div>
+        <div class="experiment-lightbox-stage">
+          <div class="experiment-lightbox-render"></div>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(overlay);
+    const renderPane = overlay.querySelector('.experiment-lightbox-render')!;
+
+    // Move experiment into lightbox render pane
+    const children = Array.from(experimentHome.children);
+    children.forEach((child) => renderPane.appendChild(child));
+
+    function closeLightbox() {
+      // Move experiment back
+      children.forEach((child) => experimentHome.appendChild(child));
+      overlay.remove();
+      document.removeEventListener('keydown', onKey);
+    }
+
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') closeLightbox();
+    }
+
+    document.addEventListener('keydown', onKey);
+    overlay.querySelector('.experiment-lightbox-backdrop')!.addEventListener('click', closeLightbox);
+    overlay.querySelector('.experiment-lightbox-close')!.addEventListener('click', closeLightbox);
+  }
+
+  document.addEventListener('click', (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) return;
+
+    const button = target.closest('[data-experiment-maximize]');
+    if (!(button instanceof HTMLButtonElement)) return;
+
+    const article = button.closest('.timeline-item--experiment');
+    if (!article) return;
+
+    const home = article.querySelector('[data-experiment-home]');
+    if (!(home instanceof HTMLElement)) return;
+
+    openLightbox(home);
+  });
+</script>

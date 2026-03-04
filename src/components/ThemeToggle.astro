@@ -1,0 +1,172 @@
+---
+---
+
+<button
+  id="theme-toggle"
+  type="button"
+  aria-label="Toggle theme"
+  class="text-text-secondary hover:text-text-primary cursor-pointer transition-colors"
+>
+  <!-- Light mode: Sun -->
+  <svg id="light-icon" class="hidden size-5" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <!-- Top ray -->
+    <rect x="9" y="1" width="2" height="1" fill="currentColor" />
+    <rect x="8" y="2" width="4" height="1" fill="currentColor" />
+    <!-- Diagonal rays top -->
+    <rect x="3" y="3" width="2" height="1" fill="currentColor" />
+    <rect x="15" y="3" width="2" height="1" fill="currentColor" />
+    <!-- Sun body top -->
+    <rect x="3" y="4" width="1" height="1" fill="currentColor" />
+    <rect x="7" y="4" width="6" height="1" fill="currentColor" />
+    <rect x="16" y="4" width="1" height="1" fill="currentColor" />
+    <rect x="6" y="5" width="2" height="1" fill="currentColor" />
+    <rect x="12" y="5" width="2" height="1" fill="currentColor" />
+    <rect x="5" y="6" width="2" height="1" fill="currentColor" />
+    <rect x="13" y="6" width="2" height="1" fill="currentColor" />
+    <rect x="4" y="7" width="2" height="1" fill="currentColor" />
+    <rect x="14" y="7" width="2" height="1" fill="currentColor" />
+    <!-- Side rays + sun edges -->
+    <rect x="2" y="8" width="1" height="1" fill="currentColor" />
+    <rect x="4" y="8" width="1" height="1" fill="currentColor" />
+    <rect x="15" y="8" width="1" height="1" fill="currentColor" />
+    <rect x="17" y="8" width="1" height="1" fill="currentColor" />
+    <rect x="1" y="9" width="2" height="2" fill="currentColor" />
+    <rect x="4" y="9" width="1" height="3" fill="currentColor" />
+    <rect x="15" y="9" width="1" height="3" fill="currentColor" />
+    <rect x="17" y="9" width="2" height="2" fill="currentColor" />
+    <rect x="2" y="11" width="1" height="1" fill="currentColor" />
+    <rect x="17" y="11" width="1" height="1" fill="currentColor" />
+    <!-- Sun body bottom -->
+    <rect x="4" y="12" width="2" height="1" fill="currentColor" />
+    <rect x="14" y="12" width="2" height="1" fill="currentColor" />
+    <rect x="5" y="13" width="2" height="1" fill="currentColor" />
+    <rect x="13" y="13" width="2" height="1" fill="currentColor" />
+    <rect x="6" y="14" width="2" height="1" fill="currentColor" />
+    <rect x="12" y="14" width="2" height="1" fill="currentColor" />
+    <rect x="3" y="15" width="1" height="1" fill="currentColor" />
+    <rect x="7" y="15" width="6" height="1" fill="currentColor" />
+    <rect x="16" y="15" width="1" height="1" fill="currentColor" />
+    <!-- Diagonal rays bottom -->
+    <rect x="3" y="16" width="2" height="1" fill="currentColor" />
+    <rect x="15" y="16" width="2" height="1" fill="currentColor" />
+    <!-- Bottom ray -->
+    <rect x="8" y="17" width="4" height="1" fill="currentColor" />
+    <rect x="9" y="18" width="2" height="1" fill="currentColor" />
+  </svg>
+
+  <!-- Dark mode: Crescent moon with stars -->
+  <svg id="dark-icon" class="hidden size-5" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <!-- Stars -->
+    <rect x="1" y="5" width="1" height="1" fill="currentColor" />
+    <rect x="2" y="10" width="1" height="1" fill="currentColor" />
+    <rect x="18" y="16" width="1" height="1" fill="currentColor" />
+    <rect x="14" y="19" width="1" height="1" fill="currentColor" />
+    <!-- Crescent -->
+    <rect x="9" y="1" width="4" height="1" fill="currentColor" />
+    <rect x="5" y="2" width="1" height="1" fill="currentColor" />
+    <rect x="9" y="2" width="1" height="1" fill="currentColor" />
+    <rect x="12" y="2" width="3" height="1" fill="currentColor" />
+    <rect x="4" y="3" width="3" height="1" fill="currentColor" />
+    <rect x="9" y="3" width="2" height="1" fill="currentColor" />
+    <rect x="14" y="3" width="2" height="1" fill="currentColor" />
+    <rect x="5" y="4" width="1" height="1" fill="currentColor" />
+    <rect x="10" y="4" width="2" height="1" fill="currentColor" />
+    <rect x="15" y="4" width="2" height="1" fill="currentColor" />
+    <rect x="11" y="5" width="1" height="1" fill="currentColor" />
+    <rect x="16" y="5" width="1" height="1" fill="currentColor" />
+    <rect x="11" y="6" width="2" height="1" fill="currentColor" />
+    <rect x="16" y="6" width="2" height="1" fill="currentColor" />
+    <rect x="12" y="7" width="1" height="2" fill="currentColor" />
+    <rect x="17" y="7" width="1" height="3" fill="currentColor" />
+    <rect x="11" y="9" width="2" height="1" fill="currentColor" />
+    <rect x="10" y="10" width="2" height="1" fill="currentColor" />
+    <rect x="4" y="11" width="2" height="1" fill="currentColor" />
+    <rect x="9" y="11" width="2" height="1" fill="currentColor" />
+    <rect x="2" y="11" width="1" height="2" fill="currentColor" />
+    <rect x="5" y="12" width="5" height="1" fill="currentColor" />
+    <rect x="16" y="12" width="2" height="1" fill="currentColor" />
+    <rect x="2" y="13" width="2" height="1" fill="currentColor" />
+    <rect x="15" y="13" width="2" height="1" fill="currentColor" />
+    <rect x="3" y="14" width="2" height="1" fill="currentColor" />
+    <rect x="14" y="14" width="2" height="1" fill="currentColor" />
+    <rect x="4" y="15" width="2" height="1" fill="currentColor" />
+    <rect x="13" y="15" width="2" height="1" fill="currentColor" />
+    <rect x="5" y="16" width="3" height="1" fill="currentColor" />
+    <rect x="11" y="16" width="3" height="1" fill="currentColor" />
+    <rect x="7" y="17" width="5" height="1" fill="currentColor" />
+    <rect x="17" y="17" width="3" height="1" fill="currentColor" />
+    <rect x="18" y="18" width="1" height="1" fill="currentColor" />
+  </svg>
+
+  <!-- System mode: Classic Mac -->
+  <svg id="system-icon" class="hidden size-5" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <!-- Top edge -->
+    <rect x="4" y="1" width="12" height="1" fill="currentColor" />
+    <!-- Outer shell left/right -->
+    <rect x="3" y="2" width="1" height="1" fill="currentColor" />
+    <rect x="16" y="2" width="1" height="1" fill="currentColor" />
+    <rect x="2" y="3" width="1" height="15" fill="currentColor" />
+    <rect x="17" y="3" width="1" height="15" fill="currentColor" />
+    <!-- Screen outline -->
+    <rect x="5" y="3" width="10" height="1" fill="currentColor" />
+    <rect x="4" y="4" width="1" height="6" fill="currentColor" />
+    <rect x="15" y="4" width="1" height="6" fill="currentColor" />
+    <rect x="4" y="10" width="12" height="1" fill="currentColor" />
+    <!-- Floppy slot -->
+    <rect x="5" y="14" width="1" height="1" fill="currentColor" />
+    <rect x="10" y="15" width="5" height="1" fill="currentColor" />
+    <!-- Bottom -->
+    <rect x="3" y="18" width="1" height="1" fill="currentColor" />
+    <rect x="16" y="18" width="1" height="1" fill="currentColor" />
+    <rect x="3" y="19" width="14" height="1" fill="currentColor" />
+  </svg>
+</button>
+
+<script>
+  function getTheme() {
+    return localStorage.getItem('theme') || 'system';
+  }
+
+  function applyTheme(theme: string) {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else if (theme === 'light') {
+      document.documentElement.classList.remove('dark');
+    } else {
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    }
+  }
+
+  function updateIcons() {
+    const theme = getTheme();
+    document.getElementById('light-icon')?.classList.toggle('hidden', theme !== 'light');
+    document.getElementById('dark-icon')?.classList.toggle('hidden', theme !== 'dark');
+    document.getElementById('system-icon')?.classList.toggle('hidden', theme !== 'system');
+  }
+
+  document.getElementById('theme-toggle')?.addEventListener('click', () => {
+    const current = getTheme();
+    const next = current === 'system' ? 'light' : current === 'light' ? 'dark' : 'system';
+
+    if (next === 'system') {
+      localStorage.removeItem('theme');
+    } else {
+      localStorage.setItem('theme', next);
+    }
+
+    applyTheme(next);
+    updateIcons();
+  });
+
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    if (getTheme() === 'system') {
+      applyTheme('system');
+    }
+  });
+
+  updateIcons();
+</script>

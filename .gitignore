@@ -1,0 +1,16 @@
+# Dependencies
+node_modules
+
+# Build output
+dist
+.astro
+
+# Claude Code
+.claude
+
+# Claude Code agents/skills
+.agents
+
+# Task files
+tasks.json
+skills-lock.json

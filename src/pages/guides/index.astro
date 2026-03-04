@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import TimelineItem from '../../components/TimelineItem.astro';
+
+const guides = (await getCollection('guides', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+---
+
+<BaseLayout title="Guides — Alex Russell" description="Playbooks, practical frameworks, and tactical deep dives.">
+  <section class="py-16">
+    <p class="font-mono text-sm font-semibold tracking-tight uppercase text-text-secondary">Guides</p>
+    <h1 class="font-heading mt-3 text-xl leading-snug sm:text-2xl sm:leading-[1.35]">
+      Practical frameworks and repeatable systems for shipping better product work.
+    </h1>
+
+    <div class="mt-12">
+      {guides.map((guide, index) => (
+        <TimelineItem
+          href={`/guides/${guide.id}`}
+          type="guide"
+          title={guide.data.title}
+          description={guide.data.description}
+          date={guide.data.date}
+          isLast={index === guides.length - 1}
+          showTypeLabel={false}
+        />
+      ))}
+    </div>
+  </section>
+</BaseLayout>

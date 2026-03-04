@@ -1,0 +1,42 @@
+---
+import Bricklayer from './Bricklayer.astro';
+import GenerativeLogo from './GenerativeLogo.astro';
+// @ts-ignore — Vite raw import
+import bricklayerSource from './Bricklayer.astro?raw';
+// @ts-ignore — Vite raw import
+import generativeLogoSource from './GenerativeLogo.astro?raw';
+// TODO: Re-enable syntax highlighting when screen/code toggle is ready
+// import { createHighlighter } from 'shiki';
+
+interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+
+const sourceMap: Record<string, string> = {
+  bricklayer: bricklayerSource,
+  'generative-logo': generativeLogoSource,
+};
+
+const raw = sourceMap[id] ?? '';
+
+// TODO: Re-enable when screen/code toggle is ready
+// let highlightedHtml = '';
+// if (raw) {
+//   const highlighter = await createHighlighter({
+//     themes: ['github-dark-default'],
+//     langs: ['astro'],
+//   });
+//   highlightedHtml = highlighter.codeToHtml(raw, {
+//     lang: 'astro',
+//     theme: 'github-dark-default',
+//   });
+//   highlighter.dispose();
+// }
+---
+
+<!-- TODO: Re-enable when screen/code toggle is ready -->
+<!-- <template data-experiment-source>{highlightedHtml}</template> -->
+{id === 'bricklayer' && <Bricklayer />}
+{id === 'generative-logo' && <GenerativeLogo />}

@@ -1,0 +1,185 @@
+---
+title: A Local-First UX Research Workflow in Cursor
+subtitle: A self-updating research repository
+description: How I stopped copying interview notes into chat windows and built a research pipeline that lives in my codebase, processes transcripts automatically, and compounds over time.
+date: '2025-12-15'
+type: 'guide'
+---
+
+Most UX research workflows have a hidden bottleneck: everything collapses into a single chat window, a Confluence page, or a folder of notes that nobody ever opens again. The work exists but it doesn't accumulate. Each interview is processed in isolation. Patterns don't surface until someone manually reads everything again.
+
+This is the workflow I built to fix that — using Cursor, MS Teams transcripts, and a Cursor Skill that treats your research like a codebase.
+
+---
+
+## What this is and who it's for
+
+This guide is for designers who are comfortable in a code editor, already conducting user interviews, and frustrated that their research doesn't compound. You don't need to write much code. You do need to be willing to think about your research data as structured files rather than freeform notes.
+
+The pipeline:
+
+1. Record interviews in MS Teams. Let MS Copilot generate a synthesis.
+2. Save that synthesis as a markdown file in your research project.
+3. Ask Cursor to process it against your existing insights.
+4. Review the diff. Commit the change.
+
+---
+
+## The structure that makes it work
+
+Before setting up anything in Cursor, you need a folder structure that the skill can reason about. Here's what mine looks like:
+
+```
+/research
+  /syntheses          ← raw Copilot summaries go here
+  /insights
+    /seamless         ← grouped by quality category
+    /scalable
+    /secure
+  qualities.md        ← your taxonomy reference
+  .cursor/
+    skills/
+      research-insights/
+        SKILL.md      ← the skill that drives everything
+        references/
+          example-synthesis.md
+          example-insight.md
+```
+
+The key decision here is that the skill lives *inside* the project rather than globally in Cursor. This means the skill and your research data evolve together, the folder paths in the skill are always accurate, and the whole thing is version-controllable and shareable.
+
+---
+
+## Step 1: Get your transcript out of MS Teams
+
+After a Teams interview, MS Copilot generates a meeting summary automatically. You want the synthesis version — not the full verbatim transcript, but Copilot's structured summary of themes, pain points, and action items.
+
+Export it or copy it. Paste it into a new markdown file inside `/syntheses`. The naming convention I use:
+
+```
+role-date.md
+# e.g. app-developer-2025-03-01.md
+```
+
+Add a small frontmatter block at the top. The `id` field is what gets referenced in insight links — it's the only thing that ever shows up in shareable outputs. The `participant` field stays local:
+
+```yaml
+---
+participant: Jordan
+role: App Developer
+date: 2025-03-01
+id: app-developer-2025-03-01
+---
+```
+
+The body is whatever Copilot gave you. It doesn't need to be reformatted. The skill is designed to handle Copilot's free-form structure.
+
+---
+
+## Step 2: Build your qualities taxonomy
+
+Insights without categories are just notes. The taxonomy is what lets you answer questions like "what does the research say about scalability?" without reading everything again.
+
+My taxonomy has three top-level categories that map to how the platform team thinks about product priorities:
+
+- **Seamless** — how frictionless the experience feels
+- **Scalable** — how well it handles growth and complexity
+- **Secure** — how trustworthy and compliant it is
+
+Each has sub-qualities. For example, under Seamless: *Learnable*, *Productive*, *Consistent*, *Transparent*. These are the tags that insights get labeled with.
+
+Save this as `qualities.md` at the root of your research project. The skill references it when categorizing new insights and when linking related ones.
+
+When labeling an insight, use the sub-quality name, not the category. "Productive" is more useful than "Seamless" when you're trying to find a specific cluster of findings later.
+
+---
+
+## Step 3: Write the SKILL.md
+
+This is the core of the whole workflow. A Cursor Skill is a markdown file that gives the AI a defined behavior when you invoke it. The `SKILL.md` for this workflow tells Cursor:
+
+1. Read the new synthesis file in `/syntheses`
+2. Read the existing insight files in `/insights`
+3. For each theme in the synthesis, decide: does this corroborate an existing insight, contradict one, or warrant a new one?
+4. Make the changes directly to the insight files
+5. Leave a `CHANGES.md` summary so you can review what happened
+
+The skill uses three evidence strength levels:
+
+- **Strong** — the participant raised this unprompted
+- **Supported** — the participant validated it when asked
+- **Emerging** — single mention, not yet a pattern
+
+This distinction matters. "Three people agreed when I asked about it" is not the same signal as "three people brought it up on their own." The skill defaults to Supported and flags items for manual upgrade to Strong when you know from context that they were unprompted.
+
+The insight file format looks like this:
+
+```markdown
+---
+title: Manual Handoffs Slow Development Velocity
+quality: Productive
+category: Seamless
+sources: 3
+strength: Strong
+---
+
+Teams wait days for simple configuration changes because automated
+workflows don't exist for common tasks.
+
+## Evidence
+
+- **app-developer-2025-01-14** — 7-day SLA for Kafka topic creation
+- **platform-lead-2025-01-22** — Vault access requires manual approval
+- **app-developer-2025-03-01** — Token provisioning requires director sign-off
+
+## Related Insights
+
+- siloed-tools-break-development-flow.md
+```
+
+The filename becomes the slug used in `Related Insights` links. When the skill adds evidence, it appends to the Evidence section and increments the `sources` count in frontmatter. It doesn't rename files or restructure existing insights — it only adds.
+
+---
+
+## Step 4: Process a new synthesis
+
+With the structure in place, the workflow for each new interview is:
+
+1. Drop the synthesis markdown into `/syntheses`
+2. Open Cursor's chat
+3. Say: *"Process the new synthesis in /syntheses against the existing insights"*
+4. Review the diff in Cursor's source control panel
+5. Accept or revert individual changes
+6. Commit
+
+The diff view is the review step. You're not reading the AI's output in a chat window and manually applying it — you're looking at exactly what changed in exactly which files. That's a much faster and more reliable review process than anything that happens in a conversation.
+
+---
+
+## What happens over time
+
+After a few months of interviews, the research project starts to feel like a codebase with real history. Each insight file shows you when new evidence was added. The `sources` count in frontmatter lets you query for high-confidence patterns at a glance. The qualities taxonomy lets you pull all research related to a specific product priority in seconds.
+
+When I'm preparing for a stakeholder meeting, I can ask Cursor: *"Summarize all Strong insights in the Scalable category."* The answer is grounded in structured files I control, not a model reconstructing things from memory.
+
+The other thing that builds up is the `/syntheses` folder itself. Every Copilot summary you've ever run through the workflow is there, with participant metadata in frontmatter. If you want to revisit what a specific person said, it's findable. If you want to re-process an old synthesis after the taxonomy evolves, you can.
+
+---
+
+## Practical notes
+
+**Copilot summaries vary in quality.** Some interviews produce well-structured Copilot output. Others produce a wall of bullet points with no theme grouping. The skill handles both, but the better the synthesis, the more precisely the insights get categorized. It helps to briefly review and add a header or two to rough Copilot outputs before dropping them into `/syntheses`.
+
+**Don't try to normalize everything up front.** When I started, I wanted clean consistent insight files before I ran anything. That's not how research works. Let the skill create messy early insights and clean them up as more evidence accumulates. An `Emerging` insight with one source is still useful — it's a hypothesis to probe in future interviews.
+
+**Privacy is built into the structure.** Participant names live only in local frontmatter. The insight files and anything you publish only ever reference the participant `id`. When it's time to share research with stakeholders, the insight files are already clean.
+
+**The skill is part of the project, so it can be changed.** As your taxonomy evolves, update `qualities.md` and the processing logic in `SKILL.md`. The research data doesn't need to change — just the rules the skill applies going forward.
+
+---
+
+## Why this beats a chat window
+
+The problem with doing research synthesis in a chat window isn't the quality of the output. It's that the output lives in the conversation. Every time you start a new chat, you start from zero. The model doesn't know what you already know.
+
+Running this locally in Cursor means the model has access to every insight file every time. It's not summarizing — it's updating a shared knowledge base that gets richer with every interview. That's what makes research compound instead of evaporate.

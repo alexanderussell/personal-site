@@ -1,0 +1,603 @@
+---
+// Bricklayer.astro
+// Self-contained experiment component — no props required.
+// Drop into any Astro page: <Bricklayer />
+---
+
+<div class="bl-root" data-bricklayer>
+  <div class="bl-wall-wrap" data-wall-wrap>
+    <div class="bl-wall" data-wall></div>
+  </div>
+
+  <div class="bl-row-progress-wrap">
+    <div class="bl-row-progress-label">
+      <span>Current row</span><span class="bl-row-lbl" data-row-lbl>0 / ?</span>
+    </div>
+    <div class="bl-row-progress-bar">
+      <div class="bl-row-progress-fill" data-row-fill style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="bl-yard" data-yard>
+    <span class="bl-yard-label">Yard</span>
+    <div class="bl-brick-stack" data-brick-stack></div>
+  </div>
+
+  <div class="bl-controls">
+    <div class="bl-stat-block">
+      <div class="bl-stat-label">Bricks laid</div>
+      <div class="bl-stat-value" data-total-bricks>0</div>
+    </div>
+    <div class="bl-stat-block">
+      <div class="bl-stat-label">Rows complete</div>
+      <div class="bl-stat-value" data-total-rows>0</div>
+    </div>
+  </div>
+
+  <!-- toast and drag ghost are appended to body so they escape overflow:hidden containers -->
+</div>
+
+<style is:global>
+  /* All selectors scoped to .bl-root to avoid collisions */
+  .bl-root {
+    --bl-brick:        #b5572a;
+    --bl-brick-dark:   #8c3e1c;
+    --bl-brick-light:  #cb7048;
+    --bl-mortar:       #c8b89a;
+    --bl-mortar-dark:  #a89070;
+    --bl-bg:           #1a1410;
+    --bl-surface:      #110d09;
+    --bl-paper:        #f0e6d3;
+    --bl-ink:          #2a1f14;
+    --bl-border:       #2e2018;
+    --bl-wall-shadow:  rgba(0,0,0,0.6);
+    --bl-wall-highlight: rgba(255,255,255,0.04);
+    --bl-yard-bg:      #1a1108;
+    --bl-stat-bg:      #1f160e;
+    --bl-footer-color: #3a2a1c;
+
+    font-family: 'IBM Plex Mono', 'Courier New', monospace;
+    font-weight: 600;
+    color: var(--bl-paper);
+    background: var(--bl-bg);
+    border-radius: 6px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    user-select: none;
+    position: relative;
+    /* grain texture */
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+  }
+
+  /* Light mode overrides — everything except brick colors */
+  :root:not(.dark) .bl-root {
+    --bl-mortar:       #3d2e20;
+    --bl-mortar-dark:  #6b5a48;
+    --bl-bg:           #f2ece4;
+    --bl-surface:      #e8e0d4;
+    --bl-paper:        #1a1008;
+    --bl-ink:          #f0e6d3;
+    --bl-border:       #d4c9b8;
+    --bl-wall-shadow:  rgba(0,0,0,0.08);
+    --bl-wall-highlight: rgba(255,255,255,0.5);
+    --bl-yard-bg:      #ede5d9;
+    --bl-stat-bg:      #e8e0d4;
+    --bl-footer-color: #b5a48e;
+  }
+
+  /* Wall */
+  .bl-wall-wrap {
+    width: 100%;
+    background: var(--bl-surface);
+    border: 2px solid var(--bl-border);
+    border-radius: 3px;
+    padding: 1.5rem 1.5rem 0.8rem;
+    margin-bottom: 1.2rem;
+    box-shadow: 0 8px 40px var(--bl-wall-shadow, rgba(0,0,0,0.6)), inset 0 1px 0 var(--bl-wall-highlight, rgba(255,255,255,0.04));
+    min-height: 190px;
+    position: relative;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .bl-wall-wrap.drop-ready {
+    border-color: var(--bl-brick);
+    box-shadow:
+      0 8px 40px var(--bl-wall-shadow),
+      0 0 0 1px var(--bl-brick-dark),
+      inset 0 1px 0 var(--bl-wall-highlight);
+  }
+
+  .bl-wall {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+
+  .bl-row {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 5px;
+  }
+
+  .bl-row:nth-child(even) { margin-left: 28px; }
+
+  /* Placed bricks */
+  .bl-brick-placed {
+    height: 22px;
+    flex: 0 0 56px;
+    border-radius: 2px;
+    position: relative;
+    animation: bl-brickDrop 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .bl-brick-placed::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 2px;
+    background: linear-gradient(160deg, rgba(255,255,255,0.12) 0%, transparent 40%, rgba(0,0,0,0.15) 100%);
+  }
+
+  @keyframes bl-brickDrop {
+    from { transform: translateY(-18px) scaleY(0.7); opacity: 0; }
+    to   { transform: translateY(0) scaleY(1); opacity: 1; }
+  }
+
+  /* Ghost slot */
+  .bl-ghost-slot {
+    height: 22px;
+    flex: 0 0 56px;
+    border-radius: 2px;
+    border: 2px dashed var(--bl-border);
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .bl-wall-wrap.drop-ready .bl-ghost-slot {
+    border-color: var(--bl-brick-dark);
+    background: rgba(181, 87, 42, 0.12);
+  }
+
+  /* Color variants */
+  .bl-v1 { background: #b5572a; }
+  .bl-v2 { background: #a84e24; }
+  .bl-v3 { background: #c06032; }
+  .bl-v4 { background: #9e4820; }
+  .bl-v5 { background: #bf5c2e; }
+
+  /* Yard */
+  .bl-yard {
+    width: 100%;
+    background: var(--bl-yard-bg);
+    border: 1px solid var(--bl-border);
+    border-radius: 3px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-height: 66px;
+  }
+
+  .bl-yard-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--bl-mortar-dark);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .bl-brick-stack {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  /* Source bricks */
+  .bl-brick-source {
+    height: 30px;
+    width: 62px;
+    border-radius: 3px;
+    cursor: grab;
+    position: relative;
+    flex-shrink: 0;
+    transition: transform 0.12s, box-shadow 0.12s;
+    box-shadow: 0 3px 0 #5a2510, 0 4px 12px rgba(0,0,0,0.4);
+    touch-action: none;
+  }
+
+  .bl-brick-source::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 3px;
+    background: linear-gradient(160deg, rgba(255,255,255,0.14) 0%, transparent 40%, rgba(0,0,0,0.15) 100%);
+  }
+
+  .bl-brick-source:hover {
+    transform: translateY(-3px) rotate(-1deg);
+    box-shadow: 0 6px 0 #5a2510, 0 8px 20px rgba(0,0,0,0.5);
+  }
+
+  .bl-brick-source.bl-dragging {
+    opacity: 0.3;
+    transform: none !important;
+    box-shadow: 0 1px 0 #5a2510;
+    cursor: grabbing;
+  }
+
+  /* Progress bar */
+  .bl-row-progress-wrap {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .bl-row-progress-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--bl-mortar-dark);
+    margin-bottom: 0.4rem;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .bl-row-progress-bar {
+    height: 6px;
+    background: var(--bl-border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .bl-row-progress-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.15s ease;
+    background: linear-gradient(90deg, var(--bl-brick-dark), var(--bl-brick-light));
+  }
+
+  /* Stats */
+  .bl-controls {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .bl-stat-block {
+    background: var(--bl-stat-bg);
+    border: 1px solid var(--bl-border);
+    border-radius: 3px;
+    padding: 0.9rem 1.1rem;
+  }
+
+  .bl-stat-label {
+    font-size: 0.6rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--bl-mortar-dark);
+    margin-bottom: 0.3rem;
+  }
+
+  .bl-stat-value {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: var(--bl-mortar);
+    line-height: 1;
+  }
+
+</style>
+
+<script is:inline>
+  (() => {
+    const BRICK_W = 56;
+    const GAP = 5;
+    const OFFSET = 28; // even-row stagger (half brick)
+    const MAX_ROWS = 7;
+    const YARD_SIZE = 5;
+    const MIN_RPR = 3;
+    const VARIANTS = ['bl-v1', 'bl-v2', 'bl-v3', 'bl-v4', 'bl-v5'];
+    const MILESTONES = [
+      { at: 1, msg: 'First brick down.' },
+      { at: 10, msg: 'A foundation begins.' },
+      { at: 25, msg: 'Finding your rhythm.' },
+      { at: 50, msg: 'Halfway to a hundred.' },
+      { at: 100, msg: 'One hundred bricks.' },
+      { at: 200, msg: 'The wall grows taller.' },
+      { at: 500, msg: "You don't stop, do you." },
+      { at: 1000, msg: 'A thousand bricks. A wall.' },
+    ];
+    const DROP_QUIPS = [
+      'Ouch! My toe!',
+      'That one\'s coming out of your pay.',
+      'Five-second rule?',
+      'The foreman saw that.',
+      'Brick down. Dignity too.',
+      'Butterfingers.',
+      'That\'s not how walls work.',
+      'Ground: 1. You: 0.',
+    ];
+    const colorMap = {
+      'bl-v1': '#b5572a',
+      'bl-v2': '#a84e24',
+      'bl-v3': '#c06032',
+      'bl-v4': '#9e4820',
+      'bl-v5': '#bf5c2e',
+    };
+
+    const pickVariant = () => VARIANTS[Math.floor(Math.random() * VARIANTS.length)];
+
+    /** Calculate how many bricks fit in a row given the wall's current width */
+    const calcRPR = (wallWidth) => {
+      // Even rows are the tighter constraint (offset eats into space)
+      const usable = wallWidth - OFFSET;
+      // N bricks need: N * BRICK_W + (N-1) * GAP
+      const n = Math.floor((usable + GAP) / (BRICK_W + GAP));
+      return Math.max(MIN_RPR, n);
+    };
+
+    /**
+     * @param {HTMLElement} root
+     */
+    const initBricklayer = (root) => {
+      if (root.dataset.blInitialized === 'true') return;
+
+      const wallEl = root.querySelector('[data-wall]');
+      const wallWrap = root.querySelector('[data-wall-wrap]');
+      const tbEl = root.querySelector('[data-total-bricks]');
+      const trEl = root.querySelector('[data-total-rows]');
+      const fillEl = root.querySelector('[data-row-fill]');
+      const lblEl = root.querySelector('[data-row-lbl]');
+      const stackEl = root.querySelector('[data-brick-stack]');
+
+      if (!wallEl || !wallWrap || !tbEl || !trEl || !fillEl || !lblEl || !stackEl) return;
+      if (!(wallEl instanceof HTMLElement) || !(wallWrap instanceof HTMLElement) || !(stackEl instanceof HTMLElement)) return;
+      if (!(tbEl instanceof HTMLElement) || !(trEl instanceof HTMLElement) || !(fillEl instanceof HTMLElement) || !(lblEl instanceof HTMLElement)) return;
+
+      root.dataset.blInitialized = 'true';
+
+      let rpr = calcRPR(wallEl.clientWidth);
+      let totalBricks = 0;
+      let rowBricks = 0;
+      let totalRows = 0;
+      /** @type {HTMLElement | null} */
+      let dragging = null;
+      const hit = new Set();
+
+      const updateProgressUI = () => {
+        fillEl.style.width = `${(rowBricks / rpr) * 100}%`;
+        lblEl.textContent = `${rowBricks} / ${rpr}`;
+      };
+
+      const toastEl = document.createElement('div');
+      Object.assign(toastEl.style, {
+        position: 'fixed',
+        bottom: '2rem',
+        left: '50%',
+        transform: 'translateX(-50%) translateY(20px)',
+        background: '#c8b89a',
+        color: '#2a1f14',
+        fontFamily: "'IBM Plex Mono', monospace",
+        fontSize: '0.72rem',
+        letterSpacing: '0.08em',
+        padding: '0.5rem 1.1rem',
+        borderRadius: '2px',
+        opacity: '0',
+        pointerEvents: 'none',
+        whiteSpace: 'nowrap',
+        transition: 'opacity 0.2s, transform 0.2s',
+        zIndex: '9999',
+      });
+      document.body.appendChild(toastEl);
+
+      const ghostEl = document.createElement('div');
+      Object.assign(ghostEl.style, {
+        position: 'fixed',
+        pointerEvents: 'none',
+        zIndex: '9998',
+        height: '30px',
+        width: '62px',
+        borderRadius: '3px',
+        display: 'none',
+        boxShadow: '0 10px 24px rgba(0,0,0,0.65), 0 2px 0 #5a2510',
+        transform: 'rotate(-2deg) scale(1.05)',
+      });
+      const ghostShine = document.createElement('div');
+      Object.assign(ghostShine.style, {
+        position: 'absolute',
+        inset: '0',
+        borderRadius: '3px',
+        background:
+          'linear-gradient(160deg,rgba(255,255,255,0.18) 0%,transparent 40%,rgba(0,0,0,0.1) 100%)',
+      });
+      ghostEl.appendChild(ghostShine);
+      document.body.appendChild(ghostEl);
+
+      const topRow = () => wallEl.children[wallEl.children.length - 1];
+      const addRow = () => {
+        const row = document.createElement('div');
+        row.className = 'bl-row';
+        wallEl.appendChild(row);
+        while (wallEl.children.length > MAX_ROWS) {
+          wallEl.removeChild(wallEl.children[0]);
+        }
+        return row;
+      };
+
+      const syncGhostSlot = () => {
+        wallEl.querySelectorAll('.bl-ghost-slot').forEach((slot) => slot.remove());
+        let row = topRow();
+        if (!row || row.querySelectorAll('.bl-brick-placed').length >= rpr) row = addRow();
+        const ghostSlot = document.createElement('div');
+        ghostSlot.className = 'bl-ghost-slot';
+        row.appendChild(ghostSlot);
+      };
+
+      // Recalculate RPR on resize
+      const ro = new ResizeObserver(() => {
+        const newRpr = calcRPR(wallEl.clientWidth);
+        if (newRpr !== rpr) {
+          rpr = newRpr;
+          updateProgressUI();
+          syncGhostSlot();
+        }
+      });
+      ro.observe(wallEl);
+
+      let toastTimer = 0;
+      /**
+       * @param {string} msg
+       */
+      const showToast = (msg) => {
+        toastEl.textContent = msg;
+        toastEl.style.opacity = '1';
+        toastEl.style.transform = 'translateX(-50%) translateY(0)';
+        if (toastTimer) window.clearTimeout(toastTimer);
+        toastTimer = window.setTimeout(() => {
+          toastEl.style.opacity = '0';
+          toastEl.style.transform = 'translateX(-50%) translateY(20px)';
+        }, 2400);
+      };
+
+      /**
+       * @param {string} colorClass
+       */
+      const layBrick = (colorClass) => {
+        totalBricks += 1;
+        rowBricks += 1;
+        wallEl.querySelectorAll('.bl-ghost-slot').forEach((slot) => slot.remove());
+
+        let row = topRow();
+        if (!row || row.querySelectorAll('.bl-brick-placed').length >= rpr) {
+          row = addRow();
+        }
+
+        const brick = document.createElement('div');
+        brick.className = `bl-brick-placed ${colorClass}`;
+        row.appendChild(brick);
+
+        if (rowBricks >= rpr) {
+          totalRows += 1;
+          trEl.textContent = String(totalRows);
+          rowBricks = 0;
+        }
+
+        tbEl.textContent = String(totalBricks);
+        updateProgressUI();
+
+        MILESTONES.forEach((milestone) => {
+          if (totalBricks === milestone.at && !hit.has(milestone.at)) {
+            hit.add(milestone.at);
+            showToast(milestone.msg);
+          }
+        });
+
+        syncGhostSlot();
+      };
+
+      const refillYard = () => {
+        while (stackEl.children.length < YARD_SIZE) {
+          const cls = pickVariant();
+          const brick = document.createElement('div');
+          brick.className = `bl-brick-source ${cls}`;
+          brick.dataset.color = cls;
+          brick.addEventListener('pointerdown', onPointerDown);
+          stackEl.appendChild(brick);
+        }
+      };
+
+      const positionGhost = (clientX, clientY) => {
+        ghostEl.style.left = `${clientX - 31}px`;
+        ghostEl.style.top = `${clientY - 15}px`;
+      };
+
+      const PAD = 24;
+      const isNearSlot = (cx, cy) => {
+        const slot = wallEl.querySelector('.bl-ghost-slot');
+        if (!slot) return false;
+        const r = slot.getBoundingClientRect();
+        return (
+          cx >= r.left - PAD &&
+          cx <= r.right + PAD &&
+          cy >= r.top - PAD &&
+          cy <= r.bottom + PAD
+        );
+      };
+
+      const isOverYard = (cx, cy) => {
+        const r = root.querySelector('[data-yard]').getBoundingClientRect();
+        return cx >= r.left && cx <= r.right && cy >= r.top && cy <= r.bottom;
+      };
+
+      const pickQuip = () => DROP_QUIPS[Math.floor(Math.random() * DROP_QUIPS.length)];
+
+      const onPointerMove = (event) => {
+        if (!dragging) return;
+        positionGhost(event.clientX, event.clientY);
+        wallWrap.classList.toggle('drop-ready', isNearSlot(event.clientX, event.clientY));
+      };
+
+      const onPointerUp = (event) => {
+        if (!dragging) return;
+        dragging.removeEventListener('pointermove', onPointerMove);
+        dragging.removeEventListener('pointerup', onPointerUp);
+        dragging.removeEventListener('pointercancel', onPointerUp);
+
+        const near = isNearSlot(event.clientX, event.clientY);
+
+        if (near) {
+          const cls = dragging.dataset.color || 'bl-v1';
+          dragging.remove();
+          layBrick(cls);
+          refillYard();
+        } else if (!isOverYard(event.clientX, event.clientY)) {
+          dragging.classList.remove('bl-dragging');
+          showToast(pickQuip());
+        } else {
+          dragging.classList.remove('bl-dragging');
+        }
+
+        ghostEl.style.display = 'none';
+        wallWrap.classList.remove('drop-ready');
+        dragging = null;
+      };
+
+      const onPointerDown = (event) => {
+        event.preventDefault();
+        if (!(event.currentTarget instanceof HTMLElement)) return;
+        dragging = event.currentTarget;
+        dragging.setPointerCapture(event.pointerId);
+        dragging.classList.add('bl-dragging');
+
+        ghostEl.style.background = colorMap[dragging.dataset.color || 'bl-v1'] || '#b5572a';
+        ghostEl.style.display = 'block';
+        positionGhost(event.clientX, event.clientY);
+
+        dragging.addEventListener('pointermove', onPointerMove);
+        dragging.addEventListener('pointerup', onPointerUp);
+        dragging.addEventListener('pointercancel', onPointerUp);
+      };
+
+      addRow();
+      syncGhostSlot();
+      updateProgressUI();
+      refillYard();
+    };
+
+    const initAll = () => {
+      document.querySelectorAll('[data-bricklayer]').forEach((root) => {
+        if (root instanceof HTMLElement) initBricklayer(root);
+      });
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initAll, { once: true });
+    } else {
+      initAll();
+    }
+  })();
+</script>
