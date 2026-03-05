@@ -1,10 +1,13 @@
 ---
 import Bricklayer from './Bricklayer.astro';
 import GenerativeLogo from './GenerativeLogo.astro';
+import HoldToCommit from './HoldToCommit.astro';
 // @ts-ignore — Vite raw import
 import bricklayerSource from './Bricklayer.astro?raw';
 // @ts-ignore — Vite raw import
 import generativeLogoSource from './GenerativeLogo.astro?raw';
+// @ts-ignore — Vite raw import
+import holdToCommitSource from './HoldToCommit.astro?raw';
 // TODO: Re-enable syntax highlighting when screen/code toggle is ready
 // import { createHighlighter } from 'shiki';
 
@@ -17,6 +20,7 @@ const { id } = Astro.props;
 const sourceMap: Record<string, string> = {
   bricklayer: bricklayerSource,
   'generative-logo': generativeLogoSource,
+  'hold-to-commit': holdToCommitSource,
 };
 
 const raw = sourceMap[id] ?? '';
@@ -40,3 +44,4 @@ const raw = sourceMap[id] ?? '';
 <!-- <template data-experiment-source>{highlightedHtml}</template> -->
 {id === 'bricklayer' && <Bricklayer />}
 {id === 'generative-logo' && <GenerativeLogo />}
+{id === 'hold-to-commit' && <HoldToCommit />}

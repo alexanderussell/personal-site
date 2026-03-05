@@ -1,0 +1,692 @@
+---
+// HoldToCommit.astro
+// Press-and-hold commit button with SVG ring progress,
+// fake commit hash toast, and running git log.
+// Self-contained — no props required.
+---
+
+<div class="htc-root" data-htc>
+  <div class="htc-stage">
+    <svg class="htc-ring" viewBox="0 0 120 120">
+      <circle class="htc-ring-track" cx="60" cy="60" r="50" />
+      <circle class="htc-ring-fill" cx="60" cy="60" r="50" data-htc-ring />
+    </svg>
+    <button class="htc-btn" data-htc-btn>
+      <span class="htc-btn-label" data-htc-label>HOLD TO COMMIT</span>
+    </button>
+    <div class="htc-checkmark" data-htc-check aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="4 12 10 18 20 6" />
+      </svg>
+    </div>
+  </div>
+
+  <div class="htc-toast" data-htc-toast aria-live="polite"></div>
+
+  <div class="htc-log" data-htc-log>
+    <div class="htc-log-header">git log --oneline</div>
+    <div class="htc-log-entries" data-htc-entries></div>
+  </div>
+
+  <div class="htc-controls" data-htc-controls>
+    <button class="htc-tune-toggle" data-htc-tune>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      <span>tune</span>
+    </button>
+    <div class="htc-sliders" data-htc-sliders>
+      <label class="htc-slider-row">
+        <span class="htc-slider-name">Hold duration</span>
+        <input type="range" min="500" max="4000" value="1800" step="100" data-htc-param="holdDuration" />
+        <span class="htc-slider-val" data-htc-val="holdDuration">1800ms</span>
+      </label>
+      <label class="htc-slider-row">
+        <span class="htc-slider-name">Ring stroke</span>
+        <input type="range" min="2" max="12" value="5" step="0.5" data-htc-param="ringStroke" />
+        <span class="htc-slider-val" data-htc-val="ringStroke">5px</span>
+      </label>
+      <label class="htc-slider-row">
+        <span class="htc-slider-name">Snap overshoot</span>
+        <input type="range" min="1.02" max="1.25" value="1.12" step="0.01" data-htc-param="snapOvershoot" />
+        <span class="htc-slider-val" data-htc-val="snapOvershoot">1.12</span>
+      </label>
+      <label class="htc-slider-row">
+        <span class="htc-slider-name">Spring duration</span>
+        <input type="range" min="100" max="800" value="400" step="25" data-htc-param="springDuration" />
+        <span class="htc-slider-val" data-htc-val="springDuration">400ms</span>
+      </label>
+    </div>
+  </div>
+</div>
+
+<style is:global>
+  /* ── Hold-to-Commit — all selectors namespaced .htc-* ── */
+
+  .htc-root {
+    --htc-accent: var(--color-accent);
+    --htc-text: var(--color-text-primary);
+    --htc-text-sec: var(--color-text-secondary);
+    --htc-bg: var(--color-bg-primary);
+    --htc-bg-sec: var(--color-bg-secondary);
+    --htc-border: var(--color-border);
+    --htc-mono: var(--font-mono);
+    --htc-hold-dur: 1800ms;
+    --htc-ring-stroke: 5px;
+    --htc-snap-scale: 1.12;
+    --htc-spring-dur: 400ms;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 2rem 1rem;
+    font-family: var(--htc-mono);
+    user-select: none;
+    -webkit-user-select: none;
+  }
+
+  /* ── Stage (ring + button) ── */
+
+  .htc-stage {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .htc-ring {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+  }
+
+  .htc-ring-track {
+    fill: none;
+    stroke: var(--htc-border);
+    stroke-width: var(--htc-ring-stroke);
+  }
+
+  .htc-ring-fill {
+    fill: none;
+    stroke: var(--htc-text-sec);
+    stroke-width: var(--htc-ring-stroke);
+    stroke-dasharray: 314.159;
+    stroke-dashoffset: 314.159;
+    stroke-linecap: round;
+    transition: stroke 0.15s ease;
+  }
+
+  .htc-btn {
+    position: relative;
+    z-index: 1;
+    width: 100px;
+    height: 100px;
+    border: 2px solid var(--htc-border);
+    border-radius: 16px;
+    background: var(--htc-bg);
+    color: var(--htc-text);
+    font-family: var(--htc-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1.3;
+    padding: 0.5rem;
+    transition: border-color 0.2s ease, background 0.2s ease;
+    touch-action: none;
+  }
+
+  .htc-btn:hover {
+    border-color: var(--htc-text-sec);
+  }
+
+  .htc-btn.is-holding {
+    border-color: var(--htc-accent);
+    background: color-mix(in srgb, var(--htc-accent) 6%, var(--htc-bg));
+  }
+
+  .htc-btn.is-committed {
+    border-color: var(--htc-accent);
+    background: color-mix(in srgb, var(--htc-accent) 10%, var(--htc-bg));
+    animation: htc-snap var(--htc-spring-dur) cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  @keyframes htc-snap {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(var(--htc-snap-scale)); }
+    100% { transform: scale(1); }
+  }
+
+  .htc-btn-label {
+    pointer-events: none;
+  }
+
+  /* ── Checkmark ── */
+
+  .htc-checkmark {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    z-index: 2;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--htc-accent);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: opacity 0.2s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    pointer-events: none;
+  }
+
+  .htc-checkmark svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .htc-checkmark.is-visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* ── Toast ── */
+
+  .htc-toast {
+    font-size: 13px;
+    color: var(--htc-accent);
+    min-height: 1.4em;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+
+  .htc-toast.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── Git log ── */
+
+  .htc-log {
+    width: 100%;
+    max-width: 380px;
+    border: 1px solid var(--htc-border);
+    border-radius: 8px;
+    overflow: hidden;
+    font-size: 12px;
+  }
+
+  .htc-log-header {
+    padding: 0.5rem 0.75rem;
+    background: color-mix(in srgb, var(--htc-bg-sec) 60%, transparent);
+    color: var(--htc-text-sec);
+    font-size: 11px;
+    letter-spacing: 0.03em;
+    border-bottom: 1px solid var(--htc-border);
+  }
+
+  .htc-log-entries {
+    padding: 0.5rem 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-height: 2rem;
+  }
+
+  .htc-log-entry {
+    display: flex;
+    gap: 0.5rem;
+    align-items: baseline;
+    opacity: 0;
+    transform: translateY(6px);
+    animation: htc-entry-in 0.3s ease forwards;
+  }
+
+  @keyframes htc-entry-in {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .htc-log-hash {
+    color: var(--htc-accent);
+    flex-shrink: 0;
+    font-weight: 500;
+  }
+
+  .htc-log-msg {
+    color: var(--htc-text);
+  }
+
+  .htc-log-empty {
+    color: var(--htc-text-sec);
+    font-style: italic;
+    padding: 0.25rem 0;
+  }
+
+  /* ── Controls ── */
+
+  .htc-controls {
+    width: 100%;
+    max-width: 380px;
+  }
+
+  .htc-tune-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    background: none;
+    border: 1px solid var(--htc-border);
+    border-radius: 6px;
+    color: var(--htc-text-sec);
+    font-family: var(--htc-mono);
+    font-size: 11px;
+    padding: 0.3rem 0.6rem;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .htc-tune-toggle:hover {
+    color: var(--htc-text);
+    border-color: var(--htc-text-sec);
+  }
+
+  .htc-tune-toggle.is-active {
+    color: var(--htc-accent);
+    border-color: var(--htc-accent);
+  }
+
+  .htc-sliders {
+    display: none;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    border: 1px solid var(--htc-border);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--htc-bg-sec) 40%, transparent);
+  }
+
+  .htc-sliders.is-open {
+    display: flex;
+  }
+
+  .htc-slider-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 11px;
+    color: var(--htc-text-sec);
+    cursor: default;
+  }
+
+  .htc-slider-name {
+    flex-shrink: 0;
+    width: 110px;
+  }
+
+  .htc-slider-row input[type="range"] {
+    flex: 1;
+    height: 4px;
+    appearance: none;
+    -webkit-appearance: none;
+    background: var(--htc-border);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .htc-slider-row input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--htc-text);
+    border: 2px solid var(--htc-bg);
+    cursor: pointer;
+  }
+
+  .htc-slider-row input[type="range"]::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--htc-text);
+    border: 2px solid var(--htc-bg);
+    cursor: pointer;
+  }
+
+  .htc-slider-val {
+    flex-shrink: 0;
+    width: 52px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+</style>
+
+<script is:inline>
+  (() => {
+    const CIRCUMFERENCE = 2 * Math.PI * 50; // r=50
+    const COMMIT_MESSAGES = [
+      'fix: resolve edge case in parser',
+      'feat: add dark mode support',
+      'chore: update dependencies',
+      'refactor: simplify state machine',
+      'docs: update readme',
+      'style: adjust spacing tokens',
+      'test: add unit coverage',
+      'perf: reduce bundle size',
+      'fix: handle null pointer',
+      'feat: implement search',
+      'chore: clean up imports',
+      'refactor: extract helper',
+      'fix: correct off-by-one',
+      'feat: add keyboard nav',
+      'style: improve contrast',
+      'perf: lazy load images',
+    ];
+
+    function randHex(len) {
+      const chars = '0123456789abcdef';
+      let s = '';
+      for (let i = 0; i < len; i++) s += chars[Math.floor(Math.random() * 16)];
+      return s;
+    }
+
+    function pickMessage(used) {
+      const pool = COMMIT_MESSAGES.filter(m => !used.has(m));
+      const list = pool.length ? pool : COMMIT_MESSAGES;
+      return list[Math.floor(Math.random() * list.length)];
+    }
+
+    // Parse CSS color via canvas (handles oklch etc.)
+    function parseCSSColor(val) {
+      const c = document.createElement('canvas');
+      c.width = 1; c.height = 1;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = val;
+      ctx.fillRect(0, 0, 1, 1);
+      const [r, g, b] = ctx.getImageData(0, 0, 1, 1).data;
+      return [r, g, b];
+    }
+
+    function lerpColor(a, b, t) {
+      return [
+        Math.round(a[0] + (b[0] - a[0]) * t),
+        Math.round(a[1] + (b[1] - a[1]) * t),
+        Math.round(a[2] + (b[2] - a[2]) * t),
+      ];
+    }
+
+    function rgbStr(c) {
+      return `rgb(${c[0]},${c[1]},${c[2]})`;
+    }
+
+    function initHoldToCommit(root) {
+      if (root.dataset.htcInit) return;
+      root.dataset.htcInit = '1';
+
+      const ring = root.querySelector('[data-htc-ring]');
+      const btn = root.querySelector('[data-htc-btn]');
+      const label = root.querySelector('[data-htc-label]');
+      const check = root.querySelector('[data-htc-check]');
+      const toast = root.querySelector('[data-htc-toast]');
+      const entries = root.querySelector('[data-htc-entries]');
+      const tuneBtn = root.querySelector('[data-htc-tune]');
+      const sliders = root.querySelector('[data-htc-sliders]');
+
+      if (!ring || !btn || !label || !check || !toast || !entries) return;
+
+      // State
+      let state = 'idle'; // idle | holding | completing | resetting
+      let progress = 0;
+      let rafId = null;
+      let startTime = 0;
+      const usedMessages = new Set();
+      const logEntries = [];
+
+      // Params
+      const params = {
+        holdDuration: 1800,
+        ringStroke: 5,
+        snapOvershoot: 1.12,
+        springDuration: 400,
+      };
+
+      // Read accent colors
+      function getAccentRGB() {
+        const style = getComputedStyle(document.documentElement);
+        return parseCSSColor(style.getPropertyValue('--color-accent').trim());
+      }
+
+      function getNeutralRGB() {
+        const style = getComputedStyle(document.documentElement);
+        return parseCSSColor(style.getPropertyValue('--color-text-secondary').trim());
+      }
+
+      // Render ring
+      function updateRing(p) {
+        const offset = CIRCUMFERENCE * (1 - p);
+        ring.style.strokeDashoffset = offset;
+
+        // Lerp stroke color from neutral to accent
+        const neutral = getNeutralRGB();
+        const accent = getAccentRGB();
+        const color = lerpColor(neutral, accent, p);
+        ring.style.stroke = rgbStr(color);
+      }
+
+      function applyParams() {
+        root.style.setProperty('--htc-hold-dur', params.holdDuration + 'ms');
+        root.style.setProperty('--htc-ring-stroke', params.ringStroke + 'px');
+        root.style.setProperty('--htc-snap-scale', params.snapOvershoot);
+        root.style.setProperty('--htc-spring-dur', params.springDuration + 'ms');
+
+        // Update SVG stroke-width directly
+        ring.style.strokeWidth = params.ringStroke + 'px';
+        root.querySelector('.htc-ring-track').style.strokeWidth = params.ringStroke + 'px';
+      }
+
+      // Holding RAF loop
+      function holdLoop(now) {
+        if (state !== 'holding') return;
+        const elapsed = now - startTime;
+        progress = Math.min(1, elapsed / params.holdDuration);
+        updateRing(progress);
+
+        const pct = Math.round(progress * 100);
+        label.textContent = `COMMITTING… ${pct}%`;
+
+        if (progress >= 1) {
+          complete();
+          return;
+        }
+        rafId = requestAnimationFrame(holdLoop);
+      }
+
+      function startHold() {
+        if (state !== 'idle') return;
+        state = 'holding';
+        progress = 0;
+        startTime = performance.now();
+        btn.classList.add('is-holding');
+        btn.classList.remove('is-committed');
+        check.classList.remove('is-visible');
+        toast.classList.remove('is-visible');
+        toast.textContent = '';
+        rafId = requestAnimationFrame(holdLoop);
+      }
+
+      function cancelHold() {
+        if (state !== 'holding') return;
+        state = 'idle';
+        if (rafId) cancelAnimationFrame(rafId);
+        btn.classList.remove('is-holding');
+        label.textContent = 'HOLD TO COMMIT';
+
+        // Animate ring back to zero
+        const fromProgress = progress;
+        const cancelStart = performance.now();
+        const cancelDur = 250;
+        function cancelLoop(now) {
+          const t = Math.min(1, (now - cancelStart) / cancelDur);
+          const ease = 1 - (1 - t) * (1 - t); // ease-out quad
+          const p = fromProgress * (1 - ease);
+          updateRing(p);
+          if (t < 1) requestAnimationFrame(cancelLoop);
+          else updateRing(0);
+        }
+        requestAnimationFrame(cancelLoop);
+      }
+
+      function complete() {
+        state = 'completing';
+        if (rafId) cancelAnimationFrame(rafId);
+
+        updateRing(1);
+        btn.classList.remove('is-holding');
+        btn.classList.add('is-committed');
+        label.textContent = 'COMMITTED';
+        check.classList.add('is-visible');
+
+        // Generate hash and message
+        const hash = randHex(7);
+        const msg = pickMessage(usedMessages);
+        usedMessages.add(msg);
+
+        // Show toast
+        toast.textContent = `${hash} ${msg}`;
+        toast.classList.add('is-visible');
+
+        // Add to log
+        addLogEntry(hash, msg);
+
+        // Reset after a beat
+        setTimeout(() => {
+          state = 'resetting';
+          check.classList.remove('is-visible');
+          btn.classList.remove('is-committed');
+
+          const resetStart = performance.now();
+          const resetDur = 400;
+          function resetLoop(now) {
+            const t = Math.min(1, (now - resetStart) / resetDur);
+            const ease = 1 - (1 - t) * (1 - t);
+            updateRing(1 - ease);
+            if (t < 1) requestAnimationFrame(resetLoop);
+            else {
+              updateRing(0);
+              label.textContent = 'HOLD TO COMMIT';
+              state = 'idle';
+            }
+          }
+          requestAnimationFrame(resetLoop);
+
+          // Fade toast
+          setTimeout(() => {
+            toast.classList.remove('is-visible');
+          }, 600);
+        }, params.springDuration + 600);
+      }
+
+      function addLogEntry(hash, msg) {
+        logEntries.unshift({ hash, msg });
+        // Keep last 5
+        while (logEntries.length > 5) logEntries.pop();
+        renderLog();
+      }
+
+      function renderLog() {
+        // Remove empty placeholder
+        const empty = entries.querySelector('.htc-log-empty');
+        if (empty) empty.remove();
+
+        entries.innerHTML = '';
+        for (const entry of logEntries) {
+          const row = document.createElement('div');
+          row.className = 'htc-log-entry';
+          row.innerHTML = `<span class="htc-log-hash">${entry.hash}</span><span class="htc-log-msg">${entry.msg}</span>`;
+          entries.appendChild(row);
+        }
+      }
+
+      // Show empty state
+      entries.innerHTML = '<div class="htc-log-empty">no commits yet</div>';
+
+      // Pointer events with capture
+      btn.addEventListener('pointerdown', (e) => {
+        if (e.button !== 0) return;
+        btn.setPointerCapture(e.pointerId);
+        startHold();
+      });
+
+      btn.addEventListener('pointerup', () => {
+        cancelHold();
+      });
+
+      btn.addEventListener('pointercancel', () => {
+        cancelHold();
+      });
+
+      // Prevent context menu on long press (mobile)
+      btn.addEventListener('contextmenu', (e) => e.preventDefault());
+
+      // Tune controls
+      if (tuneBtn && sliders) {
+        tuneBtn.addEventListener('click', () => {
+          const open = sliders.classList.toggle('is-open');
+          tuneBtn.classList.toggle('is-active', open);
+        });
+
+        sliders.querySelectorAll('input[type="range"]').forEach((input) => {
+          const param = input.dataset.htcParam;
+          const valSpan = root.querySelector(`[data-htc-val="${param}"]`);
+
+          input.addEventListener('input', () => {
+            const v = parseFloat(input.value);
+            params[param] = v;
+
+            // Format display
+            if (param === 'holdDuration') valSpan.textContent = v + 'ms';
+            else if (param === 'ringStroke') valSpan.textContent = v + 'px';
+            else if (param === 'snapOvershoot') valSpan.textContent = v.toFixed(2);
+            else if (param === 'springDuration') valSpan.textContent = v + 'ms';
+
+            applyParams();
+          });
+        });
+      }
+
+      // Watch for theme changes
+      const observer = new MutationObserver(() => {
+        if (state === 'idle') updateRing(0);
+      });
+      observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+      // Init
+      applyParams();
+      updateRing(0);
+    }
+
+    function initAll() {
+      document.querySelectorAll('[data-htc]').forEach((el) => {
+        if (el instanceof HTMLElement) initHoldToCommit(el);
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initAll, { once: true });
+    } else {
+      initAll();
+    }
+  })();
+</script>
