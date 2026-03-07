@@ -103,9 +103,16 @@
     transition: color 150ms ease, transform 150ms ease;
   }
 
-  .timeline-item:hover .timeline-icon {
+  .timeline-item:hover .timeline-icon,
+  .timeline-item:hover .timeline-icon-inline {
     color: var(--timeline-icon-hover);
     transform: translateY(-1px);
+  }
+
+  .timeline-icon-inline {
+    color: var(--color-text-secondary);
+    line-height: 0;
+    transition: color 150ms ease, transform 150ms ease;
   }
 
   .timeline-line {
