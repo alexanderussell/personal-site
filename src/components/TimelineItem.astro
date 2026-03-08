@@ -103,9 +103,10 @@ const {
 
         <!-- Desktop: experiment + maximize icon side by side -->
         <div class="flex items-start gap-3">
-          <div class="experiment-container w-full sm:w-fit sm:max-w-lg" data-experiment-home data-experiment-href={href}>
+          <div class="experiment-container w-full sm:w-fit sm:max-w-xl" data-experiment-home data-experiment-href={href}>
             <ExperimentRenderer id={experimentId} />
           </div>
+          <!-- TODO: Re-enable maximize button
           <button
             type="button"
             class="experiment-maximize hidden sm:block shrink-0 mt-1"
@@ -113,20 +114,17 @@ const {
             data-experiment-maximize
           >
             <svg viewBox="0 0 16 16" class="size-4" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <!-- Top-left corner -->
               <rect x="0" y="0" width="6" height="2" fill="currentColor" />
               <rect x="0" y="2" width="2" height="4" fill="currentColor" />
-              <!-- Top-right corner -->
               <rect x="10" y="0" width="6" height="2" fill="currentColor" />
               <rect x="14" y="2" width="2" height="4" fill="currentColor" />
-              <!-- Bottom-left corner -->
               <rect x="0" y="10" width="2" height="4" fill="currentColor" />
               <rect x="0" y="14" width="6" height="2" fill="currentColor" />
-              <!-- Bottom-right corner -->
               <rect x="14" y="10" width="2" height="4" fill="currentColor" />
               <rect x="10" y="14" width="6" height="2" fill="currentColor" />
             </svg>
           </button>
+          -->
         </div>
       </div>
     </article>

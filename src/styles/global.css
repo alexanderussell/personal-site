@@ -168,9 +168,9 @@
   /* ── Experiment (inline) ── */
 
   .experiment-container {
-    border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+    border: none;
     border-radius: 10px;
-    background: color-mix(in srgb, var(--color-bg-secondary) 60%, transparent);
+    background: transparent;
     overflow: hidden;
   }
 

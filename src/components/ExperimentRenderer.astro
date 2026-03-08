@@ -20,7 +20,7 @@ const { id } = Astro.props;
 const sourceMap: Record<string, string> = {
   bricklayer: bricklayerSource,
   'generative-logo': generativeLogoSource,
-  'hold-to-commit': holdToCommitSource,
+  'hold-to-provision': holdToCommitSource,
 };
 
 const raw = sourceMap[id] ?? '';
@@ -44,4 +44,4 @@ const raw = sourceMap[id] ?? '';
 <!-- <template data-experiment-source>{highlightedHtml}</template> -->
 {id === 'bricklayer' && <Bricklayer />}
 {id === 'generative-logo' && <GenerativeLogo />}
-{id === 'hold-to-commit' && <HoldToCommit />}
+{id === 'hold-to-provision' && <HoldToCommit />}
