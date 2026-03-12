@@ -414,4 +414,14 @@
     max-width: calc(100% + 8rem);
     width: calc(100% + 8rem);
   }
+
+  @media (max-width: 640px) {
+    .prose img {
+      margin-left: -1rem;
+      margin-right: -1rem;
+      max-width: calc(100% + 2rem);
+      width: calc(100% + 2rem);
+      border-radius: 6px;
+    }
+  }
 }

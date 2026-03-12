@@ -802,6 +802,7 @@ export default function RecordCollection() {
   const selectFromShelf = (record) => {
     setResult({ artist: record.artist, album: record.album, year: record.year, reason: record.tag, record });
     setCurrentView("turntable"); setHasInteracted(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
     setTimeout(() => setIsSpinning(true), 400);
     setTimeout(() => setShowResult(true), 800);
   };
