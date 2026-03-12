@@ -57,6 +57,31 @@ const CURATED_RECORDS = [
   { artist: "Muddy Waters", album: "Folk Singer", year: 1964, genre: "Blues", tag: "Stripped down, like good work should be", spotifyId: "2RkGOq4JlKO1F3gCxUEjyR" },
   { artist: "Johnny Cash", album: "At Folsom Prison", year: 1968, genre: "Country", tag: "Real and rough and not apologizing for it", spotifyId: "3SHTbP8FHQwCMGwxCI5bQe" },
   { artist: "Willie Nelson", album: "Red Headed Stranger", year: 1975, genre: "Country", tag: "Simple story, told right", spotifyId: "4GgcVkNma5i5NJiLv2Gieb" },
+  { artist: "Willie Nelson", album: "Always on My Mind", year: 1982, genre: "Country", tag: "You Were Always on My Mind — that song said what he couldn't", spotifyId: "" },
+  { artist: "Willie Nelson", album: "Stardust", year: 1978, genre: "Country", tag: "Moonlight in Vermont, late nights, your mother falling asleep on the couch", spotifyId: "38uGoW7jS8jjJMvZA26sRq" },
+
+  // Folk / Singer-Songwriter — additions
+  { artist: "Al Stewart", album: "Year of the Cat", year: 1976, genre: "Folk Rock", tag: "Played at your mom and my wedding", spotifyId: "" },
+  { artist: "Jim James", album: "Eternally Even", year: 2016, genre: "Folk", tag: "Here in Spirit — one of the newer ones, but it fit right in", spotifyId: "2wYw4vZlu7XwvtdQPRmsmL" },
+  { artist: "Buffalo Springfield", album: "Buffalo Springfield", year: 1966, genre: "Folk Rock", tag: "Before they all went solo and got famous", spotifyId: "" },
+  { artist: "Leonard Cohen", album: "Songs of Leonard Cohen", year: 1967, genre: "Folk", tag: "Suzanne — a song that builds a room around you", spotifyId: "" },
+  { artist: "Tim Buckley", album: "Starsailor", year: 1970, genre: "Folk", tag: "Song to the Siren — like nothing else on the shelf", spotifyId: "6XtiIO1SuBl4Eli8LCYNAH" },
+  { artist: "Peter, Paul and Mary", album: "In the Wind", year: 1963, genre: "Folk", tag: "We played Blowin' in the Wind while decorating for Christmas", spotifyId: "5XresJcJBgYkVQE9PATjli" },
+  { artist: "Jim Croce", album: "I Got a Name", year: 1973, genre: "Folk", tag: "Gone too soon, like a lot of the good ones", spotifyId: "" },
+  { artist: "Donovan", album: "Sunshine Superman", year: 1966, genre: "Folk Rock", tag: "Lighter than most of the shelf, but earned its place", spotifyId: "" },
+  { artist: "Nick Drake", album: "Pink Moon", year: 1972, genre: "Folk", tag: "Twenty-eight minutes, no filler, nothing wasted", spotifyId: "" },
+  { artist: "Arlo Guthrie", album: "Alice's Restaurant", year: 1967, genre: "Folk", tag: "Alice's Restaurant Massacree — Thanksgiving tradition, every single year", spotifyId: "" },
+  { artist: "John Prine", album: "Fair & Square", year: 2005, genre: "Folk", tag: "Clay Pigeons — Blaze Foley wrote it, John Prine made you believe it", spotifyId: "44sOCUUf8kp3Oj1yBYAKiZ" },
+  { artist: "Paul Simon", album: "Paul Simon", year: 1972, genre: "Folk Rock", tag: "Duncan — the kind of song that tells a whole life", spotifyId: "7npBPiCHjPj8PVIGPuHXep" },
+
+  // Rock — additions
+  { artist: "Creedence Clearwater Revival", album: "Green River", year: 1969, genre: "Rock", tag: "Bad Moon Rising — could feel a storm coming every time", spotifyId: "" },
+  { artist: "The Doobie Brothers", album: "Toulouse Street", year: 1972, genre: "Rock", tag: "Listen to the Music — that's all he ever wanted you to do", spotifyId: "" },
+  { artist: "The Beatles", album: "The Beatles (White Album)", year: 1968, genre: "Rock", tag: "Blackbird — sang it once, very quietly, when he thought no one was listening", spotifyId: "" },
+  { artist: "Ten Years After", album: "A Space in Time", year: 1971, genre: "Rock", tag: "I'd love to change the world — wouldn't we all", spotifyId: "3JXkf4wjTjKxyrzFvfaVJU" },
+  { artist: "Nick Cave", album: "The Boatman's Call", year: 1997, genre: "Rock", tag: "Into My Arms — as close to a prayer as he got", spotifyId: "" },
+  { artist: "Nick Cave", album: "Idiot Prayer", year: 2020, genre: "Rock", tag: "Palaces of Montezuma — solo piano, alone in a palace, still had something to say", spotifyId: "2q5FE0HvayCsZ0iz2CBjIp" },
+  { artist: "Father John Misty", album: "Anthem +3", year: 2020, genre: "Folk", tag: "Covered Cat Stevens' Trouble — that's how you know someone understands", spotifyId: "4MsCxk1m3oX1NFKGsVZ2Xm" },
 ];
 
 // ============================================================
@@ -543,7 +568,7 @@ function ShelfView({ onSelectRecord }) {
                 const pal = GENRE_PALETTES[record.genre] || GENRE_PALETTES["Rock"];
                 const c = pal.accent[idx % pal.accent.length];
                 return (
-                  <div key={record.album} onClick={() => onSelectRecord(record)}
+                  <div key={`${record.artist}-${record.album}`} onClick={() => onSelectRecord(record)}
                     title={`${record.album} — ${record.artist}\n${record.tag}`}
                     style={{
                       width: shelf.spineWidth, minHeight: shelf.spineHeight, flexShrink: 0, borderRadius: 2, cursor: "pointer",
@@ -565,8 +590,10 @@ function ShelfView({ onSelectRecord }) {
                       fontSize: shelf.fontSize, color: `rgba(255,255,255,${shelf.textOpacity})`,
                       fontFamily: "'Outfit Variable', 'Outfit', sans-serif", fontWeight: 400, letterSpacing: 0.5,
                       whiteSpace: "nowrap", overflow: "hidden", maxHeight: "90%",
+                      display: "flex", gap: 6,
                     }}>
-                      {record.artist.split(" ").pop()}
+                      <span style={{ fontWeight: 500 }}>{record.artist.split(" ").pop()}</span>
+                      <span style={{ opacity: 0.5, fontSize: shelf.fontSize - 1 }}>{record.album}</span>
                     </div>
                   </div>
                 );
