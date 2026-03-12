@@ -10,7 +10,9 @@ export const onRequest = defineMiddleware(({ request, rewrite }, next) => {
   // Local dev: vinyl.localhost detected here
   if (
     (hostWithoutPort === 'vinyl.alexanderussell.com' || hostWithoutPort === 'vinyl.localhost') &&
-    !url.pathname.startsWith('/experiments/vinyl')
+    !url.pathname.startsWith('/experiments/vinyl') &&
+    !url.pathname.startsWith('/api/') &&
+    !url.pathname.startsWith('/_')
   ) {
     return rewrite('/experiments/vinyl');
   }
