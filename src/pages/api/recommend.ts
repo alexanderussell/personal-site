@@ -2,7 +2,7 @@ import type { APIRoute } from 'astro';
 
 // Simple in-memory rate limiter (resets on cold start, which is fine for serverless)
 const rateLimit = new Map<string, { count: number; resetAt: number }>();
-const MAX_REQUESTS = 4;
+const MAX_REQUESTS = 8;
 const WINDOW_MS = 60 * 60 * 1000; // 1 hour
 
 function isRateLimited(ip: string): boolean {
@@ -58,7 +58,7 @@ export const POST: APIRoute = async ({ request }) => {
     },
     body: JSON.stringify({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 300,
+      max_tokens: 500,
       messages: [{
         role: 'user',
         content: `[BACKSTORY — use this to understand who Daniel is, but NEVER reference these details directly in your response. No names, no specific stories, no biographical facts. This just shapes how you feel and speak.]

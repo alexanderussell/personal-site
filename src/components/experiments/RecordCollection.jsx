@@ -636,6 +636,7 @@ export default function RecordCollection() {
   const [preview, setPreview] = useState(null);
   const [isAudioPlaying, setIsAudioPlaying] = useState(false);
   const [audioFailed, setAudioFailed] = useState(false);
+  const [rateLimited, setRateLimited] = useState(false);
   const lastAudioKey = useRef(null);
 
   // Pre-mapped sample moods — no AI call needed, saves tokens
@@ -748,14 +749,9 @@ export default function RecordCollection() {
       });
 
       if (response.status === 429) {
-        const errData = await response.json();
-        setResult({
-          artist: '', album: '', year: '',
-          reason: errData.error || "Easy there — even Daniel needed a break between records. Try again in a bit.",
-          record: CURATED_RECORDS[0],
-        });
-        setShowResult(true);
         setIsLoading(false);
+        setRateLimited(true);
+        setCurrentView("shelf");
         return;
       }
       if (!response.ok) throw new Error(`API ${response.status}`);
@@ -905,6 +901,15 @@ export default function RecordCollection() {
               ))}
             </div>
 
+            {currentView === "shelf" && rateLimited && (
+              <p style={{
+                textAlign: "center", color: "#b48c50", fontStyle: "italic",
+                fontFamily: "'Georgia', serif", fontSize: "14px",
+                margin: "0 0 1rem", padding: "0 1rem",
+              }}>
+                Even I need a break between records. Pick somethin' off the shelf while you wait.
+              </p>
+            )}
             {currentView === "shelf" && <ShelfView onSelectRecord={selectFromShelf} />}
           </>
         )}
