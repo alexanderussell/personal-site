@@ -4,20 +4,10 @@
  * - og-vinyl.png: Vinyl experiment subdomain card
  */
 import sharp from 'sharp';
-import { readFileSync } from 'fs';
 
 const WIDTH = 1200;
 const HEIGHT = 630;
 const BG = '#0c0a09';
-
-// Embed PP Mondwest as base64 for SVG rendering
-const mondwestPath = 'public/fonts/PPMondwest-Regular.otf';
-const mondwestBase64 = readFileSync(mondwestPath).toString('base64');
-const fontFace = `
-  @font-face {
-    font-family: 'PPMondwest';
-    src: url('data:font/otf;base64,${mondwestBase64}') format('opentype');
-  }`;
 
 // Same palette as GenerativeLogo.astro
 const PALETTE = [
@@ -56,41 +46,36 @@ function colorPlanes(cx, cy) {
 
 // ─── Default OG ───
 const defaultSvg = `<svg width="${WIDTH}" height="${HEIGHT}" xmlns="http://www.w3.org/2000/svg">
-  <style>${fontFace}</style>
   <rect width="${WIDTH}" height="${HEIGHT}" fill="${BG}" />
   <g style="mix-blend-mode: screen;">
     ${colorPlanes(WIDTH / 2, HEIGHT / 2 - 40)}
   </g>
-  <text x="${WIDTH / 2}" y="${HEIGHT / 2 + 175}"
+  <text x="${WIDTH / 2}" y="${HEIGHT / 2 + 165}"
     text-anchor="middle"
-    font-family="PPMondwest"
-    font-size="52"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="56"
     fill="#efe5d5"
-    letter-spacing="2">Alex Russell</text>
-  <text x="${WIDTH / 2}" y="${HEIGHT / 2 + 215}"
+    letter-spacing="3">Alex Russell</text>
+  <text x="${WIDTH / 2}" y="${HEIGHT / 2 + 210}"
     text-anchor="middle"
     font-family="'Courier New', monospace"
-    font-size="14"
+    font-size="15"
     fill="#7a6a5a"
-    letter-spacing="4">DESIGN ENGINEER</text>
+    letter-spacing="5">DESIGN ENGINEER</text>
 </svg>`;
 
 // ─── Vinyl OG ───
 function vinylDisc(cx, cy, r) {
-  // Simplified vinyl record with grooves and label
   const grooves = [0.35, 0.45, 0.55, 0.65, 0.75, 0.85].map(pct =>
     `<circle cx="${cx}" cy="${cy}" r="${r * pct}" fill="none" stroke="rgba(50,50,50,0.3)" stroke-width="0.5" />`
   ).join('\n    ');
 
   return `
-    <!-- Vinyl disc -->
     <circle cx="${cx}" cy="${cy}" r="${r}" fill="#111" />
     <circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#vinylGrad)" opacity="0.6" />
     ${grooves}
-    <!-- Label -->
     <circle cx="${cx}" cy="${cy}" r="${r * 0.22}" fill="#2a1c10" />
-    <circle cx="${cx}" cy="${cy}" r="${r * 0.22}"
-      fill="url(#labelGrad)" />
+    <circle cx="${cx}" cy="${cy}" r="${r * 0.22}" fill="url(#labelGrad)" />
     <text x="${cx}" y="${cy + 5}"
       text-anchor="middle"
       font-family="Georgia, serif"
@@ -98,15 +83,12 @@ function vinylDisc(cx, cy, r) {
       font-style="italic"
       fill="rgba(180,140,80,0.6)"
       letter-spacing="3">DR</text>
-    <!-- Spindle -->
     <circle cx="${cx}" cy="${cy}" r="4" fill="#0a0a0a" />
-    <!-- Sheen -->
     <circle cx="${cx}" cy="${cy}" r="${r}"
       fill="url(#sheen)" opacity="0.15" />`;
 }
 
 const vinylSvg = `<svg width="${WIDTH}" height="${HEIGHT}" xmlns="http://www.w3.org/2000/svg">
-  <style>${fontFace}</style>
   <defs>
     <radialGradient id="vinylGrad" cx="50%" cy="50%">
       <stop offset="0%" stop-color="#1a1a1a" />
@@ -126,23 +108,21 @@ const vinylSvg = `<svg width="${WIDTH}" height="${HEIGHT}" xmlns="http://www.w3.
   </defs>
   <rect width="${WIDTH}" height="${HEIGHT}" fill="${BG}" />
 
-  <!-- Subtle warm glow behind disc -->
   <circle cx="420" cy="${HEIGHT / 2}" r="280"
     fill="rgba(180,120,60,0.04)" />
 
   ${vinylDisc(420, HEIGHT / 2, 220)}
 
-  <!-- Text block -->
-  <text x="780" y="${HEIGHT / 2 - 50}"
+  <text x="780" y="${HEIGHT / 2 - 55}"
     text-anchor="middle"
-    font-family="PPMondwest"
-    font-size="38"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="40"
     fill="#efe5d5"
-    letter-spacing="1">Ask My Dad's</text>
+    letter-spacing="1">Ask My Dad&#x27;s</text>
   <text x="780" y="${HEIGHT / 2}"
     text-anchor="middle"
-    font-family="PPMondwest"
-    font-size="38"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="40"
     fill="#efe5d5"
     letter-spacing="1">Record Collection</text>
 
@@ -154,7 +134,7 @@ const vinylSvg = `<svg width="${WIDTH}" height="${HEIGHT}" xmlns="http://www.w3.
     font-family="Georgia, serif"
     font-size="15"
     font-style="italic"
-    fill="#7a6a5a">Tell it your mood. It'll pull the right record.</text>
+    fill="#7a6a5a">Tell it your mood. It&#x27;ll pull the right record.</text>
 
   <text x="780" y="${HEIGHT / 2 + 90}"
     text-anchor="middle"
