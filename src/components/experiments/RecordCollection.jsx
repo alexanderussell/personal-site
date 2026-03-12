@@ -95,8 +95,8 @@ const CURATED_RECORDS = [
   // Folk — more additions
   { artist: "Peter, Paul and Mary", album: "Moving", year: 1963, genre: "Folk", track: "Puff the Magic Dragon", tag: "Don't ask what I was thinking about when I played this one. You already know.", spotifyId: "" },
   { artist: "Townes Van Zandt", album: "Live at the Old Quarter, Houston, Texas", year: 1977, genre: "Folk", track: "Lungs", tag: "Townes was a real cowboy. You could hear the dust on his boots.", spotifyId: "" },
-  { artist: "Jackson C. Frank", album: "Jackson C. Frank", year: 1965, genre: "Folk", track: "Blues Run the Game", tag: "This guy lived in misery and made something beautiful out of it. That takes guts.", spotifyId: "" },
-  { artist: "Kevin Morby", album: "My Name", year: 2014, genre: "Folk Rock", track: "We Did It All Wrong", tag: "Alex showed me this one. Kid's got good taste. Can't stop playing it.", spotifyId: "" },
+  { artist: "Jackson C. Frank", album: "Jackson C. Frank", year: 1965, genre: "Folk", track: "Blues Run the Game", tag: "This guy lived in misery and made something beautiful out of it. ", spotifyId: "" },
+  { artist: "Kevin Morby", album: "My Name", year: 2014, genre: "Folk Rock", track: "We Did It All Wrong", tag: "Alex showed me this one. Can't stop playing it.", spotifyId: "" },
 
   // Jazz — additions
   { artist: "Yusef Lateef", album: "Suite 16", year: 1970, genre: "Jazz", track: "Michelle", tag: "A nice warm jazz album to make the tube amp hum. Found it in a box lot at auction and never let it go.", spotifyId: "" },
