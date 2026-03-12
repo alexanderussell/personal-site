@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import { useDialKit, DialRoot } from "dialkit";
+import "dialkit/styles.css";
 
 // ============================================================
 // COLLECTION DATA — Expanded with genres, decades, personal tags
@@ -331,15 +333,15 @@ function Tonearm({ isPlaying }) {
 const DANS_PLAYLIST_URL = "https://open.spotify.com/playlist/YOUR_PLAYLIST_ID";
 
 const linkStyle = {
-  fontSize: 10, color: "#5a4a3a", fontFamily: "'Courier New', monospace",
+  fontSize: 12, color: "#9a8a7a", fontFamily: "'Courier New', monospace",
   letterSpacing: 1.5, textDecoration: "none",
-  padding: "6px 16px", border: "1px solid rgba(138,122,106,0.15)",
+  padding: "7px 18px", border: "1px solid rgba(138,122,106,0.2)",
   borderRadius: 20, transition: "all 0.3s", display: "inline-block",
 };
 
 function SpotifyLinks({ spotifyId }) {
-  const onEnter = (e) => { e.target.style.color = "#b89850"; e.target.style.borderColor = "rgba(180,140,80,0.3)"; };
-  const onLeave = (e) => { e.target.style.color = "#5a4a3a"; e.target.style.borderColor = "rgba(138,122,106,0.15)"; };
+  const onEnter = (e) => { e.target.style.color = "#d4b870"; e.target.style.borderColor = "rgba(180,140,80,0.4)"; };
+  const onLeave = (e) => { e.target.style.color = "#9a8a7a"; e.target.style.borderColor = "rgba(138,122,106,0.2)"; };
 
   return (
     <div style={{ display: "flex", gap: 10, justifyContent: "center", marginTop: 14 }}>
@@ -501,7 +503,7 @@ function SpotifyPlayer({ artist, album, spotifyId, isVisible, isSpinning }) {
         {/* Progress bar + track name */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <p style={{
-            fontSize: 9, color: "#5a4a3a", fontFamily: "'Courier New', monospace",
+            fontSize: 12, color: "#9a8a7a", fontFamily: "'Courier New', monospace",
             letterSpacing: 0.5, marginBottom: 5, overflow: "hidden",
             textOverflow: "ellipsis", whiteSpace: "nowrap",
           }}>
@@ -530,8 +532,8 @@ function SpotifyPlayer({ artist, album, spotifyId, isVisible, isSpinning }) {
       </div>
 
       <p style={{
-        marginTop: 6, fontSize: 8, color: "#2a1a0a", fontFamily: "'Courier New', monospace",
-        letterSpacing: 1, opacity: 0.4,
+        marginTop: 6, fontSize: 10, color: "#6a5a4a", fontFamily: "'Courier New', monospace",
+        letterSpacing: 1,
       }}>
         30-SECOND PREVIEW
       </p>
@@ -547,25 +549,61 @@ function MoodWall({ moodHistory }) {
   if (!moodHistory || moodHistory.length === 0) return null;
   return (
     <div style={{ marginTop: 48 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 14 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
         <div style={{ flex: 1, height: 1, background: "rgba(138,122,106,0.08)" }} />
-        <p style={{ fontSize: 9, letterSpacing: 3, textTransform: "uppercase",
-          color: "#4a3a2a", fontFamily: "'Courier New', monospace" }}>
-          What people brought to the collection
+        <p style={{ fontSize: 10, letterSpacing: 3, textTransform: "uppercase",
+          color: "#6a5a4a", fontFamily: "'Courier New', monospace" }}>
+          Written on the wall
         </p>
         <div style={{ flex: 1, height: 1, background: "rgba(138,122,106,0.08)" }} />
       </div>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 5, justifyContent: "center", maxHeight: 140, overflow: "hidden" }}>
-        {moodHistory.slice(-40).map((entry, i) => (
-          <div key={i} style={{
-            padding: "3px 10px", fontSize: 10, fontFamily: "'Georgia', serif", fontStyle: "italic",
-            color: `rgba(${130+(i%3)*15},${110+(i%4)*10},${95+(i%5)*8},${0.3+(i/40)*0.5})`,
-            background: "rgba(255,255,255,0.008)",
-            border: "1px solid rgba(138,122,106,0.05)", borderRadius: 14, whiteSpace: "nowrap",
-          }}>
-            {entry.mood}
-          </div>
-        ))}
+      <div style={{
+        display: "grid",
+        gridTemplateColumns: "repeat(auto-fill, minmax(130px, 1fr))",
+        gap: 3,
+        maxHeight: 220,
+        overflow: "hidden",
+      }}>
+        {moodHistory.slice(-30).map((entry, i) => {
+          // Each brick gets subtle variation
+          const hue = 18 + (i % 5) * 2;
+          const light = 14 + (i % 4) * 1.5;
+          const rotDeg = ((i * 7) % 5) - 2; // -2 to 2 degrees
+          return (
+            <div key={i} style={{
+              padding: "10px 12px",
+              background: `hsl(${hue}, 35%, ${light}%)`,
+              borderRadius: 2,
+              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04), inset 0 -1px 0 rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.3)",
+              position: "relative",
+              overflow: "hidden",
+              minHeight: 42,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}>
+              {/* Mortar lines */}
+              <div style={{
+                position: "absolute", inset: 0,
+                border: "1px solid rgba(30,22,14,0.6)",
+                borderRadius: 2,
+                pointerEvents: "none",
+              }} />
+              <p style={{
+                fontSize: 11,
+                fontFamily: "'Georgia', serif",
+                fontStyle: "italic",
+                color: `rgba(200,180,150,${0.5 + (i % 3) * 0.12})`,
+                textAlign: "center",
+                lineHeight: 1.35,
+                transform: `rotate(${rotDeg}deg)`,
+                wordBreak: "break-word",
+              }}>
+                {entry.mood}
+              </p>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -575,6 +613,15 @@ function MoodWall({ moodHistory }) {
 // SHELF VIEW
 // ============================================================
 function ShelfView({ onSelectRecord }) {
+  const shelf = useDialKit("Shelf", {
+    spineWidth: [20, 20, 60],
+    spineHeight: [160, 80, 200],
+    fontSize: [10, 5, 14],
+    hoverLift: [24, 0, 30],
+    textOpacity: [0.85, 0.3, 1],
+    gap: [2.5, 0, 8],
+  });
+
   const genreGroups = [
     { label: "Jazz", match: (g) => g.includes("Jazz") },
     { label: "Soul & Funk", match: (g) => g.includes("Soul") || g === "Funk" },
@@ -590,11 +637,14 @@ function ShelfView({ onSelectRecord }) {
         if (!records.length) return null;
         return (
           <div key={label} style={{ marginBottom: 28 }}>
-            <p style={{ fontSize: 9, letterSpacing: 3, textTransform: "uppercase",
-              color: "#4a3a2a", fontFamily: "'Courier New', monospace", marginBottom: 10 }}>
+            <p style={{ fontSize: 11, letterSpacing: 3, textTransform: "uppercase",
+              color: "#6a5a4a", fontFamily: "'Courier New', monospace", marginBottom: 10 }}>
               {label} ({records.length})
             </p>
-            <div style={{ display: "flex", gap: 2, overflowX: "auto", paddingBottom: 6 }}>
+            <div style={{
+              display: "flex", gap: shelf.gap, overflowX: "auto", overflowY: "visible",
+              paddingTop: shelf.hoverLift + 4, paddingBottom: 6,
+            }}>
               {records.map((record, idx) => {
                 const pal = GENRE_PALETTES[record.genre] || GENRE_PALETTES["Rock"];
                 const c = pal.accent[idx % pal.accent.length];
@@ -602,14 +652,14 @@ function ShelfView({ onSelectRecord }) {
                   <div key={record.album} onClick={() => onSelectRecord(record)}
                     title={`${record.album} — ${record.artist}\n${record.tag}`}
                     style={{
-                      width: 26, minHeight: 110, flexShrink: 0, borderRadius: 2, cursor: "pointer",
+                      width: shelf.spineWidth, minHeight: shelf.spineHeight, flexShrink: 0, borderRadius: 2, cursor: "pointer",
                       background: `linear-gradient(180deg, rgba(${c[0]},${c[1]},${c[2]},0.55) 0%, rgba(${c[0]-20},${c[1]-15},${c[2]-10},0.75) 100%)`,
                       boxShadow: "inset -1px 0 2px rgba(0,0,0,0.3), 1px 0 1px rgba(0,0,0,0.1)",
                       transition: "transform 0.2s, box-shadow 0.2s", position: "relative",
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = "translateY(-10px)";
-                      e.currentTarget.style.boxShadow = "inset -1px 0 2px rgba(0,0,0,0.3), 0 10px 24px rgba(0,0,0,0.35)";
+                      e.currentTarget.style.transform = `translateY(-${shelf.hoverLift}px)`;
+                      e.currentTarget.style.boxShadow = `inset -1px 0 2px rgba(0,0,0,0.3), 0 ${shelf.hoverLift}px 24px rgba(0,0,0,0.35)`;
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.transform = "translateY(0)";
@@ -618,9 +668,9 @@ function ShelfView({ onSelectRecord }) {
                     <div style={{
                       position: "absolute", top: 6, left: "50%", transform: "translateX(-50%)",
                       writingMode: "vertical-rl", textOrientation: "mixed",
-                      fontSize: 6.5, color: "rgba(255,255,255,0.65)",
-                      fontFamily: "'Courier New', monospace", letterSpacing: 0.3,
-                      whiteSpace: "nowrap", overflow: "hidden", maxHeight: "88%",
+                      fontSize: shelf.fontSize, color: `rgba(255,255,255,${shelf.textOpacity})`,
+                      fontFamily: "'Outfit Variable', 'Outfit', sans-serif", fontWeight: 400, letterSpacing: 0.5,
+                      whiteSpace: "nowrap", overflow: "hidden", maxHeight: "90%",
                     }}>
                       {record.artist.split(" ").pop()}
                     </div>
@@ -636,8 +686,8 @@ function ShelfView({ onSelectRecord }) {
           </div>
         );
       })}
-      <p style={{ textAlign: "center", fontSize: 10, color: "#3a2a1a", fontStyle: "italic",
-        fontFamily: "'Georgia', serif", marginTop: 8 }}>
+      <p style={{ textAlign: "center", fontSize: 13, color: "#6a5a4a", fontStyle: "italic",
+        fontFamily: "'Georgia', serif", marginTop: 12 }}>
         Pull a record to hear what Daniel would say
       </p>
     </div>
@@ -773,6 +823,8 @@ export default function RecordCollection() {
     <div style={{ minHeight: "100vh", background: "#0a0808", color: "#d4c9b8",
       fontFamily: "'Georgia','Times New Roman',serif", position: "relative", overflow: "hidden" }}>
 
+      <DialRoot position="top-right" />
+
       <div style={{ position: "fixed", inset: 0, opacity: 0.03, pointerEvents: "none",
         backgroundImage: "repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(139,90,43,0.2) 3px, rgba(139,90,43,0.2) 5px)" }} />
 
@@ -780,20 +832,21 @@ export default function RecordCollection() {
         width: 500, height: 500, borderRadius: "50%", pointerEvents: "none",
         background: "radial-gradient(circle, rgba(180,120,60,0.05) 0%, transparent 70%)" }} />
 
-      <div style={{ maxWidth: 540, margin: "0 auto", padding: "48px 20px", position: "relative" }}>
+      <div style={{ maxWidth: 640, margin: "0 auto", padding: "48px 20px", position: "relative" }}>
 
         {/* Header — collapses when showing a result */}
         {!(showResult && result) && (
           <div style={{ textAlign: "center", marginBottom: 36 }}>
-            <p style={{ fontSize: 9, letterSpacing: 4, textTransform: "uppercase",
-              color: "#5a4a3a", marginBottom: 12, fontFamily: "'Courier New', monospace" }}>
+            <p style={{ fontSize: 11, letterSpacing: 4, textTransform: "uppercase",
+              color: "#7a6a5a", marginBottom: 12, fontFamily: "'Courier New', monospace" }}>
               The Collection of Daniel Russell
             </p>
-            <h1 style={{ fontSize: 28, fontWeight: 400, lineHeight: 1.25, color: "#e8dcc8", marginBottom: 8 }}>
-              Ask My Dad's<br />Record Collection
+            <h1 style={{ fontSize: "clamp(32px, 5vw, 44px)", fontWeight: 400, lineHeight: 1.2, color: "#efe5d5", marginBottom: 8,
+              fontFamily: "'Georgia', 'Times New Roman', serif" }}>
+              Ask My Dad's Record Collection
             </h1>
-            <div style={{ width: 36, height: 1, background: "#3a2a1a", margin: "14px auto" }} />
-            <p style={{ fontSize: 13, color: "#5a4a3a", lineHeight: 1.6, maxWidth: 340, margin: "0 auto" }}>
+            <div style={{ width: 36, height: 1, background: "#4a3a2a", margin: "14px auto" }} />
+            <p style={{ fontSize: 14, color: "#7a6a5a", lineHeight: 1.6, maxWidth: 340, margin: "0 auto" }}>
               Tell it your mood, your moment, the weather outside.<br />It'll pull the right record.
             </p>
           </div>
@@ -802,8 +855,8 @@ export default function RecordCollection() {
         {/* Compact header when result is showing */}
         {showResult && result && (
           <div style={{ textAlign: "center", marginBottom: 20 }}>
-            <p style={{ fontSize: 9, letterSpacing: 4, textTransform: "uppercase",
-              color: "#5a4a3a", fontFamily: "'Courier New', monospace" }}>
+            <p style={{ fontSize: 11, letterSpacing: 4, textTransform: "uppercase",
+              color: "#7a6a5a", fontFamily: "'Courier New', monospace" }}>
               The Collection of Daniel Russell
             </p>
           </div>
@@ -816,11 +869,11 @@ export default function RecordCollection() {
             <div style={{ display: "flex", justifyContent: "center", gap: 3, marginBottom: 24 }}>
               {[{ id: "turntable", label: "Ask" }, { id: "shelf", label: "Browse the Shelf" }].map(v => (
                 <button key={v.id} onClick={() => setCurrentView(v.id)} style={{
-                  padding: "5px 18px", fontSize: 10, fontFamily: "'Courier New', monospace",
+                  padding: "7px 22px", fontSize: 12, fontFamily: "'Courier New', monospace",
                   letterSpacing: 2, textTransform: "uppercase",
                   background: currentView === v.id ? "rgba(180,140,80,0.1)" : "transparent",
-                  border: `1px solid rgba(180,140,80,${currentView === v.id ? 0.25 : 0.08})`,
-                  borderRadius: 3, color: currentView === v.id ? "#b89850" : "#4a3a2a",
+                  border: `1px solid rgba(180,140,80,${currentView === v.id ? 0.3 : 0.12})`,
+                  borderRadius: 3, color: currentView === v.id ? "#d4b870" : "#6a5a4a",
                   cursor: "pointer", transition: "all 0.3s",
                 }}>
                   {v.label}
@@ -841,9 +894,9 @@ export default function RecordCollection() {
                 placeholder="How are you feeling right now?"
                 disabled={isLoading}
                 style={{
-                  width: "100%", padding: "13px 16px", fontSize: 14,
+                  width: "100%", padding: "14px 16px", fontSize: 15,
                   fontFamily: "'Georgia', serif", background: "rgba(255,255,255,0.02)",
-                  border: "1px solid rgba(138,122,106,0.15)", borderRadius: 3,
+                  border: "1px solid rgba(138,122,106,0.18)", borderRadius: 3,
                   color: "#d4c9b8", outline: "none", transition: "border-color 0.3s",
                   boxSizing: "border-box", marginBottom: 10,
                 }}
@@ -854,11 +907,11 @@ export default function RecordCollection() {
                 onClick={() => mood.trim() && !isLoading && fetchRecommendation(mood.trim())}
                 disabled={!mood.trim() || isLoading}
                 style={{
-                  width: "100%", padding: "11px 16px", fontSize: 11,
+                  width: "100%", padding: "12px 16px", fontSize: 13,
                   fontFamily: "'Courier New', monospace", letterSpacing: 2, textTransform: "uppercase",
                   background: isLoading ? "rgba(180,140,80,0.06)" : "rgba(180,140,80,0.1)",
-                  border: "1px solid rgba(180,140,80,0.2)", borderRadius: 3,
-                  color: !mood.trim() || isLoading ? "#3a2a1a" : "#a88840",
+                  border: "1px solid rgba(180,140,80,0.25)", borderRadius: 3,
+                  color: !mood.trim() || isLoading ? "#6a5a4a" : "#d4b870",
                   cursor: !mood.trim() || isLoading ? "default" : "pointer", transition: "all 0.3s",
                 }}>
                 {isLoading ? "Pulling from the shelf..." : "Drop the needle"}
@@ -866,18 +919,18 @@ export default function RecordCollection() {
 
               {!hasInteracted && (
                 <div style={{ marginTop: 16, textAlign: "center" }}>
-                  <p style={{ fontSize: 9, color: "#3a2a1a", letterSpacing: 1.5,
-                    textTransform: "uppercase", marginBottom: 7, fontFamily: "'Courier New', monospace" }}>
+                  <p style={{ fontSize: 12, color: "#6a5a4a", letterSpacing: 1.5,
+                    textTransform: "uppercase", marginBottom: 10, fontFamily: "'Courier New', monospace" }}>
                     Or try
                   </p>
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 5, justifyContent: "center" }}>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center" }}>
                     {SAMPLE_MOODS.map(s => (
                       <button key={s.mood} onClick={() => { setMood(s.mood); selectPreMapped(s); }}
                         style={{
-                          padding: "4px 11px", fontSize: 10, fontFamily: "'Georgia', serif",
-                          fontStyle: "italic", background: "rgba(255,255,255,0.01)",
-                          border: "1px solid rgba(138,122,106,0.08)", borderRadius: 14,
-                          color: "#5a4a3a", cursor: "pointer", transition: "all 0.3s",
+                          padding: "6px 14px", fontSize: 13, fontFamily: "'Georgia', serif",
+                          fontStyle: "italic", background: "rgba(255,255,255,0.015)",
+                          border: "1px solid rgba(138,122,106,0.15)", borderRadius: 14,
+                          color: "#9a8a7a", cursor: "pointer", transition: "all 0.3s",
                         }}>
                         {s.mood}
                       </button>
@@ -915,23 +968,23 @@ export default function RecordCollection() {
 
             {result && showResult && (
               <div style={{ textAlign: "center", animation: "fadeUp 0.8s ease-out" }}>
-                <p style={{ fontSize: 9, letterSpacing: 3, textTransform: "uppercase",
-                  color: "#4a3a2a", marginBottom: 6, fontFamily: "'Courier New', monospace" }}>
+                <p style={{ fontSize: 12, letterSpacing: 3, textTransform: "uppercase",
+                  color: "#6a5a4a", marginBottom: 8, fontFamily: "'Courier New', monospace" }}>
                   {result.record?.genre || "Vinyl"} &middot; {result.year}
                 </p>
-                <h2 style={{ fontSize: 22, fontWeight: 400, color: "#e8dcc8",
-                  marginBottom: 3, fontStyle: "italic" }}>
+                <h2 style={{ fontSize: 24, fontWeight: 400, color: "#efe5d5",
+                  marginBottom: 4, fontStyle: "italic" }}>
                   {result.album}
                 </h2>
-                <p style={{ fontSize: 14, color: "#8a7a6a", marginBottom: 18 }}>
+                <p style={{ fontSize: 15, color: "#9a8a7a", marginBottom: 20 }}>
                   {result.artist}
                 </p>
                 <div style={{
-                  maxWidth: 370, margin: "0 auto", padding: "14px 18px",
-                  background: "rgba(255,255,255,0.01)",
-                  borderLeft: "2px solid rgba(180,140,80,0.18)",
+                  maxWidth: 370, margin: "0 auto", padding: "16px 20px",
+                  background: "rgba(255,255,255,0.015)",
+                  borderLeft: "2px solid rgba(180,140,80,0.25)",
                 }}>
-                  <p style={{ fontSize: 12, lineHeight: 1.7, color: "#7a6a5a", fontStyle: "italic" }}>
+                  <p style={{ fontSize: 15, lineHeight: 1.7, color: "#c4b4a0", fontStyle: "italic" }}>
                     "{result.reason}"
                   </p>
                 </div>
@@ -942,13 +995,13 @@ export default function RecordCollection() {
                   setResult(null); setShowResult(false); setIsSpinning(false);
                   setMood(""); setCurrentView("turntable");
                 }} style={{
-                  marginTop: 28, padding: "7px 24px", fontSize: 10,
+                  marginTop: 28, padding: "9px 28px", fontSize: 12,
                   fontFamily: "'Courier New', monospace", letterSpacing: 2, textTransform: "uppercase",
-                  background: "transparent", border: "1px solid rgba(180,140,80,0.15)",
-                  borderRadius: 3, color: "#5a4a3a", cursor: "pointer", transition: "all 0.3s",
+                  background: "transparent", border: "1px solid rgba(180,140,80,0.2)",
+                  borderRadius: 3, color: "#9a8a7a", cursor: "pointer", transition: "all 0.3s",
                 }}
-                onMouseEnter={e => { e.target.style.color = "#b89850"; e.target.style.borderColor = "rgba(180,140,80,0.3)"; }}
-                onMouseLeave={e => { e.target.style.color = "#5a4a3a"; e.target.style.borderColor = "rgba(180,140,80,0.15)"; }}
+                onMouseEnter={e => { e.target.style.color = "#d4b870"; e.target.style.borderColor = "rgba(180,140,80,0.4)"; }}
+                onMouseLeave={e => { e.target.style.color = "#9a8a7a"; e.target.style.borderColor = "rgba(180,140,80,0.2)"; }}
                 >
                   Ask again
                 </button>
@@ -960,8 +1013,8 @@ export default function RecordCollection() {
         <MoodWall moodHistory={moodHistory} />
 
         <div style={{ marginTop: 56, textAlign: "center", paddingBottom: 28 }}>
-          <div style={{ width: 18, height: 1, background: "#201810", margin: "0 auto 10px" }} />
-          <p style={{ fontSize: 9, color: "#201810", fontFamily: "'Courier New', monospace",
+          <div style={{ width: 18, height: 1, background: "#4a3a2a", margin: "0 auto 12px" }} />
+          <p style={{ fontSize: 12, color: "#6a5a4a", fontFamily: "'Courier New', monospace",
             letterSpacing: 1.5, lineHeight: 1.8 }}>
             For Daniel Mark Russell<br />Brick mason. Audiophile. Father.
           </p>
@@ -972,7 +1025,7 @@ export default function RecordCollection() {
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.5); } }
-        input::placeholder { color: #3a2a1a; font-style: italic; }
+        input::placeholder { color: #6a5a4a; font-style: italic; }
         button:hover { filter: brightness(1.2); }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         ::-webkit-scrollbar { height: 3px; }
