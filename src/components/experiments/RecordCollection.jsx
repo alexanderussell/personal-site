@@ -90,7 +90,7 @@ const CURATED_RECORDS = [
   // Rock — more additions
   { artist: "The Band", album: "Music from Big Pink", year: 1968, genre: "Rock", track: "The Weight", tag: "The kind of song you play when you punch the card and head into the weekend.", spotifyId: "" },
   { artist: "The Rolling Stones", album: "Sticky Fingers", year: 1971, genre: "Rock", track: "Moonlight Mile", tag: "When you want to hear the Stones play a slow one. They could do that too.", spotifyId: "" },
-  { artist: "Neil Young", album: "Harvest", year: 1972, genre: "Folk Rock", track: "Old Man", tag: "Reminds me of my own old man. And my kid at the same time. Funny how that works.", spotifyId: "" },
+  { artist: "Neil Young", album: "Harvest", year: 1972, genre: "Folk Rock", track: "Old Man", tag: "Reminds me of my own old man and my kid at the same time.", spotifyId: "" },
 
   // Folk — more additions
   { artist: "Peter, Paul and Mary", album: "Moving", year: 1963, genre: "Folk", track: "Puff the Magic Dragon", tag: "Don't ask what I was thinking about when I played this one. You already know.", spotifyId: "" },
