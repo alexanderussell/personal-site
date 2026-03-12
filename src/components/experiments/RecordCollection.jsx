@@ -1,6 +1,4 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useDialKit, DialRoot } from "dialkit";
-import "dialkit/styles.css";
 
 // ============================================================
 // COLLECTION DATA — Expanded with genres, decades, personal tags
@@ -218,12 +216,13 @@ function generateGenreArt(record, canvas) {
 // ============================================================
 // VINYL — drag-to-spin
 // ============================================================
-function VinylRecord({ record, isSpinning, artCanvasRef }) {
+function VinylRecord({ record, isSpinning, artCanvasRef, isAudioPlaying, onTogglePlay, isDecelerating }) {
   const discRef = useRef(null);
   const isDragging = useRef(false);
   const lastAngle = useRef(0);
   const rotation = useRef(0);
   const [rot, setRot] = useState(0);
+  const [hovered, setHovered] = useState(false);
 
   const angleFromCenter = (e, rect) => {
     const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
@@ -261,16 +260,23 @@ function VinylRecord({ record, isSpinning, artCanvasRef }) {
 
   const grooves = useRef(Array.from({ length: 28 }, () => 0.2 + Math.random() * 0.2)).current;
 
+  const spinAnim = isDecelerating
+    ? "spinDecel 1.8s cubic-bezier(0.25, 0, 0.6, 1) forwards"
+    : isSpinning
+      ? "spin 2.8s linear infinite"
+      : "none";
+
   return (
     <div ref={discRef} onMouseDown={onDown} onTouchStart={onDown}
-      style={{ width: 300, height: 300, position: "relative", cursor: isSpinning ? "default" : "grab" }}>
+      onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
+      style={{ width: 300, height: 300, position: "relative", cursor: isSpinning ? "pointer" : "grab" }}>
       <div className="absolute inset-0 rounded-full" style={{
         background: `radial-gradient(circle at center,
           #1a1a1a 0%, #0d0d0d 14%, #1a1a1a 15%, #111 28%, #1a1a1a 29%,
           #0f0f0f 43%, #1a1a1a 44%, #111 58%, #1a1a1a 59%,
           #0d0d0d 73%, #1a1a1a 74%, #111 88%, #1a1a1a 89%, #0d0d0d 100%)`,
-        transform: isSpinning ? undefined : `rotate(${rot}deg)`,
-        animation: isSpinning ? "spin 2.8s linear infinite" : "none",
+        transform: isSpinning || isDecelerating ? undefined : `rotate(${rot}deg)`,
+        animation: spinAnim,
         boxShadow: "0 4px 40px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.3)",
       }}>
         {grooves.map((op, i) => (
@@ -291,9 +297,31 @@ function VinylRecord({ record, isSpinning, artCanvasRef }) {
       </div>
       <div className="absolute inset-0 rounded-full pointer-events-none" style={{
         background: "conic-gradient(from 200deg, transparent 0%, rgba(255,255,255,0.04) 10%, transparent 20%, transparent 100%)",
-        animation: isSpinning ? "spin 2.8s linear infinite" : "none",
-        transform: isSpinning ? undefined : `rotate(${rot}deg)`,
+        animation: spinAnim,
+        transform: isSpinning || isDecelerating ? undefined : `rotate(${rot}deg)`,
       }} />
+
+      {/* Hover pause/play overlay */}
+      {(isSpinning || isDecelerating || (isAudioPlaying !== undefined && !isSpinning)) && hovered && (
+        <div onClick={(e) => { e.stopPropagation(); onTogglePlay?.(); }}
+          className="absolute inset-0 rounded-full"
+          style={{
+            display: "flex", alignItems: "center", justifyContent: "center",
+            background: "rgba(0,0,0,0.35)", cursor: "pointer",
+            transition: "opacity 0.2s", zIndex: 10,
+          }}>
+          {isAudioPlaying ? (
+            <svg width="28" height="32" viewBox="0 0 28 32" fill="none">
+              <rect x="4" y="2" width="7" height="28" rx="1.5" fill="rgba(212,200,184,0.85)" />
+              <rect x="17" y="2" width="7" height="28" rx="1.5" fill="rgba(212,200,184,0.85)" />
+            </svg>
+          ) : (
+            <svg width="28" height="32" viewBox="0 0 28 32" fill="none">
+              <path d="M4 2L26 16L4 30V2Z" fill="rgba(212,200,184,0.85)" />
+            </svg>
+          )}
+        </div>
+      )}
     </div>
   );
 }
@@ -339,20 +367,23 @@ const linkStyle = {
   borderRadius: 20, transition: "all 0.3s", display: "inline-block",
 };
 
-function SpotifyLinks({ spotifyId }) {
+function SpotifyLinks({ artist, album, spotifyId }) {
   const onEnter = (e) => { e.target.style.color = "#d4b870"; e.target.style.borderColor = "rgba(180,140,80,0.4)"; };
   const onLeave = (e) => { e.target.style.color = "#9a8a7a"; e.target.style.borderColor = "rgba(138,122,106,0.2)"; };
 
+  // Use album page if we have a spotifyId, otherwise search
+  const spotifyUrl = spotifyId
+    ? `https://open.spotify.com/album/${spotifyId}`
+    : `https://open.spotify.com/search/${encodeURIComponent(`${artist} ${album}`)}`;
+
   return (
-    <div style={{ display: "flex", gap: 10, justifyContent: "center", marginTop: 14 }}>
-      {spotifyId && (
-        <a href={`https://open.spotify.com/album/${spotifyId}`}
-          target="_blank" rel="noopener noreferrer"
-          style={linkStyle}
-          onMouseEnter={onEnter} onMouseLeave={onLeave}>
-          LISTEN ON SPOTIFY
-        </a>
-      )}
+    <div style={{ display: "flex", gap: 10, justifyContent: "center", marginTop: 14, flexWrap: "wrap" }}>
+      <a href={spotifyUrl}
+        target="_blank" rel="noopener noreferrer"
+        style={linkStyle}
+        onMouseEnter={onEnter} onMouseLeave={onLeave}>
+        LISTEN ON SPOTIFY
+      </a>
       <a href={DANS_PLAYLIST_URL}
         target="_blank" rel="noopener noreferrer"
         style={linkStyle}
@@ -376,180 +407,34 @@ async function getPreviewUrl(artist, album, spotifyId) {
   }
 }
 
-function SpotifyPlayer({ artist, album, spotifyId, isVisible, isSpinning }) {
-  const [preview, setPreview] = useState(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [failed, setFailed] = useState(false);
-  const audioRef = useRef(null);
-  const progressInterval = useRef(null);
-  const lastAlbumKey = useRef(null);
-
-  // Fetch preview when album changes
-  useEffect(() => {
-    if (!artist || !album || !isVisible) return;
-    const key = `${artist}-${album}`;
-    if (key === lastAlbumKey.current) return;
-    lastAlbumKey.current = key;
-
-    setPreview(null);
-    setIsPlaying(false);
-    setProgress(0);
-    setFailed(false);
-
-    (async () => {
-      const result = await getPreviewUrl(artist, album, spotifyId);
-      if (result && result.url) {
-        setPreview(result);
-      } else if (result && result.spotifyId) {
-        // No preview audio but have a Spotify link
-        setFailed(true);
-      } else {
-        setFailed(true);
-      }
-    })();
-  }, [artist, album, spotifyId, isVisible]);
-
-  // Auto-play when preview loads and vinyl is spinning
-  useEffect(() => {
-    if (preview && isSpinning && audioRef.current) {
-      const playPromise = audioRef.current.play();
-      if (playPromise) {
-        playPromise.then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
-      }
-    }
-  }, [preview, isSpinning]);
-
-  // Track progress
-  useEffect(() => {
-    if (isPlaying) {
-      progressInterval.current = setInterval(() => {
-        if (audioRef.current) {
-          const pct = (audioRef.current.currentTime / audioRef.current.duration) * 100;
-          setProgress(pct || 0);
-        }
-      }, 100);
-    } else {
-      clearInterval(progressInterval.current);
-    }
-    return () => clearInterval(progressInterval.current);
-  }, [isPlaying]);
-
-  const togglePlay = () => {
-    if (!audioRef.current || !preview) return;
-    if (isPlaying) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-    } else {
-      audioRef.current.play().then(() => setIsPlaying(true)).catch(() => {});
-    }
-  };
-
-  if (!isVisible) return null;
-
-  // Fallback: links only if no preview available
-  if (failed) {
-    return (
-      <div style={{ marginTop: 16, textAlign: "center", animation: "fadeUp 0.6s ease-out" }}>
-        <SpotifyLinks spotifyId={spotifyId} />
-      </div>
-    );
-  }
-
-  if (!preview) {
-    return (
-      <div style={{ marginTop: 16, textAlign: "center" }}>
-        <div style={{
-          width: 6, height: 6, borderRadius: "50%", background: "#3a2a1a",
-          margin: "0 auto", animation: "pulse 1.5s ease-in-out infinite",
-        }} />
-      </div>
-    );
-  }
-
-  return (
-    <div style={{ marginTop: 20, animation: "fadeUp 0.6s ease-out",
-      display: "flex", flexDirection: "column", alignItems: "center" }}>
-      <audio
-        ref={audioRef}
-        src={preview.url}
-        onEnded={() => { setIsPlaying(false); setProgress(0); }}
-        preload="auto"
-      />
-
-      {/* Minimal custom player */}
-      <div style={{
-        display: "flex", alignItems: "center", gap: 12, width: 280,
-      }}>
-        {/* Play/pause button */}
-        <button onClick={togglePlay} style={{
-          width: 32, height: 32, borderRadius: "50%", border: "1px solid rgba(180,140,80,0.25)",
-          background: "rgba(180,140,80,0.08)", cursor: "pointer",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          flexShrink: 0, transition: "all 0.3s",
-        }}>
-          {isPlaying ? (
-            <svg width="10" height="12" viewBox="0 0 10 12" fill="none">
-              <rect x="1" y="1" width="3" height="10" rx="0.5" fill="#b89850" />
-              <rect x="6" y="1" width="3" height="10" rx="0.5" fill="#b89850" />
-            </svg>
-          ) : (
-            <svg width="10" height="12" viewBox="0 0 10 12" fill="none">
-              <path d="M1 1L9 6L1 11V1Z" fill="#b89850" />
-            </svg>
-          )}
-        </button>
-
-        {/* Progress bar + track name */}
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <p style={{
-            fontSize: 12, color: "#9a8a7a", fontFamily: "'Courier New', monospace",
-            letterSpacing: 0.5, marginBottom: 5, overflow: "hidden",
-            textOverflow: "ellipsis", whiteSpace: "nowrap",
-          }}>
-            {preview.name}
-          </p>
-          <div
-            onClick={(e) => {
-              if (!audioRef.current) return;
-              const rect = e.currentTarget.getBoundingClientRect();
-              const pct = (e.clientX - rect.left) / rect.width;
-              audioRef.current.currentTime = pct * audioRef.current.duration;
-              setProgress(pct * 100);
-            }}
-            style={{
-              width: "100%", height: 3, background: "rgba(138,122,106,0.12)",
-              borderRadius: 2, cursor: "pointer", position: "relative",
-            }}
-          >
-            <div style={{
-              width: `${progress}%`, height: "100%",
-              background: "rgba(180,140,80,0.5)", borderRadius: 2,
-              transition: "width 0.1s linear",
-            }} />
-          </div>
-        </div>
-      </div>
-
-      <p style={{
-        marginTop: 6, fontSize: 10, color: "#6a5a4a", fontFamily: "'Courier New', monospace",
-        letterSpacing: 1,
-      }}>
-        30-SECOND PREVIEW
-      </p>
-      <SpotifyLinks spotifyId={spotifyId} />
-    </div>
-  );
-}
+// SpotifyPlayer removed — audio now managed by main RecordCollection component.
+// Vinyl disc itself serves as the play/pause control via hover overlay.
 
 // ============================================================
 // MOOD HISTORY WALL
 // ============================================================
-function MoodWall({ moodHistory }) {
+const WALL_FONTS = [
+  "'Georgia', serif",
+  "'Courier New', monospace",
+  "'Times New Roman', serif",
+  "cursive",
+  "'Trebuchet MS', sans-serif",
+];
+
+function MoodWall({ moodHistory, onSelectMood }) {
   if (!moodHistory || moodHistory.length === 0) return null;
+
+  // Deterministic pseudo-random from index
+  const seed = (i) => {
+    const x = Math.sin(i * 127.1 + 311.7) * 43758.5453;
+    return x - Math.floor(x);
+  };
+
+  const notes = moodHistory.slice(-40);
+
   return (
-    <div style={{ marginTop: 48 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+    <div style={{ marginTop: 56 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
         <div style={{ flex: 1, height: 1, background: "rgba(138,122,106,0.08)" }} />
         <p style={{ fontSize: 10, letterSpacing: 3, textTransform: "uppercase",
           color: "#6a5a4a", fontFamily: "'Courier New', monospace" }}>
@@ -558,49 +443,65 @@ function MoodWall({ moodHistory }) {
         <div style={{ flex: 1, height: 1, background: "rgba(138,122,106,0.08)" }} />
       </div>
       <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(130px, 1fr))",
-        gap: 3,
-        maxHeight: 220,
-        overflow: "hidden",
+        position: "relative",
+        display: "flex",
+        flexWrap: "wrap",
+        gap: 0,
+        justifyContent: "center",
+        padding: "10px 0",
       }}>
-        {moodHistory.slice(-30).map((entry, i) => {
-          // Each brick gets subtle variation
-          const hue = 18 + (i % 5) * 2;
-          const light = 14 + (i % 4) * 1.5;
-          const rotDeg = ((i * 7) % 5) - 2; // -2 to 2 degrees
+        {notes.map((entry, i) => {
+          const r = seed(i);
+          const r2 = seed(i + 50);
+          const r3 = seed(i + 100);
+          const rotDeg = (r - 0.5) * 8; // -4 to 4 degrees
+          const font = WALL_FONTS[Math.floor(r2 * WALL_FONTS.length)];
+          const fontSize = 12 + Math.floor(r3 * 4); // 12-15px
+          const opacity = 0.45 + r * 0.35; // 0.45-0.80
+          const marginTop = Math.floor((r2 - 0.5) * 12); // -6 to 6
+          const marginLeft = Math.floor((r3 - 0.5) * 6); // -3 to 3
+          const isClickable = !!entry.album;
+
           return (
-            <div key={i} style={{
-              padding: "10px 12px",
-              background: `hsl(${hue}, 35%, ${light}%)`,
-              borderRadius: 2,
-              boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04), inset 0 -1px 0 rgba(0,0,0,0.2), 0 1px 2px rgba(0,0,0,0.3)",
-              position: "relative",
-              overflow: "hidden",
-              minHeight: 42,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}>
-              {/* Mortar lines */}
-              <div style={{
-                position: "absolute", inset: 0,
-                border: "1px solid rgba(30,22,14,0.6)",
-                borderRadius: 2,
-                pointerEvents: "none",
-              }} />
-              <p style={{
-                fontSize: 11,
-                fontFamily: "'Georgia', serif",
-                fontStyle: "italic",
-                color: `rgba(200,180,150,${0.5 + (i % 3) * 0.12})`,
-                textAlign: "center",
-                lineHeight: 1.35,
+            <div
+              key={i}
+              onClick={() => isClickable && onSelectMood?.(entry)}
+              className="mood-note"
+              style={{
+                padding: "8px 14px",
+                margin: `${marginTop}px ${marginLeft}px`,
                 transform: `rotate(${rotDeg}deg)`,
+                cursor: isClickable ? "pointer" : "default",
+                transition: "transform 0.25s ease, opacity 0.25s ease",
+                position: "relative",
+                maxWidth: 200,
+                flexShrink: 0,
+              }}
+            >
+              <p style={{
+                fontSize,
+                fontFamily: font,
+                fontStyle: r > 0.4 ? "italic" : "normal",
+                color: `rgba(200,185,160,${opacity})`,
+                lineHeight: 1.4,
                 wordBreak: "break-word",
+                whiteSpace: "pre-wrap",
               }}>
                 {entry.mood}
               </p>
+              {isClickable && (
+                <p style={{
+                  fontSize: 9,
+                  fontFamily: "'Courier New', monospace",
+                  color: "rgba(180,140,80,0)",
+                  letterSpacing: 1,
+                  marginTop: 3,
+                  transition: "color 0.25s ease",
+                }}
+                className="mood-note-album">
+                  {entry.album}
+                </p>
+              )}
             </div>
           );
         })}
@@ -613,14 +514,7 @@ function MoodWall({ moodHistory }) {
 // SHELF VIEW
 // ============================================================
 function ShelfView({ onSelectRecord }) {
-  const shelf = useDialKit("Shelf", {
-    spineWidth: [20, 20, 60],
-    spineHeight: [160, 80, 200],
-    fontSize: [10, 5, 14],
-    hoverLift: [24, 0, 30],
-    textOpacity: [0.85, 0.3, 1],
-    gap: [2.5, 0, 8],
-  });
+  const shelf = { spineWidth: 20, spineHeight: 160, fontSize: 10, hoverLift: 24, textOpacity: 0.85, gap: 2.5 };
 
   const genreGroups = [
     { label: "Jazz", match: (g) => g.includes("Jazz") },
@@ -702,11 +596,19 @@ export default function RecordCollection() {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [isSpinning, setIsSpinning] = useState(false);
+  const [isDecelerating, setIsDecelerating] = useState(false);
   const [showResult, setShowResult] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
   const [moodHistory, setMoodHistory] = useState([]);
   const [currentView, setCurrentView] = useState("turntable");
   const artCanvasRef = useRef(null);
+
+  // Audio state — lifted from SpotifyPlayer so vinyl controls playback
+  const audioRef = useRef(null);
+  const [preview, setPreview] = useState(null);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [audioFailed, setAudioFailed] = useState(false);
+  const lastAudioKey = useRef(null);
 
   // Pre-mapped sample moods — no AI call needed, saves tokens
   const SAMPLE_MOODS = [
@@ -749,6 +651,56 @@ export default function RecordCollection() {
       generateGenreArt(result.record, artCanvasRef.current);
     }
   }, [result]);
+
+  // Fetch audio preview when result changes
+  useEffect(() => {
+    if (!result?.artist || !result?.album || !showResult) return;
+    const key = `${result.artist}-${result.album}`;
+    if (key === lastAudioKey.current) return;
+    lastAudioKey.current = key;
+
+    setPreview(null);
+    setIsAudioPlaying(false);
+    setAudioFailed(false);
+
+    (async () => {
+      const data = await getPreviewUrl(result.artist, result.album, result.record?.spotifyId);
+      if (data && data.url) {
+        setPreview(data);
+      } else {
+        setAudioFailed(true);
+      }
+    })();
+  }, [result, showResult]);
+
+  // Auto-play when preview loads and vinyl is spinning
+  useEffect(() => {
+    if (preview && isSpinning && audioRef.current) {
+      const playPromise = audioRef.current.play();
+      if (playPromise) {
+        playPromise.then(() => setIsAudioPlaying(true)).catch(() => setIsAudioPlaying(false));
+      }
+    }
+  }, [preview, isSpinning]);
+
+  // Toggle play/pause — controls both audio and vinyl spin
+  const togglePlay = useCallback(() => {
+    if (!audioRef.current || !preview) return;
+    if (isAudioPlaying) {
+      audioRef.current.pause();
+      setIsAudioPlaying(false);
+      // Decelerate the vinyl
+      setIsDecelerating(true);
+      setIsSpinning(false);
+      setTimeout(() => setIsDecelerating(false), 1800);
+    } else {
+      audioRef.current.play().then(() => {
+        setIsAudioPlaying(true);
+        setIsDecelerating(false);
+        setIsSpinning(true);
+      }).catch(() => {});
+    }
+  }, [preview, isAudioPlaying]);
 
   const fetchRecommendation = useCallback(async (moodText) => {
     setIsLoading(true); setShowResult(false); setIsSpinning(false);
@@ -823,7 +775,6 @@ export default function RecordCollection() {
     <div style={{ minHeight: "100vh", background: "#0a0808", color: "#d4c9b8",
       fontFamily: "'Georgia','Times New Roman',serif", position: "relative", overflow: "hidden" }}>
 
-      <DialRoot position="top-right" />
 
       <div style={{ position: "fixed", inset: 0, opacity: 0.03, pointerEvents: "none",
         backgroundImage: "repeating-linear-gradient(90deg, transparent, transparent 3px, rgba(139,90,43,0.2) 3px, rgba(139,90,43,0.2) 5px)" }} />
@@ -856,9 +807,43 @@ export default function RecordCollection() {
         {showResult && result && (
           <div style={{ textAlign: "center", marginBottom: 20 }}>
             <p style={{ fontSize: 11, letterSpacing: 4, textTransform: "uppercase",
-              color: "#7a6a5a", fontFamily: "'Courier New', monospace" }}>
+              color: "#7a6a5a", fontFamily: "'Courier New', monospace", marginBottom: 14 }}>
               The Collection of Daniel Russell
             </p>
+            <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
+              <button onClick={() => {
+                if (audioRef.current) { audioRef.current.pause(); }
+                setResult(null); setShowResult(false); setIsSpinning(false);
+                setIsDecelerating(false); setIsAudioPlaying(false);
+                setPreview(null); setAudioFailed(false); lastAudioKey.current = null;
+                setMood(""); setCurrentView("turntable");
+              }} style={{
+                padding: "7px 20px", fontSize: 11,
+                fontFamily: "'Courier New', monospace", letterSpacing: 2, textTransform: "uppercase",
+                background: "transparent", border: "1px solid rgba(180,140,80,0.2)",
+                borderRadius: 3, color: "#9a8a7a", cursor: "pointer", transition: "all 0.3s",
+              }}
+              onMouseEnter={e => { e.target.style.color = "#d4b870"; e.target.style.borderColor = "rgba(180,140,80,0.4)"; }}
+              onMouseLeave={e => { e.target.style.color = "#9a8a7a"; e.target.style.borderColor = "rgba(180,140,80,0.2)"; }}>
+                Ask again
+              </button>
+              <button onClick={() => {
+                if (audioRef.current) { audioRef.current.pause(); }
+                setResult(null); setShowResult(false); setIsSpinning(false);
+                setIsDecelerating(false); setIsAudioPlaying(false);
+                setPreview(null); setAudioFailed(false); lastAudioKey.current = null;
+                setMood(""); setCurrentView("shelf");
+              }} style={{
+                padding: "7px 20px", fontSize: 11,
+                fontFamily: "'Courier New', monospace", letterSpacing: 2, textTransform: "uppercase",
+                background: "transparent", border: "1px solid rgba(180,140,80,0.2)",
+                borderRadius: 3, color: "#9a8a7a", cursor: "pointer", transition: "all 0.3s",
+              }}
+              onMouseEnter={e => { e.target.style.color = "#d4b870"; e.target.style.borderColor = "rgba(180,140,80,0.4)"; }}
+              onMouseLeave={e => { e.target.style.color = "#9a8a7a"; e.target.style.borderColor = "rgba(180,140,80,0.2)"; }}>
+                Back to shelf
+              </button>
+            </div>
           </div>
         )}
 
@@ -960,9 +945,30 @@ export default function RecordCollection() {
               }} />
               {result && (
                 <>
-                  <VinylRecord record={result.record} isSpinning={isSpinning} artCanvasRef={artCanvasRef} />
+                  <VinylRecord
+                    record={result.record}
+                    isSpinning={isSpinning}
+                    isDecelerating={isDecelerating}
+                    isAudioPlaying={isAudioPlaying}
+                    onTogglePlay={togglePlay}
+                    artCanvasRef={artCanvasRef}
+                  />
                   <Tonearm isPlaying={isSpinning} />
                 </>
+              )}
+              {/* Hidden audio element */}
+              {preview && (
+                <audio
+                  ref={audioRef}
+                  src={preview.url}
+                  onEnded={() => {
+                    setIsAudioPlaying(false);
+                    setIsDecelerating(true);
+                    setIsSpinning(false);
+                    setTimeout(() => setIsDecelerating(false), 1800);
+                  }}
+                  preload="auto"
+                />
               )}
             </div>
 
@@ -988,29 +994,24 @@ export default function RecordCollection() {
                     "{result.reason}"
                   </p>
                 </div>
-                <SpotifyPlayer artist={result.artist} album={result.album} spotifyId={result.record?.spotifyId} isVisible={showResult} isSpinning={isSpinning} />
-
-                {/* Ask again */}
-                <button onClick={() => {
-                  setResult(null); setShowResult(false); setIsSpinning(false);
-                  setMood(""); setCurrentView("turntable");
-                }} style={{
-                  marginTop: 28, padding: "9px 28px", fontSize: 12,
-                  fontFamily: "'Courier New', monospace", letterSpacing: 2, textTransform: "uppercase",
-                  background: "transparent", border: "1px solid rgba(180,140,80,0.2)",
-                  borderRadius: 3, color: "#9a8a7a", cursor: "pointer", transition: "all 0.3s",
-                }}
-                onMouseEnter={e => { e.target.style.color = "#d4b870"; e.target.style.borderColor = "rgba(180,140,80,0.4)"; }}
-                onMouseLeave={e => { e.target.style.color = "#9a8a7a"; e.target.style.borderColor = "rgba(180,140,80,0.2)"; }}
-                >
-                  Ask again
-                </button>
+                <SpotifyLinks artist={result.artist} album={result.album} spotifyId={result.record?.spotifyId} />
+                {preview && (
+                  <p style={{
+                    marginTop: 8, fontSize: 10, color: "#6a5a4a", fontFamily: "'Courier New', monospace",
+                    letterSpacing: 1, textAlign: "center",
+                  }}>
+                    {isAudioPlaying ? `Playing: ${preview.name}` : "Hover the vinyl to play"}
+                  </p>
+                )}
               </div>
             )}
           </div>
         )}
 
-        <MoodWall moodHistory={moodHistory} />
+        <MoodWall moodHistory={moodHistory} onSelectMood={(entry) => {
+          const record = CURATED_RECORDS.find(r => r.album === entry.album);
+          if (record) selectFromShelf(record);
+        }} />
 
         <div style={{ marginTop: 56, textAlign: "center", paddingBottom: 28 }}>
           <div style={{ width: 18, height: 1, background: "#4a3a2a", margin: "0 auto 12px" }} />
@@ -1023,8 +1024,11 @@ export default function RecordCollection() {
 
       <style>{`
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes spinDecel { from { transform: rotate(0deg); } to { transform: rotate(120deg); } }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.5); } }
+        .mood-note:hover { transform: rotate(0deg) scale(1.05) !important; opacity: 1; z-index: 2; }
+        .mood-note:hover .mood-note-album { color: rgba(180,140,80,0.5) !important; }
         input::placeholder { color: #6a5a4a; font-style: italic; }
         button:hover { filter: brightness(1.2); }
         * { margin: 0; padding: 0; box-sizing: border-box; }
