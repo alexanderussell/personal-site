@@ -1,0 +1,140 @@
+---
+// VinylPreview.astro
+// Spinning vinyl record preview for the experiments timeline.
+// Links out to vinyl.alexanderussell.com
+---
+
+<div class="vinyl-preview" data-vinyl-preview>
+  <div class="vinyl-preview-stage">
+    <div class="vinyl-disc">
+      <div class="vinyl-groove vinyl-groove-1"></div>
+      <div class="vinyl-groove vinyl-groove-2"></div>
+      <div class="vinyl-groove vinyl-groove-3"></div>
+      <div class="vinyl-groove vinyl-groove-4"></div>
+      <div class="vinyl-groove vinyl-groove-5"></div>
+      <div class="vinyl-label">
+        <div class="vinyl-label-text">DR</div>
+        <div class="vinyl-spindle"></div>
+      </div>
+      <div class="vinyl-sheen"></div>
+    </div>
+  </div>
+  <a href="https://vinyl.alexanderussell.com" class="vinyl-preview-cta" target="_blank" rel="noopener noreferrer">
+    View Experiment &rarr;
+  </a>
+</div>
+
+<style>
+  .vinyl-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.5rem;
+  }
+
+  .vinyl-preview-stage {
+    width: 180px;
+    height: 180px;
+    position: relative;
+    cursor: pointer;
+  }
+
+  .vinyl-disc {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    position: relative;
+    background: radial-gradient(circle at center,
+      #1a1a1a 0%, #0d0d0d 14%, #1a1a1a 15%, #111 28%, #1a1a1a 29%,
+      #0f0f0f 43%, #1a1a1a 44%, #111 58%, #1a1a1a 59%,
+      #0d0d0d 73%, #1a1a1a 74%, #111 88%, #1a1a1a 89%, #0d0d0d 100%);
+    box-shadow: 0 4px 30px rgba(0,0,0,0.4), inset 0 0 15px rgba(0,0,0,0.3);
+    animation: vinyl-spin 3s linear infinite;
+  }
+
+  .vinyl-groove {
+    position: absolute;
+    border-radius: 50%;
+    border: 0.5px solid rgba(50,50,50,0.25);
+    pointer-events: none;
+  }
+  .vinyl-groove-1 { inset: 12px; }
+  .vinyl-groove-2 { inset: 22px; }
+  .vinyl-groove-3 { inset: 32px; }
+  .vinyl-groove-4 { inset: 42px; }
+  .vinyl-groove-5 { inset: 52px; }
+
+  .vinyl-label {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #3a2a1a 0%, #2a1c10 60%, #1a1008 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+  }
+
+  .vinyl-label-text {
+    font-family: 'Georgia', serif;
+    font-size: 14px;
+    font-weight: 400;
+    font-style: italic;
+    color: rgba(180, 140, 80, 0.6);
+    letter-spacing: 2px;
+  }
+
+  .vinyl-spindle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #0a0a0a;
+    box-shadow: inset 0 0 2px rgba(0,0,0,0.9);
+  }
+
+  .vinyl-sheen {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: conic-gradient(from 200deg, transparent 0%, rgba(255,255,255,0.03) 10%, transparent 20%, transparent 100%);
+    pointer-events: none;
+  }
+
+  .vinyl-preview-cta {
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--color-text-secondary, #9a8a7a);
+    text-decoration: none;
+    padding: 7px 18px;
+    border: 1px solid rgba(138,122,106,0.2);
+    border-radius: 3px;
+    transition: all 0.3s;
+  }
+
+  .vinyl-preview-cta:hover {
+    color: var(--color-text-primary, #d4b870);
+    border-color: rgba(180,140,80,0.4);
+  }
+
+  @keyframes vinyl-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .vinyl-disc {
+      animation: none;
+    }
+  }
+</style>
