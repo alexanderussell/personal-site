@@ -10,24 +10,37 @@ export const GET: APIRoute = async ({ url }) => {
   }
 
   try {
-    // Use Deezer API for 30-second previews (free, no auth required)
-    const query = encodeURIComponent(`artist:"${artist}" album:"${album}"`);
-    const resp = await fetch(`https://api.deezer.com/search?q=${query}&limit=3`);
-    const data = await resp.json();
+    // Step 1: Search Deezer for the specific album
+    const albumQuery = encodeURIComponent(`"${album}" "${artist}"`);
+    const albumResp = await fetch(`https://api.deezer.com/search/album?q=${albumQuery}&limit=5`);
+    const albumData = await albumResp.json();
 
-    const track = (data.data || []).find((t: any) => t.preview);
+    // Find the best matching album by the correct artist
+    const artistLower = artist.toLowerCase();
+    const albumLower = album.toLowerCase();
+    const match = (albumData.data || []).find((a: any) =>
+      a.artist?.name?.toLowerCase().includes(artistLower) ||
+      artistLower.includes(a.artist?.name?.toLowerCase())
+    );
 
-    if (track) {
-      return new Response(JSON.stringify({
-        url: track.preview,
-        name: track.title,
-        spotifyId: spotifyId || null,
-      }), {
-        headers: { 'Content-Type': 'application/json' },
-      });
+    if (match) {
+      // Step 2: Get tracks from that specific album
+      const tracksResp = await fetch(`https://api.deezer.com/album/${match.id}/tracks?limit=5`);
+      const tracksData = await tracksResp.json();
+      const track = (tracksData.data || []).find((t: any) => t.preview);
+
+      if (track) {
+        return new Response(JSON.stringify({
+          url: track.preview,
+          name: track.title,
+          spotifyId: spotifyId || null,
+        }), {
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
     }
 
-    // No preview found — return spotifyId for fallback link
+    // No match — return spotifyId for fallback link
     return new Response(JSON.stringify({
       url: null,
       spotifyId: spotifyId || null,

@@ -327,6 +327,40 @@ function Tonearm({ isPlaying }) {
 // See HANDOFF.md for the /api/spotify-preview route implementation.
 // ============================================================
 
+// TODO: Replace with your public Spotify playlist URL
+const DANS_PLAYLIST_URL = "https://open.spotify.com/playlist/YOUR_PLAYLIST_ID";
+
+const linkStyle = {
+  fontSize: 10, color: "#5a4a3a", fontFamily: "'Courier New', monospace",
+  letterSpacing: 1.5, textDecoration: "none",
+  padding: "6px 16px", border: "1px solid rgba(138,122,106,0.15)",
+  borderRadius: 20, transition: "all 0.3s", display: "inline-block",
+};
+
+function SpotifyLinks({ spotifyId }) {
+  const onEnter = (e) => { e.target.style.color = "#b89850"; e.target.style.borderColor = "rgba(180,140,80,0.3)"; };
+  const onLeave = (e) => { e.target.style.color = "#5a4a3a"; e.target.style.borderColor = "rgba(138,122,106,0.15)"; };
+
+  return (
+    <div style={{ display: "flex", gap: 10, justifyContent: "center", marginTop: 14 }}>
+      {spotifyId && (
+        <a href={`https://open.spotify.com/album/${spotifyId}`}
+          target="_blank" rel="noopener noreferrer"
+          style={linkStyle}
+          onMouseEnter={onEnter} onMouseLeave={onLeave}>
+          LISTEN ON SPOTIFY
+        </a>
+      )}
+      <a href={DANS_PLAYLIST_URL}
+        target="_blank" rel="noopener noreferrer"
+        style={linkStyle}
+        onMouseEnter={onEnter} onMouseLeave={onLeave}>
+        DAN'S PLAYLIST
+      </a>
+    </div>
+  );
+}
+
 async function getPreviewUrl(artist, album, spotifyId) {
   try {
     const params = new URLSearchParams({ artist, album });
@@ -409,25 +443,13 @@ function SpotifyPlayer({ artist, album, spotifyId, isVisible, isSpinning }) {
     }
   };
 
-  if (!spotifyId || !isVisible) return null;
+  if (!isVisible) return null;
 
-  // Fallback: link to Spotify if no preview available
+  // Fallback: links only if no preview available
   if (failed) {
     return (
       <div style={{ marginTop: 16, textAlign: "center", animation: "fadeUp 0.6s ease-out" }}>
-        <a href={`https://open.spotify.com/album/${spotifyId}`}
-          target="_blank" rel="noopener noreferrer"
-          style={{
-            fontSize: 10, color: "#5a4a3a", fontFamily: "'Courier New', monospace",
-            letterSpacing: 1.5, textDecoration: "none",
-            padding: "6px 16px", border: "1px solid rgba(138,122,106,0.15)",
-            borderRadius: 20, transition: "all 0.3s",
-          }}
-          onMouseEnter={(e) => { e.target.style.color = "#b89850"; e.target.style.borderColor = "rgba(180,140,80,0.3)"; }}
-          onMouseLeave={(e) => { e.target.style.color = "#5a4a3a"; e.target.style.borderColor = "rgba(138,122,106,0.15)"; }}
-        >
-          LISTEN ON SPOTIFY &rarr;
-        </a>
+        <SpotifyLinks spotifyId={spotifyId} />
       </div>
     );
   }
@@ -513,6 +535,7 @@ function SpotifyPlayer({ artist, album, spotifyId, isVisible, isSpinning }) {
       }}>
         30-SECOND PREVIEW
       </p>
+      <SpotifyLinks spotifyId={spotifyId} />
     </div>
   );
 }
@@ -635,12 +658,13 @@ export default function RecordCollection() {
   const [currentView, setCurrentView] = useState("turntable");
   const artCanvasRef = useRef(null);
 
+  // Pre-mapped sample moods — no AI call needed, saves tokens
   const SAMPLE_MOODS = [
-    "Sunday morning, coffee getting cold",
-    "Driving at night with the windows down",
-    "Missing someone who moved away",
-    "Finally finished something I've been building",
-    "Rain on the roof, nowhere to be",
+    { mood: "Sunday morning, coffee getting cold", artist: "Dave Brubeck", album: "Time Out" },
+    { mood: "Driving at night with the windows down", artist: "Fleetwood Mac", album: "Rumours" },
+    { mood: "Missing someone who moved away", artist: "Joni Mitchell", album: "Blue" },
+    { mood: "Finally finished something I've been building", artist: "John Coltrane", album: "A Love Supreme" },
+    { mood: "Rain on the roof, nowhere to be", artist: "Cat Stevens", album: "Tea for the Tillerman" },
   ];
 
   useEffect(() => {
@@ -725,6 +749,19 @@ export default function RecordCollection() {
     } finally { setIsLoading(false); }
   }, [moodHistory]);
 
+  // Select a pre-mapped sample mood — no AI call
+  const selectPreMapped = (sample) => {
+    const record = CURATED_RECORDS.find(r =>
+      r.artist === sample.artist && r.album === sample.album
+    );
+    if (!record) return;
+    setIsLoading(true); setShowResult(false); setIsSpinning(false);
+    setHasInteracted(true); setCurrentView("turntable");
+    setResult({ artist: record.artist, album: record.album, year: record.year, reason: record.tag, record });
+    setTimeout(() => { setIsLoading(false); setIsSpinning(true); }, 400);
+    setTimeout(() => setShowResult(true), 1000);
+  };
+
   const selectFromShelf = (record) => {
     setResult({ artist: record.artist, album: record.album, year: record.year, reason: record.tag, record });
     setCurrentView("turntable"); setHasInteracted(true);
@@ -745,40 +782,57 @@ export default function RecordCollection() {
 
       <div style={{ maxWidth: 540, margin: "0 auto", padding: "48px 20px", position: "relative" }}>
 
-        {/* Header */}
-        <div style={{ textAlign: "center", marginBottom: 36 }}>
-          <p style={{ fontSize: 9, letterSpacing: 4, textTransform: "uppercase",
-            color: "#5a4a3a", marginBottom: 12, fontFamily: "'Courier New', monospace" }}>
-            The Collection of Daniel Russell
-          </p>
-          <h1 style={{ fontSize: 28, fontWeight: 400, lineHeight: 1.25, color: "#e8dcc8", marginBottom: 8 }}>
-            Ask My Dad's<br />Record Collection
-          </h1>
-          <div style={{ width: 36, height: 1, background: "#3a2a1a", margin: "14px auto" }} />
-          <p style={{ fontSize: 13, color: "#5a4a3a", lineHeight: 1.6, maxWidth: 340, margin: "0 auto" }}>
-            Tell it your mood, your moment, the weather outside.<br />It'll pull the right record.
-          </p>
-        </div>
+        {/* Header — collapses when showing a result */}
+        {!(showResult && result) && (
+          <div style={{ textAlign: "center", marginBottom: 36 }}>
+            <p style={{ fontSize: 9, letterSpacing: 4, textTransform: "uppercase",
+              color: "#5a4a3a", marginBottom: 12, fontFamily: "'Courier New', monospace" }}>
+              The Collection of Daniel Russell
+            </p>
+            <h1 style={{ fontSize: 28, fontWeight: 400, lineHeight: 1.25, color: "#e8dcc8", marginBottom: 8 }}>
+              Ask My Dad's<br />Record Collection
+            </h1>
+            <div style={{ width: 36, height: 1, background: "#3a2a1a", margin: "14px auto" }} />
+            <p style={{ fontSize: 13, color: "#5a4a3a", lineHeight: 1.6, maxWidth: 340, margin: "0 auto" }}>
+              Tell it your mood, your moment, the weather outside.<br />It'll pull the right record.
+            </p>
+          </div>
+        )}
 
-        {/* View toggle */}
-        <div style={{ display: "flex", justifyContent: "center", gap: 3, marginBottom: 24 }}>
-          {[{ id: "turntable", label: "Ask" }, { id: "shelf", label: "Browse the Shelf" }].map(v => (
-            <button key={v.id} onClick={() => setCurrentView(v.id)} style={{
-              padding: "5px 18px", fontSize: 10, fontFamily: "'Courier New', monospace",
-              letterSpacing: 2, textTransform: "uppercase",
-              background: currentView === v.id ? "rgba(180,140,80,0.1)" : "transparent",
-              border: `1px solid rgba(180,140,80,${currentView === v.id ? 0.25 : 0.08})`,
-              borderRadius: 3, color: currentView === v.id ? "#b89850" : "#4a3a2a",
-              cursor: "pointer", transition: "all 0.3s",
-            }}>
-              {v.label}
-            </button>
-          ))}
-        </div>
+        {/* Compact header when result is showing */}
+        {showResult && result && (
+          <div style={{ textAlign: "center", marginBottom: 20 }}>
+            <p style={{ fontSize: 9, letterSpacing: 4, textTransform: "uppercase",
+              color: "#5a4a3a", fontFamily: "'Courier New', monospace" }}>
+              The Collection of Daniel Russell
+            </p>
+          </div>
+        )}
 
-        {currentView === "shelf" && <ShelfView onSelectRecord={selectFromShelf} />}
+        {/* Controls — hidden when result is showing */}
+        {!(showResult && result) && (
+          <>
+            {/* View toggle */}
+            <div style={{ display: "flex", justifyContent: "center", gap: 3, marginBottom: 24 }}>
+              {[{ id: "turntable", label: "Ask" }, { id: "shelf", label: "Browse the Shelf" }].map(v => (
+                <button key={v.id} onClick={() => setCurrentView(v.id)} style={{
+                  padding: "5px 18px", fontSize: 10, fontFamily: "'Courier New', monospace",
+                  letterSpacing: 2, textTransform: "uppercase",
+                  background: currentView === v.id ? "rgba(180,140,80,0.1)" : "transparent",
+                  border: `1px solid rgba(180,140,80,${currentView === v.id ? 0.25 : 0.08})`,
+                  borderRadius: 3, color: currentView === v.id ? "#b89850" : "#4a3a2a",
+                  cursor: "pointer", transition: "all 0.3s",
+                }}>
+                  {v.label}
+                </button>
+              ))}
+            </div>
 
-        {currentView === "turntable" && (
+            {currentView === "shelf" && <ShelfView onSelectRecord={selectFromShelf} />}
+          </>
+        )}
+
+        {(!(showResult && result) || currentView === "turntable") && currentView === "turntable" && !(showResult && result) && (
           <>
             <div style={{ marginBottom: 36 }}>
               <input type="text" value={mood}
@@ -818,14 +872,14 @@ export default function RecordCollection() {
                   </p>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 5, justifyContent: "center" }}>
                     {SAMPLE_MOODS.map(s => (
-                      <button key={s} onClick={() => { setMood(s); fetchRecommendation(s); }}
+                      <button key={s.mood} onClick={() => { setMood(s.mood); selectPreMapped(s); }}
                         style={{
                           padding: "4px 11px", fontSize: 10, fontFamily: "'Georgia', serif",
                           fontStyle: "italic", background: "rgba(255,255,255,0.01)",
                           border: "1px solid rgba(138,122,106,0.08)", borderRadius: 14,
                           color: "#5a4a3a", cursor: "pointer", transition: "all 0.3s",
                         }}>
-                        {s}
+                        {s.mood}
                       </button>
                     ))}
                   </div>
@@ -833,56 +887,74 @@ export default function RecordCollection() {
               )}
             </div>
 
-            {(result || isLoading) && (
-              <div style={{
-                display: "flex", flexDirection: "column", alignItems: "center",
-                opacity: isLoading && !result ? 0.3 : 1, transition: "opacity 0.5s",
-              }}>
-                <div style={{
-                  position: "relative", width: 350, height: 330,
-                  display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 24,
-                }}>
-                  <div style={{
-                    position: "absolute", width: 316, height: 316, borderRadius: "50%",
-                    background: "rgba(16,14,11,0.9)",
-                    boxShadow: "0 2px 20px rgba(0,0,0,0.35), inset 0 0 25px rgba(0,0,0,0.2)",
-                  }} />
-                  {result && (
-                    <>
-                      <VinylRecord record={result.record} isSpinning={isSpinning} artCanvasRef={artCanvasRef} />
-                      <Tonearm isPlaying={isSpinning} />
-                    </>
-                  )}
-                </div>
+          </>
+        )}
 
-                {result && showResult && (
-                  <div style={{ textAlign: "center", animation: "fadeUp 0.8s ease-out" }}>
-                    <p style={{ fontSize: 9, letterSpacing: 3, textTransform: "uppercase",
-                      color: "#4a3a2a", marginBottom: 6, fontFamily: "'Courier New', monospace" }}>
-                      {result.record?.genre || "Vinyl"} &middot; {result.year}
-                    </p>
-                    <h2 style={{ fontSize: 22, fontWeight: 400, color: "#e8dcc8",
-                      marginBottom: 3, fontStyle: "italic" }}>
-                      {result.album}
-                    </h2>
-                    <p style={{ fontSize: 14, color: "#8a7a6a", marginBottom: 18 }}>
-                      {result.artist}
-                    </p>
-                    <div style={{
-                      maxWidth: 370, margin: "0 auto", padding: "14px 18px",
-                      background: "rgba(255,255,255,0.01)",
-                      borderLeft: "2px solid rgba(180,140,80,0.18)",
-                    }}>
-                      <p style={{ fontSize: 12, lineHeight: 1.7, color: "#7a6a5a", fontStyle: "italic" }}>
-                        "{result.reason}"
-                      </p>
-                    </div>
-                    <SpotifyPlayer artist={result.artist} album={result.album} spotifyId={result.record?.spotifyId} isVisible={showResult} isSpinning={isSpinning} />
-                  </div>
-                )}
+        {/* Vinyl + result — always visible when we have a result */}
+        {(result || isLoading) && (
+          <div style={{
+            display: "flex", flexDirection: "column", alignItems: "center",
+            opacity: isLoading && !result ? 0.3 : 1, transition: "opacity 0.5s",
+          }}>
+            <div style={{
+              position: "relative", width: 350, height: 330,
+              display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 24,
+            }}>
+              <div style={{
+                position: "absolute", width: 316, height: 316, borderRadius: "50%",
+                background: "rgba(16,14,11,0.9)",
+                boxShadow: "0 2px 20px rgba(0,0,0,0.35), inset 0 0 25px rgba(0,0,0,0.2)",
+              }} />
+              {result && (
+                <>
+                  <VinylRecord record={result.record} isSpinning={isSpinning} artCanvasRef={artCanvasRef} />
+                  <Tonearm isPlaying={isSpinning} />
+                </>
+              )}
+            </div>
+
+            {result && showResult && (
+              <div style={{ textAlign: "center", animation: "fadeUp 0.8s ease-out" }}>
+                <p style={{ fontSize: 9, letterSpacing: 3, textTransform: "uppercase",
+                  color: "#4a3a2a", marginBottom: 6, fontFamily: "'Courier New', monospace" }}>
+                  {result.record?.genre || "Vinyl"} &middot; {result.year}
+                </p>
+                <h2 style={{ fontSize: 22, fontWeight: 400, color: "#e8dcc8",
+                  marginBottom: 3, fontStyle: "italic" }}>
+                  {result.album}
+                </h2>
+                <p style={{ fontSize: 14, color: "#8a7a6a", marginBottom: 18 }}>
+                  {result.artist}
+                </p>
+                <div style={{
+                  maxWidth: 370, margin: "0 auto", padding: "14px 18px",
+                  background: "rgba(255,255,255,0.01)",
+                  borderLeft: "2px solid rgba(180,140,80,0.18)",
+                }}>
+                  <p style={{ fontSize: 12, lineHeight: 1.7, color: "#7a6a5a", fontStyle: "italic" }}>
+                    "{result.reason}"
+                  </p>
+                </div>
+                <SpotifyPlayer artist={result.artist} album={result.album} spotifyId={result.record?.spotifyId} isVisible={showResult} isSpinning={isSpinning} />
+
+                {/* Ask again */}
+                <button onClick={() => {
+                  setResult(null); setShowResult(false); setIsSpinning(false);
+                  setMood(""); setCurrentView("turntable");
+                }} style={{
+                  marginTop: 28, padding: "7px 24px", fontSize: 10,
+                  fontFamily: "'Courier New', monospace", letterSpacing: 2, textTransform: "uppercase",
+                  background: "transparent", border: "1px solid rgba(180,140,80,0.15)",
+                  borderRadius: 3, color: "#5a4a3a", cursor: "pointer", transition: "all 0.3s",
+                }}
+                onMouseEnter={e => { e.target.style.color = "#b89850"; e.target.style.borderColor = "rgba(180,140,80,0.3)"; }}
+                onMouseLeave={e => { e.target.style.color = "#5a4a3a"; e.target.style.borderColor = "rgba(180,140,80,0.15)"; }}
+                >
+                  Ask again
+                </button>
               </div>
             )}
-          </>
+          </div>
         )}
 
         <MoodWall moodHistory={moodHistory} />
