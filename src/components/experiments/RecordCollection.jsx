@@ -747,6 +747,17 @@ export default function RecordCollection() {
         body: JSON.stringify({ mood: moodText, recordList }),
       });
 
+      if (response.status === 429) {
+        const errData = await response.json();
+        setResult({
+          artist: '', album: '', year: '',
+          reason: errData.error || "Easy there — even Daniel needed a break between records. Try again in a bit.",
+          record: CURATED_RECORDS[0],
+        });
+        setShowResult(true);
+        setIsLoading(false);
+        return;
+      }
       if (!response.ok) throw new Error(`API ${response.status}`);
       const data = await response.json();
       if (!data.content?.length) throw new Error("Empty");

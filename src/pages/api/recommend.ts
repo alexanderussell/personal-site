@@ -1,10 +1,52 @@
 import type { APIRoute } from 'astro';
 
+// Simple in-memory rate limiter (resets on cold start, which is fine for serverless)
+const rateLimit = new Map<string, { count: number; resetAt: number }>();
+const MAX_REQUESTS = 4;
+const WINDOW_MS = 60 * 60 * 1000; // 1 hour
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateLimit.get(ip);
+
+  if (!entry || now > entry.resetAt) {
+    rateLimit.set(ip, { count: 1, resetAt: now + WINDOW_MS });
+    return false;
+  }
+
+  entry.count++;
+  return entry.count > MAX_REQUESTS;
+}
+
+// Cap mood input length and strip anything suspicious
+function sanitizeMood(mood: string): string {
+  return mood
+    .slice(0, 200)
+    .replace(/[<>{}]/g, '')
+    .trim();
+}
+
 export const POST: APIRoute = async ({ request }) => {
+  // Rate limit by IP
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
+    || request.headers.get('x-real-ip')
+    || 'unknown';
+
+  if (isRateLimited(ip)) {
+    return new Response(JSON.stringify({
+      error: 'Easy there — even Daniel needed a break between records. Try again in a bit.',
+    }), { status: 429 });
+  }
+
   const { mood, recordList } = await request.json();
 
   if (!mood || !recordList) {
     return new Response(JSON.stringify({ error: 'Missing mood or recordList' }), { status: 400 });
+  }
+
+  const safeMood = sanitizeMood(mood);
+  if (!safeMood) {
+    return new Response(JSON.stringify({ error: 'Invalid mood' }), { status: 400 });
   }
 
   const resp = await fetch('https://api.anthropic.com/v1/messages', {
@@ -15,8 +57,8 @@ export const POST: APIRoute = async ({ request }) => {
       'anthropic-version': '2023-06-01',
     },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1000,
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 300,
       messages: [{
         role: 'user',
         content: `[BACKSTORY — use this to understand who Daniel is, but NEVER reference these details directly in your response. No names, no specific stories, no biographical facts. This just shapes how you feel and speak.]
@@ -36,7 +78,7 @@ Keep it to 1-2 sentences. Three max if it really needs it. You're handing someon
 Your records and when you played them:
 ${recordList}
 
-Someone comes to you feeling: "${mood}"
+Someone comes to you feeling: "${safeMood}"
 
 Pick the ONE record that fits best. Respond ONLY with valid JSON, no markdown, no backticks:
 {"artist":"...","album":"...","year":...,"reason":"..."}
