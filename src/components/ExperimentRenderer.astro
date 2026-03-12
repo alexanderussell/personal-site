@@ -24,7 +24,7 @@ const sourceMap: Record<string, string> = {
   bricklayer: bricklayerSource,
   'generative-logo': generativeLogoSource,
   'hold-to-provision': holdToCommitSource,
-  vinyl: vinylPreviewSource,
+  'ask-dads-records': vinylPreviewSource,
 };
 
 const raw = sourceMap[id] ?? '';
@@ -49,4 +49,4 @@ const raw = sourceMap[id] ?? '';
 {id === 'bricklayer' && <Bricklayer />}
 {id === 'generative-logo' && <GenerativeLogo />}
 {id === 'hold-to-provision' && <HoldToCommit />}
-{id === 'vinyl' && <VinylPreview />}
+{id === 'ask-dads-records' && <VinylPreview />}

@@ -1,12 +1,14 @@
 import { defineMiddleware } from 'astro:middleware';
 
 export const onRequest = defineMiddleware(({ request, rewrite }, next) => {
-  // Check both the URL hostname and the Host header (Vercel may proxy the hostname)
-  const host = request.headers.get('host') || request.headers.get('x-forwarded-host') || new URL(request.url).hostname;
+  const url = new URL(request.url);
+  const host = request.headers.get('host') || request.headers.get('x-forwarded-host') || url.hostname;
 
-  // Rewrite vinyl.alexanderussell.com → /experiments/vinyl
-  if (host === 'vinyl.alexanderussell.com') {
-    return rewrite(new Request(new URL('/experiments/vinyl', new URL(request.url).origin), request));
+  // Rewrite vinyl subdomain → /experiments/vinyl
+  // Matches production subdomain and vinyl.localhost for local dev
+  const hostWithoutPort = host.split(':')[0];
+  if ((hostWithoutPort === 'vinyl.alexanderussell.com' || hostWithoutPort === 'vinyl.localhost') && !url.pathname.startsWith('/experiments/vinyl')) {
+    return rewrite('/experiments/vinyl');
   }
 
   return next();
