@@ -58,7 +58,7 @@ const CURATED_RECORDS = [
   { artist: "Johnny Cash", album: "At Folsom Prison", year: 1968, genre: "Country", track: "Folsom Prison Blues", tag: "Real and rough and not apologizing for any of it.", spotifyId: "3SHTbP8FHQwCMGwxCI5bQe" },
   { artist: "Willie Nelson", album: "Red Headed Stranger", year: 1975, genre: "Country", track: "Blue Eyes Crying in the Rain", tag: "Simple story, told right. That's harder than people think.", spotifyId: "4GgcVkNma5i5NJiLv2Gieb" },
   { artist: "Willie Nelson", album: "Always on My Mind", year: 1982, genre: "Country", track: "Always on My Mind", tag: "That title track said what I never quite could. June knew.", spotifyId: "" },
-  { artist: "Willie Nelson", album: "Stardust", year: 1978, genre: "Country", track: "A song for afternoon naps.", spotifyId: "38uGoW7jS8jjJMvZA26sRq" },
+  { artist: "Willie Nelson", album: "Stardust", year: 1978, genre: "Country", track: "Moonlight in Vermont", tag: "A song for late nights and quiet conversations.", spotifyId: "38uGoW7jS8jjJMvZA26sRq" },
 
   // Folk / Singer-Songwriter — additions
   { artist: "Al Stewart", album: "Year of the Cat", year: 1976, genre: "Folk Rock", track: "Year of the Cat", tag: "Played this at our wedding. Your mom and me. That's all I need to say.", spotifyId: "" },
