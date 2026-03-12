@@ -11,7 +11,9 @@ import vercel from '@astrojs/vercel';
 export default defineConfig({
   site: 'https://alexanderussell.com',
   output: 'server',
-  adapter: vercel(),
+  adapter: vercel({
+    edgeMiddleware: true,
+  }),
   integrations: [mdx(), sitemap(), react()],
 
   markdown: {
