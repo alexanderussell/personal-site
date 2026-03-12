@@ -327,31 +327,34 @@ function Tonearm({ isPlaying }) {
 // See HANDOFF.md for the /api/spotify-preview route implementation.
 // ============================================================
 
-async function getPreviewUrl(spotifyId) {
+async function getPreviewUrl(artist, album, spotifyId) {
   try {
-    const resp = await fetch(`/api/spotify-preview?albumId=${spotifyId}`);
+    const params = new URLSearchParams({ artist, album });
+    if (spotifyId) params.set('spotifyId', spotifyId);
+    const resp = await fetch(`/api/spotify-preview?${params}`);
     const data = await resp.json();
-    return data.url ? data : null;
+    return data.url ? data : data.spotifyId ? { url: null, spotifyId: data.spotifyId } : null;
   } catch (e) {
     console.error("Preview fetch failed:", e);
     return null;
   }
 }
 
-function SpotifyPlayer({ spotifyId, isVisible, isSpinning }) {
+function SpotifyPlayer({ artist, album, spotifyId, isVisible, isSpinning }) {
   const [preview, setPreview] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [failed, setFailed] = useState(false);
   const audioRef = useRef(null);
   const progressInterval = useRef(null);
-  const lastSpotifyId = useRef(null);
+  const lastAlbumKey = useRef(null);
 
   // Fetch preview when album changes
   useEffect(() => {
-    if (!spotifyId || !isVisible) return;
-    if (spotifyId === lastSpotifyId.current) return;
-    lastSpotifyId.current = spotifyId;
+    if (!artist || !album || !isVisible) return;
+    const key = `${artist}-${album}`;
+    if (key === lastAlbumKey.current) return;
+    lastAlbumKey.current = key;
 
     setPreview(null);
     setIsPlaying(false);
@@ -359,14 +362,17 @@ function SpotifyPlayer({ spotifyId, isVisible, isSpinning }) {
     setFailed(false);
 
     (async () => {
-      const result = await getPreviewUrl(spotifyId);
-      if (result) {
+      const result = await getPreviewUrl(artist, album, spotifyId);
+      if (result && result.url) {
         setPreview(result);
+      } else if (result && result.spotifyId) {
+        // No preview audio but have a Spotify link
+        setFailed(true);
       } else {
         setFailed(true);
       }
     })();
-  }, [spotifyId, isVisible]);
+  }, [artist, album, spotifyId, isVisible]);
 
   // Auto-play when preview loads and vinyl is spinning
   useEffect(() => {
@@ -871,7 +877,7 @@ export default function RecordCollection() {
                         "{result.reason}"
                       </p>
                     </div>
-                    <SpotifyPlayer spotifyId={result.record?.spotifyId} isVisible={showResult} isSpinning={isSpinning} />
+                    <SpotifyPlayer artist={result.artist} album={result.album} spotifyId={result.record?.spotifyId} isVisible={showResult} isSpinning={isSpinning} />
                   </div>
                 )}
               </div>
