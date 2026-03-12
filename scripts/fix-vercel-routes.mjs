@@ -14,26 +14,32 @@ const config = JSON.parse(readFileSync(configPath, 'utf-8'));
 // Find the index of the filesystem handler
 const fsIndex = config.routes.findIndex(r => r.handle === 'filesystem');
 
-// Insert subdomain rewrites BEFORE the filesystem handler.
-// Order matters: API passthrough first, then catch-all rewrite.
+// Insert subdomain rewrite BEFORE the filesystem handler.
+// "continue: true" ensures routing continues after the rewrite,
+// so the rewritten path hits the SSR route → serverless function.
 const subdomainRoutes = [
   // Let API routes pass through unchanged
   {
     src: '^/api/(.*)$',
     has: [{ type: 'host', value: 'vinyl.alexanderussell.com' }],
     dest: '/api/$1',
+    continue: true,
   },
   // Let static assets pass through
   {
     src: '^/_astro/(.*)$',
     has: [{ type: 'host', value: 'vinyl.alexanderussell.com' }],
     dest: '/_astro/$1',
+    continue: true,
   },
-  // Rewrite everything else to the vinyl experiment page
+  // Rewrite everything else to the vinyl experiment page.
+  // continue: true lets the rewritten URL fall through to filesystem
+  // (no static match) and then to the SSR route for /experiments/vinyl.
   {
     src: '^/(.*)$',
     has: [{ type: 'host', value: 'vinyl.alexanderussell.com' }],
     dest: '/experiments/vinyl',
+    continue: true,
   },
 ];
 
