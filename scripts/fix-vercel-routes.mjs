@@ -33,10 +33,9 @@ const subdomainRoutes = [
     continue: true,
   },
   // Rewrite everything else to the vinyl experiment page.
-  // continue: true lets the rewritten URL fall through to filesystem
-  // (no static match) and then to the SSR route for /experiments/vinyl.
+  // Exclude /experiments/vinyl to prevent infinite loop (host still matches after rewrite).
   {
-    src: '^/(.*)$',
+    src: '^(?!/experiments/vinyl)(.*)$',
     has: [{ type: 'host', value: 'vinyl.alexanderussell.com' }],
     dest: '/experiments/vinyl',
     continue: true,
