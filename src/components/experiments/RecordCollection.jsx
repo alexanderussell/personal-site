@@ -6,82 +6,82 @@ import { useState, useRef, useEffect, useCallback } from "react";
 // might say about when he played it. Feeds directly into the AI voice.
 // ============================================================
 const CURATED_RECORDS = [
-  // Jazz — spotifyId is the album ID from open.spotify.com/album/{id}
-  { artist: "Miles Davis", album: "Kind of Blue", year: 1959, genre: "Jazz", tag: "The one he put on when the house got quiet", spotifyId: "1weenld61qoidwYuZ1GESA" },
-  { artist: "John Coltrane", album: "A Love Supreme", year: 1965, genre: "Jazz", tag: "Played this after finishing a hard job", spotifyId: "7Eoz7hJvaX1eFkbpQxC5PA" },
-  { artist: "Thelonious Monk", album: "Brilliant Corners", year: 1957, genre: "Jazz", tag: "Said this album understood angles better than most architects", spotifyId: "5gWF47eGSbv4BOfxoFcQtd" },
-  { artist: "Dave Brubeck", album: "Time Out", year: 1959, genre: "Jazz", tag: "Sunday mornings, without exception", spotifyId: "0nTTEAhCZsbbeplyDMIFuA" },
-  { artist: "Charles Mingus", album: "The Black Saint and the Sinner Lady", year: 1963, genre: "Jazz", tag: "When he needed to think through a problem", spotifyId: "6Sts4Yh7KsDFwq2yTWrGGV" },
-  { artist: "Herbie Hancock", album: "Head Hunters", year: 1973, genre: "Jazz Funk", tag: "The record that made him move while working", spotifyId: "5fmIolILp5NAtNYiRPjhzA" },
-  { artist: "Nina Simone", album: "I Put a Spell on You", year: 1965, genre: "Jazz", tag: "Said her voice could lay bricks by itself", spotifyId: "6MKa7MmGRCPjnGLns1fMKC" },
+  // Jazz
+  { artist: "Miles Davis", album: "Kind of Blue", year: 1959, genre: "Jazz", tag: "When the house finally got quiet, this is what I put on. Every time.", spotifyId: "1weenld61qoidwYuZ1GESA" },
+  { artist: "John Coltrane", album: "A Love Supreme", year: 1965, genre: "Jazz", tag: "End of a long job, everything aching, and this made it all worth it.", spotifyId: "7Eoz7hJvaX1eFkbpQxC5PA" },
+  { artist: "Thelonious Monk", album: "Brilliant Corners", year: 1957, genre: "Jazz", tag: "This album understands angles better than most architects I worked with.", spotifyId: "5gWF47eGSbv4BOfxoFcQtd" },
+  { artist: "Dave Brubeck", album: "Time Out", year: 1959, genre: "Jazz", tag: "Sunday mornings. Coffee. No exceptions.", spotifyId: "0nTTEAhCZsbbeplyDMIFuA" },
+  { artist: "Charles Mingus", album: "The Black Saint and the Sinner Lady", year: 1963, genre: "Jazz", tag: "When I had to think something through. This one does the thinking with you.", spotifyId: "6Sts4Yh7KsDFwq2yTWrGGV" },
+  { artist: "Herbie Hancock", album: "Head Hunters", year: 1973, genre: "Jazz Funk", tag: "Try standing still to this. You can't. I tried.", spotifyId: "5fmIolILp5NAtNYiRPjhzA" },
+  { artist: "Nina Simone", album: "I Put a Spell on You", year: 1965, genre: "Jazz", tag: "That voice could lay bricks by itself.", spotifyId: "6MKa7MmGRCPjnGLns1fMKC" },
 
   // Soul / Funk / R&B
-  { artist: "Marvin Gaye", album: "What's Going On", year: 1971, genre: "Soul", tag: "The most important record in the collection", spotifyId: "2v6ANhWhZBUKkg6pJJBs3B" },
-  { artist: "Al Green", album: "Let's Stay Together", year: 1972, genre: "Soul", tag: "Put this on every anniversary", spotifyId: "1FWBPHkYbzOQGMWEFaGn1f" },
-  { artist: "Stevie Wonder", album: "Songs in the Key of Life", year: 1976, genre: "Soul", tag: "Called it the only double album worth every groove", spotifyId: "6YUCc2RiXcEKS9ibuGXjEe" },
-  { artist: "Curtis Mayfield", album: "Superfly", year: 1972, genre: "Soul", tag: "Played it loud in the truck", spotifyId: "2wFqYhgMYzMGjiv1TNzu36" },
-  { artist: "Bill Withers", album: "Still Bill", year: 1972, genre: "Soul", tag: "Workingman's music for a workingman", spotifyId: "1eNpEFOlQMop4OFBQT1bPS" },
-  { artist: "Otis Redding", album: "Otis Blue", year: 1965, genre: "Soul", tag: "Could fix a bad day in four minutes", spotifyId: "4vFKErQavGgiqE47mUkwFP" },
-  { artist: "Aretha Franklin", album: "I Never Loved a Man the Way I Love You", year: 1967, genre: "Soul", tag: "Handled with extra care", spotifyId: "7MSfTWBjxbbGRAqkkFMlDi" },
-  { artist: "Parliament", album: "Mothership Connection", year: 1975, genre: "Funk", tag: "The weekend record", spotifyId: "5GwBYRIzETEAhFOleFaLcP" },
-  { artist: "Earth, Wind & Fire", album: "That's the Way of the World", year: 1975, genre: "Soul", tag: "Cookouts, every single time", spotifyId: "2QLLU4Fgi5JMKvNtO07mjc" },
+  { artist: "Marvin Gaye", album: "What's Going On", year: 1971, genre: "Soul", tag: "If you only ever listen to one record, make it this one.", spotifyId: "2v6ANhWhZBUKkg6pJJBs3B" },
+  { artist: "Al Green", album: "Let's Stay Together", year: 1972, genre: "Soul", tag: "Anniversary record. June and I never skipped it.", spotifyId: "1FWBPHkYbzOQGMWEFaGn1f" },
+  { artist: "Stevie Wonder", album: "Songs in the Key of Life", year: 1976, genre: "Soul", tag: "Only double album where every single groove earns its place.", spotifyId: "6YUCc2RiXcEKS9ibuGXjEe" },
+  { artist: "Curtis Mayfield", album: "Superfly", year: 1972, genre: "Soul", tag: "Loud in the truck. Windows down. That's all you need to know.", spotifyId: "2wFqYhgMYzMGjiv1TNzu36" },
+  { artist: "Bill Withers", album: "Still Bill", year: 1972, genre: "Soul", tag: "Guy worked in a factory before he made records. You can hear it. That's a compliment.", spotifyId: "1eNpEFOlQMop4OFBQT1bPS" },
+  { artist: "Otis Redding", album: "Otis Blue", year: 1965, genre: "Soul", tag: "Four minutes of Otis fixes just about any bad day you're having.", spotifyId: "4vFKErQavGgiqE47mUkwFP" },
+  { artist: "Aretha Franklin", album: "I Never Loved a Man the Way I Love You", year: 1967, genre: "Soul", tag: "You handle this record with care. She earned that.", spotifyId: "7MSfTWBjxbbGRAqkkFMlDi" },
+  { artist: "Parliament", album: "Mothership Connection", year: 1975, genre: "Funk", tag: "Friday night record. Don't overthink it.", spotifyId: "5GwBYRIzETEAhFOleFaLcP" },
+  { artist: "Earth, Wind & Fire", album: "That's the Way of the World", year: 1975, genre: "Soul", tag: "Cookouts. Every single time. Not negotiable.", spotifyId: "2QLLU4Fgi5JMKvNtO07mjc" },
 
   // Rock
-  { artist: "Pink Floyd", album: "Wish You Were Here", year: 1975, genre: "Rock", tag: "The sleeve was worn thin from how much he held it", spotifyId: "0bCAjiUamIFqKJsekOYuRw" },
-  { artist: "Led Zeppelin", album: "Physical Graffiti", year: 1975, genre: "Rock", tag: "Appreciated the craftsmanship of it", spotifyId: "1lZahjeu4AhPkg9JARZr3F" },
-  { artist: "Fleetwood Mac", album: "Rumours", year: 1977, genre: "Rock", tag: "Said everybody's got this one for a reason", spotifyId: "1bt6q2SruMsBtcerNVtpZB" },
-  { artist: "The Beatles", album: "Abbey Road", year: 1969, genre: "Rock", tag: "The last great thing they built together", spotifyId: "0ETFjACtuP2ADo6LFhL6HN" },
-  { artist: "Dire Straits", album: "Brothers in Arms", year: 1985, genre: "Rock", tag: "One of the first CDs he bought, then bought again on vinyl", spotifyId: "3CYTV2M8uo0PamCJSaMttw" },
-  { artist: "The Who", album: "Who's Next", year: 1971, genre: "Rock", tag: "When the energy needed to match the work", spotifyId: "5MpFMGg36ldtrSXaERr1sQ" },
-  { artist: "Creedence Clearwater Revival", album: "Cosmo's Factory", year: 1970, genre: "Rock", tag: "Garage door open, radio up", spotifyId: "6wPXUmYJ1sSRVyAMmTgdR8" },
-  { artist: "The Allman Brothers Band", album: "At Fillmore East", year: 1971, genre: "Rock", tag: "Said live albums tell you who a band really is", spotifyId: "3e5dScVvjOZqVLm99DkaQz" },
-  { artist: "Cream", album: "Disraeli Gears", year: 1967, genre: "Rock", tag: "Three guys building something bigger than themselves", spotifyId: "0bBIos1YYvOBI2wOkJOUWe" },
+  { artist: "Pink Floyd", album: "Wish You Were Here", year: 1975, genre: "Rock", tag: "Sleeve's worn thin. That should tell you something.", spotifyId: "0bCAjiUamIFqKJsekOYuRw" },
+  { artist: "Led Zeppelin", album: "Physical Graffiti", year: 1975, genre: "Rock", tag: "The craftsmanship on this thing. They built it to last.", spotifyId: "1lZahjeu4AhPkg9JARZr3F" },
+  { artist: "Fleetwood Mac", album: "Rumours", year: 1977, genre: "Rock", tag: "Everybody's got this one. There's a reason for that.", spotifyId: "1bt6q2SruMsBtcerNVtpZB" },
+  { artist: "The Beatles", album: "Abbey Road", year: 1969, genre: "Rock", tag: "Last great thing they built together. You can hear them knowing it.", spotifyId: "0ETFjACtuP2ADo6LFhL6HN" },
+  { artist: "Dire Straits", album: "Brothers in Arms", year: 1985, genre: "Rock", tag: "Bought this on CD first. Then bought it again on vinyl because it deserved it.", spotifyId: "3CYTV2M8uo0PamCJSaMttw" },
+  { artist: "The Who", album: "Who's Next", year: 1971, genre: "Rock", tag: "When the energy in the room needed to match the work getting done.", spotifyId: "5MpFMGg36ldtrSXaERr1sQ" },
+  { artist: "Creedence Clearwater Revival", album: "Cosmo's Factory", year: 1970, genre: "Rock", tag: "Garage door open, this cranked up. Best way to spend a Saturday.", spotifyId: "6wPXUmYJ1sSRVyAMmTgdR8" },
+  { artist: "The Allman Brothers Band", album: "At Fillmore East", year: 1971, genre: "Rock", tag: "Live albums tell you who a band really is. These guys were the real deal.", spotifyId: "3e5dScVvjOZqVLm99DkaQz" },
+  { artist: "Cream", album: "Disraeli Gears", year: 1967, genre: "Rock", tag: "Three guys who built something way bigger than themselves. I respect that.", spotifyId: "0bBIos1YYvOBI2wOkJOUWe" },
 
   // Folk / Singer-Songwriter
-  { artist: "Joni Mitchell", album: "Blue", year: 1971, genre: "Folk", tag: "Quiet and careful with this one", spotifyId: "1vz94WpXDVYIEGja8cjFNa" },
-  { artist: "Bob Dylan", album: "Blood on the Tracks", year: 1975, genre: "Folk Rock", tag: "Said Dylan understood what it cost to build and lose", spotifyId: "4qCKrmJBMHHVsZqIghPkRS" },
-  { artist: "Cat Stevens", album: "Tea for the Tillerman", year: 1970, genre: "Folk", tag: "Played it when he was thinking about his own father", spotifyId: "6AvnF4VQKQamOKIEB9TV8S" },
-  { artist: "Simon & Garfunkel", album: "Bridge over Troubled Water", year: 1970, genre: "Folk Rock", tag: "The record he reached for when someone was hurting", spotifyId: "0JwHz5SSvpYWuuCNbtYZoV" },
-  { artist: "James Taylor", album: "Sweet Baby James", year: 1970, genre: "Folk", tag: "Evening record, windows open", spotifyId: "4GBARCMjMBsMYPaePGthDy" },
-  { artist: "Tom Waits", album: "Closing Time", year: 1973, genre: "Folk", tag: "Said Tom Waits built songs like he built walls — rough, honest, standing", spotifyId: "5kBIulEBFJ36PnOSHqrB5l" },
-  { artist: "Van Morrison", album: "Astral Weeks", year: 1968, genre: "Folk Rock", tag: "The one he said you had to sit down for", spotifyId: "2qOauwFeIONzs6jNDBGn1p" },
+  { artist: "Joni Mitchell", album: "Blue", year: 1971, genre: "Folk", tag: "Careful with this one. It'll get in there if you let it.", spotifyId: "1vz94WpXDVYIEGja8cjFNa" },
+  { artist: "Bob Dylan", album: "Blood on the Tracks", year: 1975, genre: "Folk Rock", tag: "Dylan understood what it costs to build something and then lose it.", spotifyId: "4qCKrmJBMHHVsZqIghPkRS" },
+  { artist: "Cat Stevens", album: "Tea for the Tillerman", year: 1970, genre: "Folk", tag: "Put this on when I was thinking about my own old man.", spotifyId: "6AvnF4VQKQamOKIEB9TV8S" },
+  { artist: "Simon & Garfunkel", album: "Bridge over Troubled Water", year: 1970, genre: "Folk Rock", tag: "When somebody's hurting, you don't say much. You put this on.", spotifyId: "0JwHz5SSvpYWuuCNbtYZoV" },
+  { artist: "James Taylor", album: "Sweet Baby James", year: 1970, genre: "Folk", tag: "Evening. Windows open. Nothing else to do but listen.", spotifyId: "4GBARCMjMBsMYPaePGthDy" },
+  { artist: "Tom Waits", album: "Closing Time", year: 1973, genre: "Folk", tag: "Tom Waits builds songs the way I build walls. Rough, honest, and still standing.", spotifyId: "5kBIulEBFJ36PnOSHqrB5l" },
+  { artist: "Van Morrison", album: "Astral Weeks", year: 1968, genre: "Folk Rock", tag: "Sit down for this one. I mean it.", spotifyId: "2qOauwFeIONzs6jNDBGn1p" },
 
   // Progressive / New Wave / Other
-  { artist: "Talking Heads", album: "Remain in Light", year: 1980, genre: "New Wave", tag: "Didn't understand it at first, then couldn't stop", spotifyId: "4FR8Z4e1sHwbMHqAhciGRs" },
-  { artist: "Steely Dan", album: "Aja", year: 1977, genre: "Jazz Rock", tag: "Said these guys were perfectionists and he respected that", spotifyId: "1kMEoxvlpSrKECb1GB1jZe" },
-  { artist: "Yes", album: "Close to the Edge", year: 1972, genre: "Progressive Rock", tag: "For long drives, nothing else", spotifyId: "7cmHCFNsgVAGpOmNsW0qNm" },
-  { artist: "Peter Gabriel", album: "So", year: 1986, genre: "Art Rock", tag: "The one that surprised everyone who borrowed it", spotifyId: "4CaKWwmVT0X0Jjr8T28wlh" },
+  { artist: "Talking Heads", album: "Remain in Light", year: 1980, genre: "New Wave", tag: "Didn't get it at first. Then I couldn't stop playing it. That's how the good ones work.", spotifyId: "4FR8Z4e1sHwbMHqAhciGRs" },
+  { artist: "Steely Dan", album: "Aja", year: 1977, genre: "Jazz Rock", tag: "These guys were perfectionists. I can respect a perfectionist.", spotifyId: "1kMEoxvlpSrKECb1GB1jZe" },
+  { artist: "Yes", album: "Close to the Edge", year: 1972, genre: "Progressive Rock", tag: "Long drives. This and the road and nothing else.", spotifyId: "7cmHCFNsgVAGpOmNsW0qNm" },
+  { artist: "Peter Gabriel", album: "So", year: 1986, genre: "Art Rock", tag: "Lent this out a hundred times. Surprised everyone who borrowed it.", spotifyId: "4CaKWwmVT0X0Jjr8T28wlh" },
 
   // Blues / Country
-  { artist: "B.B. King", album: "Live at the Regal", year: 1965, genre: "Blues", tag: "Said this is where all the other music comes from", spotifyId: "4jGiMRST4t9m3dvEz8cJN3" },
-  { artist: "Muddy Waters", album: "Folk Singer", year: 1964, genre: "Blues", tag: "Stripped down, like good work should be", spotifyId: "2RkGOq4JlKO1F3gCxUEjyR" },
-  { artist: "Johnny Cash", album: "At Folsom Prison", year: 1968, genre: "Country", tag: "Real and rough and not apologizing for it", spotifyId: "3SHTbP8FHQwCMGwxCI5bQe" },
-  { artist: "Willie Nelson", album: "Red Headed Stranger", year: 1975, genre: "Country", tag: "Simple story, told right", spotifyId: "4GgcVkNma5i5NJiLv2Gieb" },
-  { artist: "Willie Nelson", album: "Always on My Mind", year: 1982, genre: "Country", tag: "You Were Always on My Mind — that song said what he couldn't", spotifyId: "" },
-  { artist: "Willie Nelson", album: "Stardust", year: 1978, genre: "Country", tag: "Moonlight in Vermont, late nights, your mother falling asleep on the couch", spotifyId: "38uGoW7jS8jjJMvZA26sRq" },
+  { artist: "B.B. King", album: "Live at the Regal", year: 1965, genre: "Blues", tag: "Everything else on this shelf comes from right here. Start here.", spotifyId: "4jGiMRST4t9m3dvEz8cJN3" },
+  { artist: "Muddy Waters", album: "Folk Singer", year: 1964, genre: "Blues", tag: "Stripped way down. No fuss. That's how good work should be.", spotifyId: "2RkGOq4JlKO1F3gCxUEjyR" },
+  { artist: "Johnny Cash", album: "At Folsom Prison", year: 1968, genre: "Country", tag: "Real and rough and not apologizing for any of it.", spotifyId: "3SHTbP8FHQwCMGwxCI5bQe" },
+  { artist: "Willie Nelson", album: "Red Headed Stranger", year: 1975, genre: "Country", tag: "Simple story, told right. That's harder than people think.", spotifyId: "4GgcVkNma5i5NJiLv2Gieb" },
+  { artist: "Willie Nelson", album: "Always on My Mind", year: 1982, genre: "Country", tag: "That title track said what I never quite could. June knew.", spotifyId: "" },
+  { artist: "Willie Nelson", album: "Stardust", year: 1978, genre: "Country", tag: "Moonlight in Vermont. Late nights. Your mother asleep on the couch.", spotifyId: "38uGoW7jS8jjJMvZA26sRq" },
 
   // Folk / Singer-Songwriter — additions
-  { artist: "Al Stewart", album: "Year of the Cat", year: 1976, genre: "Folk Rock", tag: "Played at your mom and my wedding", spotifyId: "" },
-  { artist: "Jim James", album: "Eternally Even", year: 2016, genre: "Folk", tag: "Here in Spirit — one of the newer ones, but it fit right in", spotifyId: "2wYw4vZlu7XwvtdQPRmsmL" },
-  { artist: "Buffalo Springfield", album: "Buffalo Springfield", year: 1966, genre: "Folk Rock", tag: "Before they all went solo and got famous", spotifyId: "" },
-  { artist: "Leonard Cohen", album: "Songs of Leonard Cohen", year: 1967, genre: "Folk", tag: "Suzanne — a song that builds a room around you", spotifyId: "" },
-  { artist: "Tim Buckley", album: "Starsailor", year: 1970, genre: "Folk", tag: "Song to the Siren — like nothing else on the shelf", spotifyId: "6XtiIO1SuBl4Eli8LCYNAH" },
-  { artist: "Peter, Paul and Mary", album: "In the Wind", year: 1963, genre: "Folk", tag: "We played Blowin' in the Wind while decorating for Christmas", spotifyId: "5XresJcJBgYkVQE9PATjli" },
-  { artist: "Jim Croce", album: "I Got a Name", year: 1973, genre: "Folk", tag: "Gone too soon, like a lot of the good ones", spotifyId: "" },
-  { artist: "Donovan", album: "Sunshine Superman", year: 1966, genre: "Folk Rock", tag: "Lighter than most of the shelf, but earned its place", spotifyId: "" },
-  { artist: "Nick Drake", album: "Pink Moon", year: 1972, genre: "Folk", tag: "Twenty-eight minutes, no filler, nothing wasted", spotifyId: "" },
-  { artist: "Arlo Guthrie", album: "Alice's Restaurant", year: 1967, genre: "Folk", tag: "Alice's Restaurant Massacree — Thanksgiving tradition, every single year", spotifyId: "" },
-  { artist: "John Prine", album: "Fair & Square", year: 2005, genre: "Folk", tag: "Clay Pigeons — Blaze Foley wrote it, John Prine made you believe it", spotifyId: "44sOCUUf8kp3Oj1yBYAKiZ" },
-  { artist: "Paul Simon", album: "Paul Simon", year: 1972, genre: "Folk Rock", tag: "Duncan — the kind of song that tells a whole life", spotifyId: "7npBPiCHjPj8PVIGPuHXep" },
+  { artist: "Al Stewart", album: "Year of the Cat", year: 1976, genre: "Folk Rock", tag: "Played this at our wedding. Your mom and me. That's all I need to say.", spotifyId: "" },
+  { artist: "Jim James", album: "Eternally Even", year: 2016, genre: "Folk", tag: "Newer than most of what's on here, but it earned its spot.", spotifyId: "2wYw4vZlu7XwvtdQPRmsmL" },
+  { artist: "Buffalo Springfield", album: "Buffalo Springfield", year: 1966, genre: "Folk Rock", tag: "Before Neil Young and Stephen Stills went off and got famous. This is where it started.", spotifyId: "" },
+  { artist: "Leonard Cohen", album: "Songs of Leonard Cohen", year: 1967, genre: "Folk", tag: "Suzanne. That song builds a whole room around you and locks the door.", spotifyId: "" },
+  { artist: "Tim Buckley", album: "Starsailor", year: 1970, genre: "Folk", tag: "Song to the Siren. Nothing else on the shelf sounds like this. Nothing.", spotifyId: "6XtiIO1SuBl4Eli8LCYNAH" },
+  { artist: "Peter, Paul and Mary", album: "In the Wind", year: 1963, genre: "Folk", tag: "We'd put Blowin' in the Wind on while decorating for Christmas. Every year.", spotifyId: "5XresJcJBgYkVQE9PATjli" },
+  { artist: "Jim Croce", album: "I Got a Name", year: 1973, genre: "Folk", tag: "Gone way too soon. Thirty years old. Hell of a thing.", spotifyId: "" },
+  { artist: "Donovan", album: "Sunshine Superman", year: 1966, genre: "Folk Rock", tag: "Lighter than most of what I keep. But not everything has to be heavy.", spotifyId: "" },
+  { artist: "Nick Drake", album: "Pink Moon", year: 1972, genre: "Folk", tag: "Twenty-eight minutes. No filler. Nothing wasted. Kid knew what he was doing.", spotifyId: "" },
+  { artist: "Arlo Guthrie", album: "Alice's Restaurant", year: 1967, genre: "Folk", tag: "Thanksgiving. Every year. The whole massacree. Non-negotiable.", spotifyId: "" },
+  { artist: "John Prine", album: "Fair & Square", year: 2005, genre: "Folk", tag: "Clay Pigeons. Blaze Foley wrote it but Prine made you believe every word.", spotifyId: "44sOCUUf8kp3Oj1yBYAKiZ" },
+  { artist: "Paul Simon", album: "Paul Simon", year: 1972, genre: "Folk Rock", tag: "Duncan tells a whole life in four minutes. That's not easy to do.", spotifyId: "7npBPiCHjPj8PVIGPuHXep" },
 
   // Rock — additions
-  { artist: "Creedence Clearwater Revival", album: "Green River", year: 1969, genre: "Rock", tag: "Bad Moon Rising — could feel a storm coming every time", spotifyId: "" },
-  { artist: "The Doobie Brothers", album: "Toulouse Street", year: 1972, genre: "Rock", tag: "Listen to the Music — that's all he ever wanted you to do", spotifyId: "" },
-  { artist: "The Beatles", album: "The Beatles (White Album)", year: 1968, genre: "Rock", tag: "Blackbird — sang it once, very quietly, when he thought no one was listening", spotifyId: "" },
-  { artist: "Ten Years After", album: "A Space in Time", year: 1971, genre: "Rock", tag: "I'd love to change the world — wouldn't we all", spotifyId: "3JXkf4wjTjKxyrzFvfaVJU" },
-  { artist: "Nick Cave", album: "The Boatman's Call", year: 1997, genre: "Rock", tag: "Into My Arms — as close to a prayer as he got", spotifyId: "" },
-  { artist: "Nick Cave", album: "Idiot Prayer", year: 2020, genre: "Rock", tag: "Palaces of Montezuma — solo piano, alone in a palace, still had something to say", spotifyId: "2q5FE0HvayCsZ0iz2CBjIp" },
-  { artist: "Father John Misty", album: "Anthem +3", year: 2020, genre: "Folk", tag: "Covered Cat Stevens' Trouble — that's how you know someone understands", spotifyId: "4MsCxk1m3oX1NFKGsVZ2Xm" },
+  { artist: "Creedence Clearwater Revival", album: "Green River", year: 1969, genre: "Rock", tag: "Bad Moon Rising. Could feel the storm coming every single time.", spotifyId: "" },
+  { artist: "The Doobie Brothers", album: "Toulouse Street", year: 1972, genre: "Rock", tag: "Listen to the Music. That's all I ever wanted anybody to do.", spotifyId: "" },
+  { artist: "The Beatles", album: "The Beatles (White Album)", year: 1968, genre: "Rock", tag: "Blackbird. Caught myself singing it once when I thought nobody was around.", spotifyId: "" },
+  { artist: "Ten Years After", album: "A Space in Time", year: 1971, genre: "Rock", tag: "I'd love to change the world. Well. Wouldn't we all.", spotifyId: "3JXkf4wjTjKxyrzFvfaVJU" },
+  { artist: "Nick Cave", album: "The Boatman's Call", year: 1997, genre: "Rock", tag: "Into My Arms. About as close to a prayer as I ever got.", spotifyId: "" },
+  { artist: "Nick Cave", album: "Idiot Prayer", year: 2020, genre: "Rock", tag: "Just him and a piano in an empty palace. Still had plenty to say.", spotifyId: "2q5FE0HvayCsZ0iz2CBjIp" },
+  { artist: "Father John Misty", album: "Anthem +3", year: 2020, genre: "Folk", tag: "He covered Cat Stevens' Trouble. That's how you know somebody gets it.", spotifyId: "4MsCxk1m3oX1NFKGsVZ2Xm" },
 ];
 
 // ============================================================
@@ -539,7 +539,7 @@ function MoodWall({ moodHistory, onSelectMood }) {
 // SHELF VIEW
 // ============================================================
 function ShelfView({ onSelectRecord }) {
-  const shelf = { spineWidth: 20, spineHeight: 160, fontSize: 10, hoverLift: 24, textOpacity: 0.85, gap: 2.5 };
+  const shelf = { spineWidth: 20, spineHeight: 200, fontSize: 10, hoverLift: 24, textOpacity: 0.85, gap: 2.5 };
 
   const genreGroups = [
     { label: "Jazz", match: (g) => g.includes("Jazz") },
