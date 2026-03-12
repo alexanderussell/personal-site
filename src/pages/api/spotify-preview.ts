@@ -4,6 +4,7 @@ export const GET: APIRoute = async ({ url }) => {
   const artist = url.searchParams.get('artist');
   const album = url.searchParams.get('album');
   const spotifyId = url.searchParams.get('spotifyId');
+  const targetTrack = url.searchParams.get('track');
 
   if (!artist || !album) {
     return new Response(JSON.stringify({ error: 'Missing artist or album' }), { status: 400 });
@@ -29,21 +30,32 @@ export const GET: APIRoute = async ({ url }) => {
       const tracks = (tracksData.data || []).filter((t: any) => t.preview);
 
       if (tracks.length > 0) {
-        // Prefer the title track (track name matches album name)
-        const albumLower = album.toLowerCase();
-        const titleTrack = tracks.find((t: any) => {
-          const title = t.title.toLowerCase().replace(/\s*\(.*\)/, ''); // strip "(2005 Remaster)" etc.
-          return title === albumLower || albumLower.includes(title) || title.includes(albumLower);
-        });
+        let bestTrack = null;
 
-        // If no title track, pick the most recognizable — Deezer ranks by popularity
-        // so search for the top track by this artist from this album
-        let bestTrack = titleTrack || null;
+        // Priority 1: Match the specific requested track name
+        if (targetTrack) {
+          const trackLower = targetTrack.toLowerCase();
+          bestTrack = tracks.find((t: any) => {
+            const title = t.title.toLowerCase().replace(/\s*\(.*\)/, '');
+            return title === trackLower || title.includes(trackLower) || trackLower.includes(title);
+          });
+        }
 
+        // Priority 2: Title track (track name matches album name)
         if (!bestTrack) {
-          // Try a track search scoped to artist + album to get popularity-ranked results
-          const trackQuery = encodeURIComponent(`artist:"${artist}" album:"${album}"`);
-          const popularResp = await fetch(`https://api.deezer.com/search/track?q=${trackQuery}&limit=5`);
+          const albumLower = album.toLowerCase();
+          bestTrack = tracks.find((t: any) => {
+            const title = t.title.toLowerCase().replace(/\s*\(.*\)/, '');
+            return title === albumLower || albumLower.includes(title) || title.includes(albumLower);
+          });
+        }
+
+        // Priority 3: Popularity-ranked search via Deezer
+        if (!bestTrack) {
+          const searchQuery = targetTrack
+            ? encodeURIComponent(`artist:"${artist}" track:"${targetTrack}"`)
+            : encodeURIComponent(`artist:"${artist}" album:"${album}"`);
+          const popularResp = await fetch(`https://api.deezer.com/search/track?q=${searchQuery}&limit=5`);
           const popularData = await popularResp.json();
           const popularMatch = (popularData.data || []).find((t: any) =>
             t.preview && t.album?.id === match.id
@@ -55,6 +67,26 @@ export const GET: APIRoute = async ({ url }) => {
           url: bestTrack.preview,
           name: bestTrack.title,
           album: match.title,
+          spotifyId: spotifyId || null,
+        }), {
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+    }
+
+    // Fallback: If album not found but we have a target track, try direct track search
+    if (targetTrack) {
+      const directQuery = encodeURIComponent(`artist:"${artist}" track:"${targetTrack}"`);
+      const directResp = await fetch(`https://api.deezer.com/search/track?q=${directQuery}&limit=5`);
+      const directData = await directResp.json();
+      const directMatch = (directData.data || []).find((t: any) =>
+        t.preview && t.artist?.name?.toLowerCase().includes(artistLower)
+      );
+      if (directMatch) {
+        return new Response(JSON.stringify({
+          url: directMatch.preview,
+          name: directMatch.title,
+          album: directMatch.album?.title || album,
           spotifyId: spotifyId || null,
         }), {
           headers: { 'Content-Type': 'application/json' },
