@@ -82,6 +82,24 @@ const CURATED_RECORDS = [
   { artist: "Nick Cave", album: "The Boatman's Call", year: 1997, genre: "Rock", track: "Into My Arms", tag: "Into My Arms. About as close to a prayer as I ever got.", spotifyId: "" },
   { artist: "Nick Cave", album: "Idiot Prayer", year: 2020, genre: "Rock", track: "Palaces of Montezuma", tag: "Just him and a piano in an empty palace. Still had plenty to say.", spotifyId: "2q5FE0HvayCsZ0iz2CBjIp" },
   { artist: "Father John Misty", album: "Anthem +3", year: 2020, genre: "Folk", track: "Trouble", tag: "Covered Cat Stevens' Trouble. That's how you know somebody gets it.", spotifyId: "4MsCxk1m3oX1NFKGsVZ2Xm" },
+
+  // Van Morrison — additions
+  { artist: "Van Morrison", album: "Tupelo Honey", year: 1971, genre: "Folk Rock", track: "Tupelo Honey", tag: "Picked this up at an estate sale in a box of fifty records. The rest were junk. This one paid for all of them.", spotifyId: "" },
+  { artist: "Van Morrison", album: "Moondance", year: 1970, genre: "Folk Rock", track: "And It Stoned Me", tag: "Road trips. Van on the stereo. Nobody needed to say a word.", spotifyId: "" },
+
+  // Rock — more additions
+  { artist: "The Band", album: "Music from Big Pink", year: 1968, genre: "Rock", track: "The Weight", tag: "The kind of song you play when you punch the card and head into the weekend.", spotifyId: "" },
+  { artist: "The Rolling Stones", album: "Sticky Fingers", year: 1971, genre: "Rock", track: "Moonlight Mile", tag: "When you want to hear the Stones play a slow one. They could do that too.", spotifyId: "" },
+  { artist: "Neil Young", album: "Harvest", year: 1972, genre: "Folk Rock", track: "Old Man", tag: "Reminds me of my own old man. And my kid at the same time. Funny how that works.", spotifyId: "" },
+
+  // Folk — more additions
+  { artist: "Peter, Paul and Mary", album: "Moving", year: 1963, genre: "Folk", track: "Puff the Magic Dragon", tag: "Don't ask what I was thinking about when I played this one. You already know.", spotifyId: "" },
+  { artist: "Townes Van Zandt", album: "Live at the Old Quarter, Houston, Texas", year: 1977, genre: "Folk", track: "Lungs", tag: "Townes was a real cowboy. You could hear the dust on his boots.", spotifyId: "" },
+  { artist: "Jackson C. Frank", album: "Jackson C. Frank", year: 1965, genre: "Folk", track: "Blues Run the Game", tag: "This guy lived in misery and made something beautiful out of it. That takes guts.", spotifyId: "" },
+  { artist: "Kevin Morby", album: "My Name", year: 2014, genre: "Folk Rock", track: "We Did It All Wrong", tag: "Alex showed me this one. Kid's got good taste. Can't stop playing it.", spotifyId: "" },
+
+  // Jazz — additions
+  { artist: "Yusef Lateef", album: "Suite 16", year: 1970, genre: "Jazz", track: "Michelle", tag: "A nice warm jazz album to make the tube amp hum. Found it in a box lot at auction and never let it go.", spotifyId: "" },
 ];
 
 // ============================================================
