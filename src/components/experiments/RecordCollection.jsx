@@ -800,11 +800,17 @@ export default function RecordCollection() {
   };
 
   const selectFromShelf = (record) => {
+    setHasInteracted(true);
+    setShowResult(false);
+    setIsSpinning(false);
     setResult({ artist: record.artist, album: record.album, year: record.year, reason: record.tag, record });
-    setCurrentView("turntable"); setHasInteracted(true);
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    setTimeout(() => setIsSpinning(true), 400);
-    setTimeout(() => setShowResult(true), 800);
+    setCurrentView("turntable");
+    // Small delay so the view transition starts before we scroll
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+    setTimeout(() => setIsSpinning(true), 600);
+    setTimeout(() => setShowResult(true), 1000);
   };
 
   return (
@@ -821,13 +827,21 @@ export default function RecordCollection() {
 
       <div style={{ maxWidth: 640, margin: "0 auto", padding: "48px 20px", position: "relative" }}>
 
-        {/* Header — collapses when showing a result */}
-        {!(showResult && result) && (
-          <div style={{ textAlign: "center", marginBottom: 36 }}>
-            <p style={{ fontSize: 11, letterSpacing: 4, textTransform: "uppercase",
-              color: "#7a6a5a", marginBottom: 12, fontFamily: "'Courier New', monospace" }}>
-              The Collection of Daniel Russell
-            </p>
+        {/* Header — smoothly collapses when showing a result */}
+        <div style={{ textAlign: "center", marginBottom: showResult && result ? 20 : 36, transition: "margin-bottom 0.5s ease" }}>
+          <p style={{ fontSize: 11, letterSpacing: 4, textTransform: "uppercase",
+            color: "#7a6a5a", marginBottom: showResult && result ? 14 : 12, fontFamily: "'Courier New', monospace",
+            transition: "margin-bottom 0.4s ease" }}>
+            The Collection of Daniel Russell
+          </p>
+
+          {/* Expandable intro text — collapses smoothly */}
+          <div style={{
+            maxHeight: showResult && result ? 0 : 200,
+            opacity: showResult && result ? 0 : 1,
+            overflow: "hidden",
+            transition: "max-height 0.5s ease, opacity 0.35s ease",
+          }}>
             <h1 style={{ fontSize: "clamp(32px, 5vw, 44px)", fontWeight: 400, lineHeight: 1.2, color: "#efe5d5", marginBottom: 8,
               fontFamily: "'Georgia', 'Times New Roman', serif" }}>
               Ask My Dad's Record Collection
@@ -837,72 +851,81 @@ export default function RecordCollection() {
               Tell it your mood, your moment, the weather outside.<br />It'll pull the right record.
             </p>
           </div>
-        )}
 
-        {/* Compact header when result is showing */}
-        {showResult && result && (
-          <div style={{ textAlign: "center", marginBottom: 20 }}>
-            <p style={{ fontSize: 11, letterSpacing: 4, textTransform: "uppercase",
-              color: "#7a6a5a", fontFamily: "'Courier New', monospace", marginBottom: 14 }}>
-              The Collection of Daniel Russell
-            </p>
-            <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
-              <button onClick={() => {
-                if (audioRef.current) { audioRef.current.pause(); }
-                setResult(null); setShowResult(false); setIsSpinning(false);
-                setIsDecelerating(false); setIsAudioPlaying(false);
-                setPreview(null); setAudioFailed(false); lastAudioKey.current = null;
-                setMood(""); setCurrentView("turntable");
-              }} style={{
-                padding: "7px 20px", fontSize: 11,
-                fontFamily: "'Courier New', monospace", letterSpacing: 2, textTransform: "uppercase",
-                background: "transparent", border: "1px solid rgba(180,140,80,0.2)",
-                borderRadius: 3, color: "#9a8a7a", cursor: "pointer", transition: "all 0.3s",
-              }}
-              onMouseEnter={e => { e.target.style.color = "#d4b870"; e.target.style.borderColor = "rgba(180,140,80,0.4)"; }}
-              onMouseLeave={e => { e.target.style.color = "#9a8a7a"; e.target.style.borderColor = "rgba(180,140,80,0.2)"; }}>
-                Ask again
-              </button>
-              <button onClick={() => {
-                if (audioRef.current) { audioRef.current.pause(); }
-                setResult(null); setShowResult(false); setIsSpinning(false);
-                setIsDecelerating(false); setIsAudioPlaying(false);
-                setPreview(null); setAudioFailed(false); lastAudioKey.current = null;
-                setMood(""); setCurrentView("shelf");
-              }} style={{
-                padding: "7px 20px", fontSize: 11,
-                fontFamily: "'Courier New', monospace", letterSpacing: 2, textTransform: "uppercase",
-                background: "transparent", border: "1px solid rgba(180,140,80,0.2)",
-                borderRadius: 3, color: "#9a8a7a", cursor: "pointer", transition: "all 0.3s",
-              }}
-              onMouseEnter={e => { e.target.style.color = "#d4b870"; e.target.style.borderColor = "rgba(180,140,80,0.4)"; }}
-              onMouseLeave={e => { e.target.style.color = "#9a8a7a"; e.target.style.borderColor = "rgba(180,140,80,0.2)"; }}>
-                Back to shelf
-              </button>
-            </div>
+          {/* Result action buttons — fade in */}
+          <div style={{
+            maxHeight: showResult && result ? 60 : 0,
+            opacity: showResult && result ? 1 : 0,
+            overflow: "hidden",
+            transition: "max-height 0.5s ease 0.15s, opacity 0.4s ease 0.2s",
+            display: "flex", gap: 8, justifyContent: "center",
+          }}>
+            <button onClick={() => {
+              if (audioRef.current) { audioRef.current.pause(); }
+              setResult(null); setShowResult(false); setIsSpinning(false);
+              setIsDecelerating(false); setIsAudioPlaying(false);
+              setPreview(null); setAudioFailed(false); lastAudioKey.current = null;
+              setMood(""); setCurrentView("turntable");
+            }} style={{
+              padding: "7px 20px", fontSize: 11,
+              fontFamily: "'Courier New', monospace", letterSpacing: 2, textTransform: "uppercase",
+              background: "transparent", border: "1px solid rgba(180,140,80,0.2)",
+              borderRadius: 3, color: "#9a8a7a", cursor: "pointer", transition: "color 0.3s, border-color 0.3s",
+            }}
+            onMouseEnter={e => { e.target.style.color = "#d4b870"; e.target.style.borderColor = "rgba(180,140,80,0.4)"; }}
+            onMouseLeave={e => { e.target.style.color = "#9a8a7a"; e.target.style.borderColor = "rgba(180,140,80,0.2)"; }}>
+              Ask again
+            </button>
+            <button onClick={() => {
+              if (audioRef.current) { audioRef.current.pause(); }
+              setResult(null); setShowResult(false); setIsSpinning(false);
+              setIsDecelerating(false); setIsAudioPlaying(false);
+              setPreview(null); setAudioFailed(false); lastAudioKey.current = null;
+              setMood(""); setCurrentView("shelf");
+            }} style={{
+              padding: "7px 20px", fontSize: 11,
+              fontFamily: "'Courier New', monospace", letterSpacing: 2, textTransform: "uppercase",
+              background: "transparent", border: "1px solid rgba(180,140,80,0.2)",
+              borderRadius: 3, color: "#9a8a7a", cursor: "pointer", transition: "color 0.3s, border-color 0.3s",
+            }}
+            onMouseEnter={e => { e.target.style.color = "#d4b870"; e.target.style.borderColor = "rgba(180,140,80,0.4)"; }}
+            onMouseLeave={e => { e.target.style.color = "#9a8a7a"; e.target.style.borderColor = "rgba(180,140,80,0.2)"; }}>
+              Back to shelf
+            </button>
           </div>
-        )}
+        </div>
 
-        {/* Controls — hidden when result is showing */}
-        {!(showResult && result) && (
-          <>
-            {/* View toggle */}
-            <div style={{ display: "flex", justifyContent: "center", gap: 3, marginBottom: 24 }}>
-              {[{ id: "turntable", label: "Ask" }, { id: "shelf", label: "Browse the Shelf" }].map(v => (
-                <button key={v.id} onClick={() => setCurrentView(v.id)} style={{
-                  padding: "7px 22px", fontSize: 12, fontFamily: "'Courier New', monospace",
-                  letterSpacing: 2, textTransform: "uppercase",
-                  background: currentView === v.id ? "rgba(180,140,80,0.1)" : "transparent",
-                  border: `1px solid rgba(180,140,80,${currentView === v.id ? 0.3 : 0.12})`,
-                  borderRadius: 3, color: currentView === v.id ? "#d4b870" : "#6a5a4a",
-                  cursor: "pointer", transition: "all 0.3s",
-                }}>
-                  {v.label}
-                </button>
-              ))}
-            </div>
+        {/* Controls — smoothly collapse when result is showing */}
+        <div style={{
+          maxHeight: showResult && result ? 0 : 2000,
+          opacity: showResult && result ? 0 : 1,
+          overflow: showResult && result ? "hidden" : "visible",
+          transition: "max-height 0.5s ease, opacity 0.35s ease",
+        }}>
+          {/* View toggle */}
+          <div style={{ display: "flex", justifyContent: "center", gap: 3, marginBottom: 24 }}>
+            {[{ id: "turntable", label: "Ask" }, { id: "shelf", label: "Browse the Shelf" }].map(v => (
+              <button key={v.id} onClick={() => setCurrentView(v.id)} style={{
+                padding: "7px 22px", fontSize: 12, fontFamily: "'Courier New', monospace",
+                letterSpacing: 2, textTransform: "uppercase",
+                background: currentView === v.id ? "rgba(180,140,80,0.1)" : "transparent",
+                border: `1px solid rgba(180,140,80,${currentView === v.id ? 0.3 : 0.12})`,
+                borderRadius: 3, color: currentView === v.id ? "#d4b870" : "#6a5a4a",
+                cursor: "pointer", transition: "all 0.3s",
+              }}>
+                {v.label}
+              </button>
+            ))}
+          </div>
 
-            {currentView === "shelf" && rateLimited && (
+          {/* Shelf view with cross-fade */}
+          <div style={{
+            opacity: currentView === "shelf" ? 1 : 0,
+            maxHeight: currentView === "shelf" ? 2000 : 0,
+            overflow: currentView === "shelf" ? "visible" : "hidden",
+            transition: "opacity 0.4s ease, max-height 0.4s ease",
+          }}>
+            {rateLimited && (
               <p style={{
                 textAlign: "center", color: "#b48c50", fontStyle: "italic",
                 fontFamily: "'Georgia', serif", fontSize: "14px",
@@ -911,11 +934,17 @@ export default function RecordCollection() {
                 Even I need a break between records. Pick somethin' off the shelf while you wait.
               </p>
             )}
-            {currentView === "shelf" && <ShelfView onSelectRecord={selectFromShelf} />}
-          </>
-        )}
+            <ShelfView onSelectRecord={selectFromShelf} />
+          </div>
+        </div>
 
-        {(!(showResult && result) || currentView === "turntable") && currentView === "turntable" && !(showResult && result) && (
+        {/* Turntable input — smooth fade */}
+        <div style={{
+          opacity: currentView === "turntable" && !(showResult && result) ? 1 : 0,
+          maxHeight: currentView === "turntable" && !(showResult && result) ? 500 : 0,
+          overflow: "hidden",
+          transition: "opacity 0.4s ease, max-height 0.4s ease",
+        }}>
           <>
             <div style={{ marginBottom: 36 }}>
               <input type="text" value={mood}
@@ -971,7 +1000,7 @@ export default function RecordCollection() {
             </div>
 
           </>
-        )}
+        </div>
 
         {/* Vinyl + result — always visible when we have a result */}
         {(result || isLoading) && (

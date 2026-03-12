@@ -31,6 +31,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" href="/fonts/PPMondwest-Regular.otf" as="font" type="font/otf" crossorigin />
     <meta name="generator" content={Astro.generator} />
 
     <!-- Open Graph -->
@@ -49,6 +50,10 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageURL} />
 
+    <style is:inline>
+      html.dark { background-color: oklch(21.6% .006 56.043); color: oklch(92.3% .003 48.717); }
+      html:not(.dark) { background-color: oklch(97% .003 56); color: oklch(21.6% .006 56.043); }
+    </style>
     <script is:inline>
       (function () {
         var stored = localStorage.getItem('theme');
