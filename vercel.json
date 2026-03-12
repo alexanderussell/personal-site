@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/experiments/vinyl",
+      "has": [{ "type": "host", "value": "vinyl.alexanderussell.com" }]
+    }
+  ]
+}

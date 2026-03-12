@@ -4,6 +4,11 @@ node_modules
 # Build output
 dist
 .astro
+.vercel
+
+# Environment variables
+.env
+.env.*
 
 # Claude Code
 .claude
