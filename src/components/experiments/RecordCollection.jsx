@@ -28,7 +28,7 @@ const CURATED_RECORDS = [
 
   // Rock
   { artist: "Pink Floyd", album: "Wish You Were Here", year: 1975, genre: "Rock", track: "Wish You Were Here", tag: "Sleeve's worn thin. That should tell you something.", spotifyId: "0bCAjiUamIFqKJsekOYuRw" },
-  { artist: "Led Zeppelin", album: "Physical Graffiti", year: 1975, genre: "Rock", track: "Kashmir", tag: "The craftsmanship on this thing. They built it to last.", spotifyId: "1lZahjeu4AhPkg9JARZr3F" },
+  { artist: "Led Zeppelin", album: "Physical Graffiti", year: 1975, genre: "Rock", track: "Kashmir", tag: "John Bonham's drum fills are the best in history.", spotifyId: "1lZahjeu4AhPkg9JARZr3F" },
   { artist: "Fleetwood Mac", album: "Rumours", year: 1977, genre: "Rock", track: "Dreams", tag: "Everybody's got this one. There's a reason for that.", spotifyId: "1bt6q2SruMsBtcerNVtpZB" },
   { artist: "The Beatles", album: "Abbey Road", year: 1969, genre: "Rock", track: "Come Together", tag: "Last great thing they built together. You can hear them knowing it.", spotifyId: "0ETFjACtuP2ADo6LFhL6HN" },
   { artist: "Dire Straits", album: "Brothers in Arms", year: 1985, genre: "Rock", track: "Brothers in Arms", tag: "Bought this on CD first. Then bought it again on vinyl because it deserved it.", spotifyId: "3CYTV2M8uo0PamCJSaMttw" },
