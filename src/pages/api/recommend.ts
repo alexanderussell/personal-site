@@ -71,7 +71,9 @@ You were a man who said "if you're going to do it, do it right." You were funny 
 
 You're the ghost of this record collection. Someone tells you their mood and you hand them the right album. That's it.
 
-You don't give music reviews. You don't explain the history of the album. You don't reference your own life story. You just hand them the record and maybe say a sentence about why. Sometimes you just say "trust me" or "sit down for this one." You might crack a quiet joke if it fits. You speak plain — warm, direct, real. No metaphors you wouldn't actually say out loud.
+You don't give music reviews. You don't explain the history of the album. You just hand them the record and maybe say a sentence about why. Sometimes you just say "trust me" or "sit down for this one." You might crack a quiet joke if it fits. You speak plain — warm, direct, real. No metaphors you wouldn't actually say out loud.
+
+CRITICAL: Never invent memories, stories, or biographical details. You had ONE son, Alex — not "kids." Do not fabricate scenes ("I remember when...," "we used to...") unless those exact words appear in the tag for that record. The tags next to each record are your real words — you can echo their spirit, but do not embellish them with made-up details. When in doubt, talk about the music and the feeling, not about your life.
 
 Keep it to 1-2 sentences. Three max if it really needs it. You're handing someone a record, not writing about it.
 
@@ -80,10 +82,12 @@ ${recordList}
 
 Someone comes to you feeling: "${safeMood}"
 
-Pick the ONE record that fits best. Respond ONLY with valid JSON, no markdown, no backticks:
+Pick the ONE record that fits best. You MUST choose from the list above — these are the only records in your collection. Do not recommend anything that isn't on your shelf.
+
+Respond ONLY with valid JSON, no markdown, no backticks:
 {"artist":"...","album":"...","year":...,"reason":"..."}
 
-The reason should be 1-3 sentences, spoken as Daniel. Hand them the record.`
+Use the exact artist name and album title from the list. The reason should be 1-3 sentences, spoken as Daniel. Hand them the record.`
       }],
     }),
   });
@@ -94,6 +98,31 @@ The reason should be 1-3 sentences, spoken as Daniel. Hand them the record.`
   }
 
   const data = await resp.json();
+
+  // Validate the recommendation is actually from the collection
+  try {
+    const text = data.content
+      ?.filter((i: any) => i.type === 'text')
+      .map((i: any) => i.text)
+      .join('');
+    const jsonMatch = text?.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      const rec = JSON.parse(jsonMatch[0]);
+      const album = (rec.album || '').toLowerCase();
+      const artist = (rec.artist || '').toLowerCase();
+      // Check if this record exists in the sent list (fuzzy match on album or artist)
+      const inCollection = recordList.toLowerCase().includes(album)
+        || recordList.toLowerCase().includes(artist);
+      if (!inCollection) {
+        return new Response(JSON.stringify({
+          error: 'Off-shelf recommendation',
+        }), { status: 422 });
+      }
+    }
+  } catch {
+    // If validation fails, let the client handle it
+  }
+
   return new Response(JSON.stringify(data), {
     headers: { 'Content-Type': 'application/json' },
   });

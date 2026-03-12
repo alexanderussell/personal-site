@@ -793,12 +793,17 @@ export default function RecordCollection() {
       if (!match) throw new Error("No JSON");
 
       const rec = JSON.parse(match[0]);
+      const album = (rec.album || "").toLowerCase();
+      const artist = (rec.artist || "").toLowerCase();
       const found = CURATED_RECORDS.find(r =>
-        r.album.toLowerCase() === rec.album.toLowerCase() ||
-        r.artist.toLowerCase() === rec.artist.toLowerCase()
+        r.album.toLowerCase() === album || r.artist.toLowerCase() === artist
+      ) || CURATED_RECORDS.find(r =>
+        album.includes(r.album.toLowerCase()) || r.album.toLowerCase().includes(album)
       );
-      setResult({ ...rec, record: found || { ...rec, genre: "Rock", tag: "" } });
-      saveMood(moodText, rec.album);
+      // If the AI hallucinated a record not in the collection, fall back
+      if (!found) throw new Error("Off-shelf");
+      setResult({ ...rec, record: found, artist: found.artist, album: found.album, year: found.year });
+      saveMood(moodText, found.album);
       setTimeout(() => setIsSpinning(true), 400);
       setTimeout(() => setShowResult(true), 1000);
     } catch (err) {
