@@ -1,9 +1,9 @@
 /**
  * Post-build script: injects subdomain routing into Vercel's config.
  *
- * Sends ALL vinyl subdomain requests to the serverless function,
- * bypassing the filesystem handler. The Astro middleware inside the
- * serverless function detects the host and rewrites to /experiments/vinyl.
+ * Routes vinyl subdomain page requests to the serverless function,
+ * while letting static assets (/_astro/*, /favicon.*, etc.) and
+ * API routes fall through to their normal handlers.
  */
 import { readFileSync, writeFileSync } from 'fs';
 
@@ -13,11 +13,11 @@ const config = JSON.parse(readFileSync(configPath, 'utf-8'));
 // Find the index of the filesystem handler
 const fsIndex = config.routes.findIndex(r => r.handle === 'filesystem');
 
-// Route ALL subdomain requests to the serverless function, BEFORE
-// the filesystem handler serves static files (like index.html).
-// No "continue" — the function handles everything.
+// Only intercept page requests on the subdomain — NOT static assets or API routes.
+// Static assets (/_astro/, /favicon, /fonts, /images) need the filesystem handler.
+// API routes (already SSR) are handled by their own route entries after filesystem.
 config.routes.splice(fsIndex, 0, {
-  src: '^/(.*)$',
+  src: '^(?!/_astro/|/api/|/favicon|/fonts/|/images/)(.*)$',
   has: [{ type: 'host', value: 'vinyl.alexanderussell.com' }],
   dest: '_render',
 });
