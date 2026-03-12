@@ -3,6 +3,8 @@ import { getCollection, render } from 'astro:content';
 import PostLayout from '../../layouts/PostLayout.astro';
 import ExperimentRenderer from '../../components/ExperimentRenderer.astro';
 
+export const prerender = true;
+
 export async function getStaticPaths() {
   const experiments = (await getCollection('experiments')).sort((a, b) => a.data.date.getTime() - b.data.date.getTime());
   return experiments.map((entry, i) => ({

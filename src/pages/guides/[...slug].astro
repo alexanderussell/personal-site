@@ -2,6 +2,8 @@
 import { getCollection, render } from 'astro:content';
 import PostLayout from '../../layouts/PostLayout.astro';
 
+export const prerender = true;
+
 export async function getStaticPaths() {
   const guides = (await getCollection('guides')).sort((a, b) => a.data.date.getTime() - b.data.date.getTime());
   return guides.map((entry, i) => ({
