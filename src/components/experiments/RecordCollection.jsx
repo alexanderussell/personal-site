@@ -839,9 +839,10 @@ export default function RecordCollection() {
 
       <div style={{ maxWidth: 640, margin: "0 auto", padding: "48px 20px", position: "relative" }}>
 
-        {/* Persistent "← Back to shelf" — fixed top-left, matching inset */}
+        {/* Persistent "← Back to shelf" — anchored to content column */}
         <div style={{
-          position: "fixed", top: 20, left: 20, zIndex: 20,
+          position: "fixed", top: 20, left: "50%", zIndex: 20,
+          transform: "translateX(max(-380px, calc(-50vw + 20px)))",
           opacity: showResult && result ? 1 : 0,
           pointerEvents: showResult && result ? "auto" : "none",
           transition: "opacity 0.3s ease",
