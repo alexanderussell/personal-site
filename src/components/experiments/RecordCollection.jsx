@@ -295,7 +295,8 @@ function VinylRecord({ record, isSpinning, artCanvasRef, isAudioPlaying, onToggl
     <div ref={discRef} onMouseDown={onDown} onTouchStart={onDown}
       onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
       style={{ width: 300, height: 300, position: "relative", cursor: isSpinning ? "pointer" : "grab" }}>
-      <div className="absolute inset-0 rounded-full" style={{
+      <div style={{
+        position: "absolute", inset: 0, borderRadius: "50%",
         background: `radial-gradient(circle at center,
           #1a1a1a 0%, #0d0d0d 14%, #1a1a1a 15%, #111 28%, #1a1a1a 29%,
           #0f0f0f 43%, #1a1a1a 44%, #111 58%, #1a1a1a 59%,
@@ -305,22 +306,24 @@ function VinylRecord({ record, isSpinning, artCanvasRef, isAudioPlaying, onToggl
         boxShadow: "0 4px 40px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.3)",
       }}>
         {grooves.map((op, i) => (
-          <div key={i} className="absolute rounded-full"
-            style={{ inset: `${8+i*3.2}px`, border: `0.5px solid rgba(50,50,50,${op})` }} />
+          <div key={i} style={{ position: "absolute", borderRadius: "50%", inset: `${8+i*3.2}px`, border: `0.5px solid rgba(50,50,50,${op})` }} />
         ))}
-        <div className="absolute rounded-full overflow-hidden" style={{
+        <div style={{
+          position: "absolute", borderRadius: "50%", overflow: "hidden",
           top: "50%", left: "50%", transform: "translate(-50%,-50%)",
           width: 100, height: 100, boxShadow: "inset 0 0 8px rgba(0,0,0,0.6)",
         }}>
           <canvas ref={artCanvasRef} style={{ width: 100, height: 100, objectFit: "cover" }} />
-          <div className="absolute rounded-full" style={{
+          <div style={{
+            position: "absolute", borderRadius: "50%",
             top: "50%", left: "50%", transform: "translate(-50%,-50%)",
             width: 8, height: 8, background: "#0a0a0a",
             boxShadow: "inset 0 0 3px rgba(0,0,0,0.9), 0 0 2px rgba(0,0,0,0.5)",
           }} />
         </div>
       </div>
-      <div className="absolute inset-0 rounded-full pointer-events-none" style={{
+      <div style={{
+        position: "absolute", inset: 0, borderRadius: "50%", pointerEvents: "none",
         background: "conic-gradient(from 200deg, transparent 0%, rgba(255,255,255,0.04) 10%, transparent 20%, transparent 100%)",
         animation: spinAnim,
         transform: isSpinning || isDecelerating ? undefined : `rotate(${rot}deg)`,
@@ -329,8 +332,8 @@ function VinylRecord({ record, isSpinning, artCanvasRef, isAudioPlaying, onToggl
       {/* Hover pause/play overlay */}
       {(isSpinning || isDecelerating || (isAudioPlaying !== undefined && !isSpinning)) && hovered && (
         <div onClick={(e) => { e.stopPropagation(); onTogglePlay?.(); }}
-          className="absolute inset-0 rounded-full"
           style={{
+            position: "absolute", inset: 0, borderRadius: "50%",
             display: "flex", alignItems: "center", justifyContent: "center",
             background: "rgba(0,0,0,0.35)", cursor: "pointer",
             transition: "opacity 0.2s", zIndex: 10,
@@ -629,6 +632,7 @@ export default function RecordCollection() {
   const [hasInteracted, setHasInteracted] = useState(false);
   const [moodHistory, setMoodHistory] = useState([]);
   const [currentView, setCurrentView] = useState("turntable");
+  const [askAgainMood, setAskAgainMood] = useState("");
   const artCanvasRef = useRef(null);
 
   // Audio state — lifted from SpotifyPlayer so vinyl controls playback
@@ -638,6 +642,14 @@ export default function RecordCollection() {
   const [audioFailed, setAudioFailed] = useState(false);
   const [rateLimited, setRateLimited] = useState(false);
   const lastAudioKey = useRef(null);
+
+  const resetPlayer = useCallback((targetView = "turntable") => {
+    if (audioRef.current) audioRef.current.pause();
+    setResult(null); setShowResult(false); setIsSpinning(false);
+    setIsDecelerating(false); setIsAudioPlaying(false);
+    setPreview(null); setAudioFailed(false); lastAudioKey.current = null;
+    setMood(""); setAskAgainMood(""); setCurrentView(targetView);
+  }, []);
 
   // Pre-mapped sample moods — no AI call needed, saves tokens
   const SAMPLE_MOODS = [
@@ -795,8 +807,8 @@ export default function RecordCollection() {
     setIsLoading(true); setShowResult(false); setIsSpinning(false);
     setHasInteracted(true); setCurrentView("turntable");
     setResult({ artist: record.artist, album: record.album, year: record.year, reason: record.tag, record });
-    setTimeout(() => { setIsLoading(false); setIsSpinning(true); }, 400);
-    setTimeout(() => setShowResult(true), 1000);
+    setTimeout(() => { setIsLoading(false); setIsSpinning(true); }, 300);
+    setTimeout(() => setShowResult(true), 500);
   };
 
   const selectFromShelf = (record) => {
@@ -805,12 +817,12 @@ export default function RecordCollection() {
     setIsSpinning(false);
     setResult({ artist: record.artist, album: record.album, year: record.year, reason: record.tag, record });
     setCurrentView("turntable");
-    // Small delay so the view transition starts before we scroll
     requestAnimationFrame(() => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
-    setTimeout(() => setIsSpinning(true), 600);
-    setTimeout(() => setShowResult(true), 1000);
+    // Quick sequence: vinyl appears → starts spinning → info fades in
+    setTimeout(() => setIsSpinning(true), 300);
+    setTimeout(() => setShowResult(true), 500);
   };
 
   return (
@@ -827,11 +839,30 @@ export default function RecordCollection() {
 
       <div style={{ maxWidth: 640, margin: "0 auto", padding: "48px 20px", position: "relative" }}>
 
+        {/* Persistent "← Back to shelf" — fixed top-left, matching inset */}
+        <div style={{
+          position: "fixed", top: 20, left: 20, zIndex: 20,
+          opacity: showResult && result ? 1 : 0,
+          pointerEvents: showResult && result ? "auto" : "none",
+          transition: "opacity 0.3s ease",
+        }}>
+          <button onClick={() => resetPlayer("shelf")} style={{
+            background: "rgba(10,8,8,0.7)", backdropFilter: "blur(8px)",
+            border: "1px solid rgba(180,140,80,0.15)", borderRadius: 4,
+            cursor: "pointer", padding: "8px 14px",
+            fontSize: 11, fontFamily: "'Courier New', monospace", letterSpacing: 1.5,
+            color: "#7a6a5a", transition: "color 0.2s, border-color 0.2s",
+          }}
+          onMouseEnter={e => { e.target.style.color = "#d4b870"; e.target.style.borderColor = "rgba(180,140,80,0.35)"; }}
+          onMouseLeave={e => { e.target.style.color = "#7a6a5a"; e.target.style.borderColor = "rgba(180,140,80,0.15)"; }}>
+            ← Back to shelf
+          </button>
+        </div>
+
         {/* Header — smoothly collapses when showing a result */}
-        <div style={{ textAlign: "center", marginBottom: showResult && result ? 20 : 36, transition: "margin-bottom 0.5s ease" }}>
+        <div style={{ textAlign: "center", marginBottom: showResult && result ? 12 : 36, transition: "margin-bottom 0.3s ease" }}>
           <p style={{ fontSize: 11, letterSpacing: 4, textTransform: "uppercase",
-            color: "#7a6a5a", marginBottom: showResult && result ? 14 : 12, fontFamily: "'Courier New', monospace",
-            transition: "margin-bottom 0.4s ease" }}>
+            color: "#7a6a5a", marginBottom: 12, fontFamily: "'Courier New', monospace" }}>
             The Collection of Daniel Russell
           </p>
 
@@ -840,7 +871,9 @@ export default function RecordCollection() {
             maxHeight: showResult && result ? 0 : 200,
             opacity: showResult && result ? 0 : 1,
             overflow: "hidden",
-            transition: "max-height 0.5s ease, opacity 0.35s ease",
+            transition: showResult && result
+              ? "opacity 0.15s ease, max-height 0.01s ease 0.15s"
+              : "opacity 0.3s ease 0.1s, max-height 0.01s ease",
           }}>
             <h1 style={{ fontSize: "clamp(32px, 5vw, 44px)", fontWeight: 400, lineHeight: 1.2, color: "#efe5d5", marginBottom: 8,
               fontFamily: "'Georgia', 'Times New Roman', serif" }}>
@@ -851,69 +884,67 @@ export default function RecordCollection() {
               Tell it your mood, your moment, the weather outside.<br />It'll pull the right record.
             </p>
           </div>
-
-          {/* Result action buttons — fade in */}
-          <div style={{
-            maxHeight: showResult && result ? 60 : 0,
-            opacity: showResult && result ? 1 : 0,
-            overflow: "hidden",
-            transition: "max-height 0.5s ease 0.15s, opacity 0.4s ease 0.2s",
-            display: "flex", gap: 8, justifyContent: "center",
-          }}>
-            <button onClick={() => {
-              if (audioRef.current) { audioRef.current.pause(); }
-              setResult(null); setShowResult(false); setIsSpinning(false);
-              setIsDecelerating(false); setIsAudioPlaying(false);
-              setPreview(null); setAudioFailed(false); lastAudioKey.current = null;
-              setMood(""); setCurrentView("turntable");
-            }} style={{
-              padding: "7px 20px", fontSize: 11,
-              fontFamily: "'Courier New', monospace", letterSpacing: 2, textTransform: "uppercase",
-              background: "transparent", border: "1px solid rgba(180,140,80,0.2)",
-              borderRadius: 3, color: "#9a8a7a", cursor: "pointer", transition: "color 0.3s, border-color 0.3s",
-            }}
-            onMouseEnter={e => { e.target.style.color = "#d4b870"; e.target.style.borderColor = "rgba(180,140,80,0.4)"; }}
-            onMouseLeave={e => { e.target.style.color = "#9a8a7a"; e.target.style.borderColor = "rgba(180,140,80,0.2)"; }}>
-              Ask again
-            </button>
-            <button onClick={() => {
-              if (audioRef.current) { audioRef.current.pause(); }
-              setResult(null); setShowResult(false); setIsSpinning(false);
-              setIsDecelerating(false); setIsAudioPlaying(false);
-              setPreview(null); setAudioFailed(false); lastAudioKey.current = null;
-              setMood(""); setCurrentView("shelf");
-            }} style={{
-              padding: "7px 20px", fontSize: 11,
-              fontFamily: "'Courier New', monospace", letterSpacing: 2, textTransform: "uppercase",
-              background: "transparent", border: "1px solid rgba(180,140,80,0.2)",
-              borderRadius: 3, color: "#9a8a7a", cursor: "pointer", transition: "color 0.3s, border-color 0.3s",
-            }}
-            onMouseEnter={e => { e.target.style.color = "#d4b870"; e.target.style.borderColor = "rgba(180,140,80,0.4)"; }}
-            onMouseLeave={e => { e.target.style.color = "#9a8a7a"; e.target.style.borderColor = "rgba(180,140,80,0.2)"; }}>
-              Back to shelf
-            </button>
-          </div>
         </div>
 
-        {/* Controls — smoothly collapse when result is showing */}
+        {/* Controls — quickly fade when result is showing */}
         <div style={{
           maxHeight: showResult && result ? 0 : 2000,
           opacity: showResult && result ? 0 : 1,
           overflow: showResult && result ? "hidden" : "visible",
-          transition: "max-height 0.5s ease, opacity 0.35s ease",
+          transition: showResult && result
+            ? "opacity 0.15s ease, max-height 0.01s ease 0.15s"
+            : "opacity 0.3s ease 0.1s, max-height 0.01s ease",
         }}>
-          {/* View toggle */}
-          <div style={{ display: "flex", justifyContent: "center", gap: 3, marginBottom: 24 }}>
-            {[{ id: "turntable", label: "Ask" }, { id: "shelf", label: "Browse the Shelf" }].map(v => (
+          {/* Side A / Side B toggle */}
+          <div style={{
+            display: "flex", marginBottom: 28,
+            border: "1px solid rgba(180,140,80,0.15)",
+            borderRadius: 4, overflow: "hidden",
+            position: "relative",
+          }}>
+            {/* Sliding highlight */}
+            <div style={{
+              position: "absolute", top: 0, bottom: 0,
+              width: "50%",
+              left: currentView === "turntable" ? "0%" : "50%",
+              background: "rgba(180,140,80,0.08)",
+              borderBottom: "2px solid rgba(212,184,112,0.6)",
+              transition: "left 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
+              pointerEvents: "none",
+            }} />
+            {/* Divider */}
+            <div style={{
+              position: "absolute", top: "20%", bottom: "20%", left: "50%",
+              width: 1, background: "rgba(180,140,80,0.12)",
+              pointerEvents: "none",
+            }} />
+            {[
+              { id: "turntable", side: "Side A", label: "Ask the Collection", desc: "Tell it your mood" },
+              { id: "shelf", side: "Side B", label: "Browse the Shelf", desc: "Pull one yourself" },
+            ].map(v => (
               <button key={v.id} onClick={() => setCurrentView(v.id)} style={{
-                padding: "7px 22px", fontSize: 12, fontFamily: "'Courier New', monospace",
-                letterSpacing: 2, textTransform: "uppercase",
-                background: currentView === v.id ? "rgba(180,140,80,0.1)" : "transparent",
-                border: `1px solid rgba(180,140,80,${currentView === v.id ? 0.3 : 0.12})`,
-                borderRadius: 3, color: currentView === v.id ? "#d4b870" : "#6a5a4a",
-                cursor: "pointer", transition: "all 0.3s",
+                flex: 1, padding: "14px 16px", background: "transparent", border: "none",
+                cursor: "pointer", position: "relative", textAlign: "center",
+                transition: "color 0.3s",
               }}>
-                {v.label}
+                <span style={{
+                  display: "block", fontSize: 9, letterSpacing: 3, textTransform: "uppercase",
+                  fontFamily: "'Courier New', monospace",
+                  color: currentView === v.id ? "rgba(212,184,112,0.7)" : "rgba(106,90,74,0.5)",
+                  marginBottom: 4, transition: "color 0.3s",
+                }}>{v.side}</span>
+                <span style={{
+                  display: "block", fontSize: 14,
+                  fontFamily: "'Georgia', 'Times New Roman', serif",
+                  color: currentView === v.id ? "#efe5d5" : "#7a6a5a",
+                  fontWeight: 400, transition: "color 0.3s",
+                }}>{v.label}</span>
+                <span style={{
+                  display: "block", fontSize: 11, marginTop: 3,
+                  fontFamily: "'Georgia', serif", fontStyle: "italic",
+                  color: currentView === v.id ? "rgba(154,138,122,0.8)" : "rgba(106,90,74,0.4)",
+                  transition: "color 0.3s",
+                }}>{v.desc}</span>
               </button>
             ))}
           </div>
@@ -1002,11 +1033,13 @@ export default function RecordCollection() {
           </>
         </div>
 
-        {/* Vinyl + result — always visible when we have a result */}
+        {/* Vinyl + result — slides up smoothly when a record is picked */}
         {(result || isLoading) && (
           <div style={{
             display: "flex", flexDirection: "column", alignItems: "center",
-            opacity: isLoading && !result ? 0.3 : 1, transition: "opacity 0.5s",
+            opacity: isLoading && !result ? 0.3 : 1,
+            transform: result ? "translateY(0)" : "translateY(20px)",
+            transition: "opacity 0.5s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)",
           }}>
             <div style={{
               position: "relative", width: 350, height: 330,
@@ -1082,8 +1115,78 @@ export default function RecordCollection() {
           </div>
         )}
 
+        {/* "Ask again" section — visible below result */}
+        {showResult && result && (
+          <div style={{
+            textAlign: "center", marginTop: 40, marginBottom: 8,
+            animation: "fadeUp 0.6s ease-out 0.3s both",
+          }}>
+            <div style={{ width: 36, height: 1, background: "#4a3a2a", margin: "0 auto 20px" }} />
+            <p style={{
+              fontSize: 13, color: "#7a6a5a", fontStyle: "italic",
+              fontFamily: "'Georgia', serif", marginBottom: 14,
+            }}>
+              What else are you feeling?
+            </p>
+            <div style={{ maxWidth: 400, margin: "0 auto", display: "flex", gap: 8 }}>
+              <input
+                type="text"
+                value={askAgainMood}
+                onChange={e => setAskAgainMood(e.target.value)}
+                onKeyDown={e => {
+                  if (e.key === "Enter" && askAgainMood.trim()) {
+                    const m = askAgainMood.trim();
+                    resetPlayer("turntable");
+                    // Small delay to let reset clear, then fire the new ask
+                    setTimeout(() => {
+                      setMood(m);
+                      fetchRecommendation(m);
+                    }, 50);
+                  }
+                }}
+                placeholder="Try another mood..."
+                style={{
+                  flex: 1, padding: "10px 14px", fontSize: 14,
+                  fontFamily: "'Georgia', serif", background: "rgba(255,255,255,0.02)",
+                  border: "1px solid rgba(138,122,106,0.18)", borderRadius: 3,
+                  color: "#d4c9b8", outline: "none", transition: "border-color 0.3s",
+                }}
+                onFocus={e => e.target.style.borderColor = "rgba(180,140,80,0.3)"}
+                onBlur={e => e.target.style.borderColor = "rgba(138,122,106,0.18)"}
+              />
+              <button
+                onClick={() => {
+                  if (!askAgainMood.trim()) return;
+                  const m = askAgainMood.trim();
+                  resetPlayer("turntable");
+                  setTimeout(() => {
+                    setMood(m);
+                    fetchRecommendation(m);
+                  }, 50);
+                }}
+                disabled={!askAgainMood.trim()}
+                style={{
+                  padding: "10px 18px", fontSize: 11,
+                  fontFamily: "'Courier New', monospace", letterSpacing: 2, textTransform: "uppercase",
+                  background: askAgainMood.trim() ? "rgba(180,140,80,0.1)" : "transparent",
+                  border: "1px solid rgba(180,140,80,0.25)", borderRadius: 3,
+                  color: askAgainMood.trim() ? "#d4b870" : "#6a5a4a",
+                  cursor: askAgainMood.trim() ? "pointer" : "default",
+                  transition: "all 0.3s", whiteSpace: "nowrap",
+                }}>
+                Ask
+              </button>
+            </div>
+          </div>
+        )}
+
         <MoodWall moodHistory={moodHistory} onSelectMood={(entry) => {
-          const record = CURATED_RECORDS.find(r => r.album === entry.album);
+          if (!entry.album) return;
+          // Exact match first, then case-insensitive, then partial match
+          const album = entry.album.toLowerCase();
+          const record = CURATED_RECORDS.find(r => r.album === entry.album)
+            || CURATED_RECORDS.find(r => r.album.toLowerCase() === album)
+            || CURATED_RECORDS.find(r => album.includes(r.album.toLowerCase()) || r.album.toLowerCase().includes(album));
           if (record) selectFromShelf(record);
         }} />
 
