@@ -9,7 +9,7 @@ const CURATED_RECORDS = [
   // Jazz
   { artist: "Miles Davis", album: "Kind of Blue", year: 1959, genre: "Jazz", track: "So What", tag: "When the house finally got quiet, this is what I put on. Every time.", spotifyId: "1weenld61qoidwYuZ1GESA" },
   { artist: "John Coltrane", album: "A Love Supreme", year: 1965, genre: "Jazz", track: "Acknowledgement", tag: "End of a long job, everything aching, and this made it all worth it.", spotifyId: "7Eoz7hJvaX1eFkbpQxC5PA" },
-  { artist: "Thelonious Monk", album: "Brilliant Corners", year: 1957, genre: "Jazz", track: "Brilliant Corners", tag: "This album understands angles better than most architects I worked with.", spotifyId: "5gWF47eGSbv4BOfxoFcQtd" },
+  { artist: "Thelonious Monk", album: "Brilliant Corners", year: 1957, genre: "Jazz", track: "Brilliant Corners", tag: "Discovered from an estate sale box, loved it on the maggies.", spotifyId: "5gWF47eGSbv4BOfxoFcQtd" },
   { artist: "Dave Brubeck", album: "Time Out", year: 1959, genre: "Jazz", track: "Take Five", tag: "Sunday mornings. Coffee. No exceptions.", spotifyId: "0nTTEAhCZsbbeplyDMIFuA" },
   { artist: "Charles Mingus", album: "The Black Saint and the Sinner Lady", year: 1963, genre: "Jazz", track: "Solo Dancer", tag: "When I had to think something through. This one does the thinking with you.", spotifyId: "6Sts4Yh7KsDFwq2yTWrGGV" },
   { artist: "Herbie Hancock", album: "Head Hunters", year: 1973, genre: "Jazz Funk", track: "Chameleon", tag: "Try standing still to this. You can't. I tried.", spotifyId: "5fmIolILp5NAtNYiRPjhzA" },
@@ -24,7 +24,7 @@ const CURATED_RECORDS = [
   { artist: "Otis Redding", album: "Otis Blue", year: 1965, genre: "Soul", track: "I've Been Loving You Too Long", tag: "Four minutes of Otis fixes just about any bad day you're having.", spotifyId: "4vFKErQavGgiqE47mUkwFP" },
   { artist: "Aretha Franklin", album: "I Never Loved a Man the Way I Love You", year: 1967, genre: "Soul", track: "Respect", tag: "You handle this record with care. She earned that.", spotifyId: "7MSfTWBjxbbGRAqkkFMlDi" },
   { artist: "Parliament", album: "Mothership Connection", year: 1975, genre: "Funk", track: "Give Up the Funk", tag: "Friday night record. Don't overthink it.", spotifyId: "5GwBYRIzETEAhFOleFaLcP" },
-  { artist: "Earth, Wind & Fire", album: "That's the Way of the World", year: 1975, genre: "Soul", track: "Shining Star", tag: "Cookouts. Every single time. Not negotiable.", spotifyId: "2QLLU4Fgi5JMKvNtO07mjc" },
+  { artist: "Earth, Wind & Fire", album: "That's the Way of the World", year: 1975, genre: "Soul", track: "Shining Star", tag: "Cookouts. Not negotiable.", spotifyId: "2QLLU4Fgi5JMKvNtO07mjc" },
 
   // Rock
   { artist: "Pink Floyd", album: "Wish You Were Here", year: 1975, genre: "Rock", track: "Wish You Were Here", tag: "Sleeve's worn thin. That should tell you something.", spotifyId: "0bCAjiUamIFqKJsekOYuRw" },
@@ -57,49 +57,74 @@ const CURATED_RECORDS = [
   { artist: "Muddy Waters", album: "Folk Singer", year: 1964, genre: "Blues", track: "My Home Is in the Delta", tag: "Stripped way down. No fuss. That's how good work should be.", spotifyId: "2RkGOq4JlKO1F3gCxUEjyR" },
   { artist: "Johnny Cash", album: "At Folsom Prison", year: 1968, genre: "Country", track: "Folsom Prison Blues", tag: "Real and rough and not apologizing for any of it.", spotifyId: "3SHTbP8FHQwCMGwxCI5bQe" },
   { artist: "Willie Nelson", album: "Red Headed Stranger", year: 1975, genre: "Country", track: "Blue Eyes Crying in the Rain", tag: "Simple story, told right. That's harder than people think.", spotifyId: "4GgcVkNma5i5NJiLv2Gieb" },
-  { artist: "Willie Nelson", album: "Always on My Mind", year: 1982, genre: "Country", track: "Always on My Mind", tag: "That title track said what I never quite could. June knew.", spotifyId: "" },
+  { artist: "Willie Nelson", album: "Always on My Mind", year: 1982, genre: "Country", track: "Always on My Mind", tag: "That title track said what I never quite could. June knew.", spotifyId: "2xYQTU2bbg6WVAmpY1eae4" },
   { artist: "Willie Nelson", album: "Stardust", year: 1978, genre: "Country", track: "Moonlight in Vermont", tag: "A song for late nights and quiet conversations.", spotifyId: "38uGoW7jS8jjJMvZA26sRq" },
 
   // Folk / Singer-Songwriter — additions
-  { artist: "Al Stewart", album: "Year of the Cat", year: 1976, genre: "Folk Rock", track: "Year of the Cat", tag: "Played this at our wedding. Your mom and me. That's all I need to say.", spotifyId: "" },
+  { artist: "Al Stewart", album: "Year of the Cat", year: 1976, genre: "Folk Rock", track: "Year of the Cat", tag: "Played this at our wedding. Your mom and me. That's all I need to say.", spotifyId: "7MTX3vevnm41xuEoPxWT3j" },
   { artist: "Jim James", album: "Eternally Even", year: 2016, genre: "Folk", track: "Here in Spirit", tag: "Newer than most of what's on here, but it earned its spot.", spotifyId: "2wYw4vZlu7XwvtdQPRmsmL" },
-  { artist: "Buffalo Springfield", album: "Buffalo Springfield", year: 1966, genre: "Folk Rock", track: "For What It's Worth", tag: "Before Neil Young and Stephen Stills went off and got famous. This is where it started.", spotifyId: "" },
-  { artist: "Leonard Cohen", album: "Songs of Leonard Cohen", year: 1967, genre: "Folk", track: "Suzanne", tag: "Suzanne. That song builds a whole room around you and locks the door.", spotifyId: "" },
+  { artist: "Buffalo Springfield", album: "Buffalo Springfield", year: 1966, genre: "Folk Rock", track: "For What It's Worth", tag: "Before Neil Young and Stephen Stills went off and got famous. This is where it started.", spotifyId: "1qRA5BS78u3gME0loMl9AA" },
+  { artist: "Leonard Cohen", album: "Songs of Leonard Cohen", year: 1967, genre: "Folk", track: "Suzanne", tag: "Suzanne. That song builds a whole room around you and locks the door.", spotifyId: "4jiM2fAXVOxl4DAx3wraFx" },
   { artist: "Tim Buckley", album: "Starsailor", year: 1970, genre: "Folk", track: "Song to the Siren", tag: "Song to the Siren. Nothing else on the shelf sounds like this. Nothing.", spotifyId: "6XtiIO1SuBl4Eli8LCYNAH" },
   { artist: "Peter, Paul and Mary", album: "In the Wind", year: 1963, genre: "Folk", track: "Blowin' in the Wind", tag: "We'd put Blowin' in the Wind on while decorating for Christmas. Every year.", spotifyId: "5XresJcJBgYkVQE9PATjli" },
-  { artist: "Jim Croce", album: "I Got a Name", year: 1973, genre: "Folk", track: "I Got a Name", tag: "Gone way too soon. Thirty years old. Hell of a thing.", spotifyId: "" },
-  { artist: "Donovan", album: "Sunshine Superman", year: 1966, genre: "Folk Rock", track: "Sunshine Superman", tag: "Lighter than most of what I keep. But not everything has to be heavy.", spotifyId: "" },
-  { artist: "Nick Drake", album: "Pink Moon", year: 1972, genre: "Folk", track: "Pink Moon", tag: "Twenty-eight minutes. No filler. Nothing wasted. Kid knew what he was doing.", spotifyId: "" },
-  { artist: "Arlo Guthrie", album: "Alice's Restaurant", year: 1967, genre: "Folk", track: "Alice's Restaurant Massacree", tag: "Thanksgiving. Every year. The whole massacree. Non-negotiable.", spotifyId: "" },
+  { artist: "Jim Croce", album: "I Got a Name", year: 1973, genre: "Folk", track: "I Got a Name", tag: "Gone way too soon. Thirty years old. Hell of a thing.", spotifyId: "4UEgKxYLP0bPG6EwD0DgYK" },
+  { artist: "Donovan", album: "Sunshine Superman", year: 1966, genre: "Folk Rock", track: "Sunshine Superman", tag: "Lighter than most of what I keep. But not everything has to be heavy.", spotifyId: "4RGxUjaCmVtD30pIhtEi7w" },
+  { artist: "Nick Drake", album: "Pink Moon", year: 1972, genre: "Folk", track: "Pink Moon", tag: "Twenty-eight minutes. No filler. Nothing wasted. Kid knew what he was doing.", spotifyId: "4KROoGIaPaR1pBHPnR3bwC" },
+  { artist: "Arlo Guthrie", album: "Alice's Restaurant", year: 1967, genre: "Folk", track: "Alice's Restaurant Massacree", tag: "Thanksgiving. Every year. The whole massacree. Non-negotiable.", spotifyId: "4OjKHySJHstsImlUW3qfml" },
   { artist: "John Prine", album: "Fair & Square", year: 2005, genre: "Folk", track: "Clay Pigeons", tag: "Clay Pigeons. Blaze Foley wrote it but Prine made you believe every word.", spotifyId: "44sOCUUf8kp3Oj1yBYAKiZ" },
   { artist: "Paul Simon", album: "Paul Simon", year: 1972, genre: "Folk Rock", track: "Duncan", tag: "Duncan tells a whole life in four minutes. That's not easy to do.", spotifyId: "7npBPiCHjPj8PVIGPuHXep" },
 
   // Rock — additions
-  { artist: "Creedence Clearwater Revival", album: "Green River", year: 1969, genre: "Rock", track: "Bad Moon Rising", tag: "Bad Moon Rising. Could feel the storm coming every single time.", spotifyId: "" },
-  { artist: "The Doobie Brothers", album: "Toulouse Street", year: 1972, genre: "Rock", track: "Listen to the Music", tag: "Listen to the Music. That's all I ever wanted anybody to do.", spotifyId: "" },
-  { artist: "The Beatles", album: "The Beatles (White Album)", year: 1968, genre: "Rock", track: "Blackbird", tag: "Blackbird. Caught myself singing it once when I thought nobody was around.", spotifyId: "" },
+  { artist: "Creedence Clearwater Revival", album: "Green River", year: 1969, genre: "Rock", track: "Bad Moon Rising", tag: "Bad Moon Rising. Could feel the storm coming every single time.", spotifyId: "20OFwXhEXf12DzwXmaV7fj" },
+  { artist: "The Doobie Brothers", album: "Toulouse Street", year: 1972, genre: "Rock", track: "Listen to the Music", tag: "Listen to the Music. That's all I ever wanted anybody to do.", spotifyId: "7Ar4G7Ci11gpt6sfH9Cgz5" },
+  { artist: "The Beatles", album: "The Beatles (White Album)", year: 1968, genre: "Rock", track: "Blackbird", tag: "Blackbird. Caught myself singing it once when I thought nobody was around.", spotifyId: "5jgFfDIR6FR0gvlA56Nakr" },
   { artist: "Ten Years After", album: "A Space in Time", year: 1971, genre: "Rock", track: "I'd Love to Change the World", tag: "I'd love to change the world. Well. Wouldn't we all.", spotifyId: "3JXkf4wjTjKxyrzFvfaVJU" },
-  { artist: "Nick Cave", album: "The Boatman's Call", year: 1997, genre: "Rock", track: "Into My Arms", tag: "Into My Arms. About as close to a prayer as I ever got.", spotifyId: "" },
+  { artist: "Nick Cave", album: "The Boatman's Call", year: 1997, genre: "Rock", track: "Into My Arms", tag: "Into My Arms. About as close to a prayer as I ever got.", spotifyId: "39CFOvYse9fcMhIwyS73Fl" },
   { artist: "Nick Cave", album: "Idiot Prayer", year: 2020, genre: "Rock", track: "Palaces of Montezuma", tag: "Just him and a piano in an empty palace. Still had plenty to say.", spotifyId: "2q5FE0HvayCsZ0iz2CBjIp" },
   { artist: "Father John Misty", album: "Anthem +3", year: 2020, genre: "Folk", track: "Trouble", tag: "Covered Cat Stevens' Trouble. That's how you know somebody gets it.", spotifyId: "4MsCxk1m3oX1NFKGsVZ2Xm" },
 
   // Van Morrison — additions
-  { artist: "Van Morrison", album: "Tupelo Honey", year: 1971, genre: "Folk Rock", track: "Tupelo Honey", tag: "Picked this up at an estate sale in a box of fifty records. The rest were junk. This one paid for all of them.", spotifyId: "" },
-  { artist: "Van Morrison", album: "Moondance", year: 1970, genre: "Folk Rock", track: "And It Stoned Me", tag: "Road trips. Van on the stereo. Nobody needed to say a word.", spotifyId: "" },
+  { artist: "Van Morrison", album: "Tupelo Honey", year: 1971, genre: "Folk Rock", track: "Tupelo Honey", tag: "Picked this up at an estate sale in a box of fifty records. The rest were junk. This one paid for all of them.", spotifyId: "1fRnysUhiECVtlgdFN8Io4" },
+  { artist: "Van Morrison", album: "Moondance", year: 1970, genre: "Folk Rock", track: "And It Stoned Me", tag: "Road trips. Van on the stereo. Nobody needed to say a word.", spotifyId: "3n5iUh2Z6P7cnWins22W0F" },
 
   // Rock — more additions
-  { artist: "The Band", album: "Music from Big Pink", year: 1968, genre: "Rock", track: "The Weight", tag: "The kind of song you play when you punch the card and head into the weekend.", spotifyId: "" },
-  { artist: "The Rolling Stones", album: "Sticky Fingers", year: 1971, genre: "Rock", track: "Moonlight Mile", tag: "When you want to hear the Stones play a slow one. They could do that too.", spotifyId: "" },
-  { artist: "Neil Young", album: "Harvest", year: 1972, genre: "Folk Rock", track: "Old Man", tag: "Reminds me of my own old man and my kid at the same time.", spotifyId: "" },
+  { artist: "The Band", album: "Music from Big Pink", year: 1968, genre: "Rock", track: "The Weight", tag: "The kind of song you play when you punch the card and head into the weekend.", spotifyId: "0P7DoyGrr4Wp9w5TotEtUC" },
+  { artist: "The Rolling Stones", album: "Sticky Fingers", year: 1971, genre: "Rock", track: "Moonlight Mile", tag: "When you want to hear the Stones play a slow one. They could do that too.", spotifyId: "3w7hnMNX4zVZeBJ6LisTjT" },
+  { artist: "Neil Young", album: "Harvest", year: 1972, genre: "Folk Rock", track: "Old Man", tag: "Reminds me of my own old man and my kid at the same time.", spotifyId: "6grFWYpLQul3nAHjzzPKT8" },
 
   // Folk — more additions
-  { artist: "Peter, Paul and Mary", album: "Moving", year: 1963, genre: "Folk", track: "Puff the Magic Dragon", tag: "Don't ask what I was thinking about when I played this one. You already know.", spotifyId: "" },
-  { artist: "Townes Van Zandt", album: "Live at the Old Quarter, Houston, Texas", year: 1977, genre: "Folk", track: "Lungs", tag: "Townes was a real cowboy. You could hear the dust on his boots.", spotifyId: "" },
-  { artist: "Jackson C. Frank", album: "Jackson C. Frank", year: 1965, genre: "Folk", track: "Blues Run the Game", tag: "This guy lived in misery and made something beautiful out of it. ", spotifyId: "" },
-  { artist: "Kevin Morby", album: "My Name", year: 2014, genre: "Folk Rock", track: "We Did It All Wrong", tag: "Alex showed me this one. Can't stop playing it.", spotifyId: "" },
+  { artist: "Peter, Paul and Mary", album: "Moving", year: 1963, genre: "Folk", track: "Puff the Magic Dragon", tag: "Don't ask what I was thinking about when I played this one. You already know.", spotifyId: "3hqsBLMAqJqrhr434Z7WlA" },
+  { artist: "Townes Van Zandt", album: "Live at the Old Quarter, Houston, Texas", year: 1977, genre: "Folk", track: "Lungs", tag: "Townes was a real cowboy. You could hear the dust on his boots.", spotifyId: "0tBAT5NugCTPG3W5mKpbn4" },
+  { artist: "Jackson C. Frank", album: "Jackson C. Frank", year: 1965, genre: "Folk", track: "Blues Run the Game", tag: "This guy lived in misery and made something beautiful out of it. ", spotifyId: "1aM9ClS0qz0Fp2BjmbM72M" },
+  { artist: "Kevin Morby", album: "My Name", year: 2014, genre: "Folk Rock", track: "We Did It All Wrong", tag: "Alex showed me this one. Can't stop playing it.", spotifyId: "06BjtvosFDQxBLdqgZPqoy" },
 
   // Jazz — additions
-  { artist: "Yusef Lateef", album: "Suite 16", year: 1970, genre: "Jazz", track: "Michelle", tag: "A nice warm jazz album to make the tube amp hum. Found it in a box lot at auction and never let it go.", spotifyId: "" },
+  { artist: "Yusef Lateef", album: "Suite 16", year: 1970, genre: "Jazz", track: "Michelle", tag: "A nice warm jazz album to make the tube amp hum. Found it in a box lot at auction and never let it go.", spotifyId: "3YmxwafE7wiBGOM7WnWdY3" },
+  { artist: "Bill Evans", album: "Waltz for Debby", year: 1961, genre: "Jazz", track: "Waltz for Debby", tag: "Piano so quiet you lean in. That's when you know it's got you.", spotifyId: "4mH2GwDyurRpDSO9Ks3E6K" },
+  { artist: "Chet Baker", album: "Chet Baker Sings", year: 1954, genre: "Jazz", track: "My Funny Valentine", tag: "Tough guys don't admit they own this one. I'm admitting it.", spotifyId: "4l9hml2UCnxoNI3yCdL1BW" },
+
+  // Soul / Funk — additions
+  { artist: "Donny Hathaway", album: "Live", year: 1972, genre: "Soul", track: "The Ghetto", tag: "Live album. You can hear the audience falling in love in real time.", spotifyId: "1yeIxOEFmpQ3qlOb2R3g2m" },
+  { artist: "Bobby Womack", album: "Understanding", year: 1972, genre: "Soul", track: "I Can Understand It", tag: "Nobody talks about this one enough. That's usually how you know it's good.", spotifyId: "0QF4HIdSr83fgpXeKWlxEV" },
+  { artist: "Gil Scott-Heron", album: "Pieces of a Man", year: 1971, genre: "Soul", track: "The Revolution Will Not Be Televised", tag: "Marvin sang about what's going on. Gil told you exactly why.", spotifyId: "7ni78Vjslqo2VxiDOahYlV" },
+  { artist: "Isaac Hayes", album: "Hot Buttered Soul", year: 1969, genre: "Soul", track: "Walk On By", tag: "Eighteen minutes on one track. Man had something to say and wasn't rushing.", spotifyId: "1jwKdqb7OindD204ocIryP" },
+
+  // Country — additions
+  { artist: "Kris Kristofferson", album: "Kristofferson", year: 1970, genre: "Country", track: "Sunday Mornin' Comin' Down", tag: "Sunday Mornin' Comin' Down. If you've ever had one of those mornings, you don't need me to explain.", spotifyId: "4mLo5ouQ9giUdWSAOtn5TK" },
+  { artist: "Waylon Jennings", album: "Honky Tonk Heroes", year: 1973, genre: "Country", track: "Honky Tonk Heroes", tag: "Him and Willie broke every rule Nashville had. Good.", spotifyId: "1skfGDMO9162triZ8ReWR8" },
+
+  // Rock — additions
+  { artist: "Tom Petty", album: "Wildflowers", year: 1994, genre: "Rock", track: "Wildflowers", tag: "Petty stripped it all down and it only got bigger. That's the trick.", spotifyId: "2Pr1nZpt8A8WP7QYpyq6L3" },
+  { artist: "J.J. Cale", album: "Naturally", year: 1972, genre: "Rock", track: "After Midnight", tag: "Clapton heard this guy and went home to practice. That tells you everything.", spotifyId: "1PC5GV3OaoXx5em8ttQOMI" },
+  { artist: "Little Feat", album: "Waiting for Columbus", year: 1978, genre: "Rock", track: "Dixie Chicken", tag: "Best live band nobody's heard of. Put it on and argue with me.", spotifyId: "0eTHlx53lUn95HVsJtR6Qx" },
+  { artist: "Derek & The Dominos", album: "Layla and Other Assorted Love Songs", year: 1970, genre: "Rock", track: "Layla", tag: "Clapton poured his whole heart out on this one. You can hear it cracking.", spotifyId: "2kkvB3RNRzwjFdGhaUA0tz" },
+  { artist: "Bob Marley & The Wailers", album: "Legend", year: 1984, genre: "Rock", track: "Redemption Song", tag: "Everybody owns this record. If you don't, I don't know what to tell you.", spotifyId: "7MKcM6TfaGKQVFfhstCbOw" },
+
+  // Singer-Songwriter — additions
+  { artist: "Harry Nilsson", album: "Nilsson Schmilsson", year: 1971, genre: "Folk", track: "Without You", tag: "Without You comes on and suddenly you're not doing anything else.", spotifyId: "6MrILERJLA3Jcq0E9poZsp" },
+  { artist: "Gordon Lightfoot", album: "Sundown", year: 1974, genre: "Folk", track: "Sundown", tag: "Canadian. Quiet. Could write a song that followed you home.", spotifyId: "0SjnBEHZVXgCKvOrpvzL2k" },
+  { artist: "Randy Newman", album: "Sail Away", year: 1972, genre: "Folk", track: "Sail Away", tag: "Smarter than he lets on. I like that in a person and a record.", spotifyId: "4uy0fpmQbUfN4j94Lt9cc4" },
+  { artist: "Richard Thompson", album: "Shoot Out the Lights", year: 1982, genre: "Folk Rock", track: "Wall of Death", tag: "Made this with his wife while the marriage was ending. You can hear every bit of it.", spotifyId: "31UkxdOUhXEzyylWjNfAKz" },
 ];
 
 // ============================================================
@@ -142,113 +167,253 @@ function generateGenreArt(record, canvas) {
   }
   const rand = seededRandom(seed);
 
-  const palette = GENRE_PALETTES[record.genre] || GENRE_PALETTES["Rock"];
-  const bgChoice = palette.bg[Math.floor(rand(0, palette.bg.length))];
-  const accentChoice = palette.accent[Math.floor(rand(0, palette.accent.length))];
+  // Per-album variation factors derived from year + name length
+  const age = Math.min(1, Math.max(0, (record.year - 1950) / 70)); // 0=old, 1=new
+  const complexity = (record.album.length + record.artist.length) % 5; // 0-4 structural variation
+  const yearTint = ((record.year * 7) % 30) - 15; // subtle per-year color shift
 
-  const gradient = ctx.createRadialGradient(
-    size * rand(0.3, 0.7), size * rand(0.3, 0.7), 0,
-    size / 2, size / 2, size * 0.8
-  );
-  gradient.addColorStop(0, `rgb(${bgChoice[0]+15},${bgChoice[1]+15},${bgChoice[2]+15})`);
-  gradient.addColorStop(1, `rgb(${bgChoice[0]},${bgChoice[1]},${bgChoice[2]})`);
-  ctx.fillStyle = gradient;
+  const palette = GENRE_PALETTES[record.genre] || GENRE_PALETTES["Rock"];
+  const bgIdx = Math.floor(rand(0, palette.bg.length));
+  const bgChoice = palette.bg[bgIdx];
+  const accentIdx = Math.floor(rand(0, palette.accent.length));
+  const accentChoice = palette.accent[accentIdx];
+  // Secondary accent for two-tone variation
+  const accent2 = palette.accent[(accentIdx + 1) % palette.accent.length];
+
+  // Background — vary gradient shape per album
+  const gradCenterX = size * rand(0.2, 0.8);
+  const gradCenterY = size * rand(0.2, 0.8);
+  const useLinearBg = complexity > 3;
+  if (useLinearBg) {
+    const angle = rand(0, Math.PI);
+    const dx = Math.cos(angle) * size;
+    const dy = Math.sin(angle) * size;
+    const gradient = ctx.createLinearGradient(size/2 - dx/2, size/2 - dy/2, size/2 + dx/2, size/2 + dy/2);
+    gradient.addColorStop(0, `rgb(${bgChoice[0]+15+yearTint},${bgChoice[1]+15},${bgChoice[2]+15})`);
+    gradient.addColorStop(0.5, `rgb(${bgChoice[0]+8},${bgChoice[1]+8+Math.abs(yearTint/2)},${bgChoice[2]+8})`);
+    gradient.addColorStop(1, `rgb(${bgChoice[0]},${bgChoice[1]},${bgChoice[2]})`);
+    ctx.fillStyle = gradient;
+  } else {
+    const gradient = ctx.createRadialGradient(
+      gradCenterX, gradCenterY, 0,
+      size / 2, size / 2, size * (0.7 + age * 0.2)
+    );
+    gradient.addColorStop(0, `rgb(${bgChoice[0]+15+yearTint},${bgChoice[1]+15},${bgChoice[2]+15})`);
+    gradient.addColorStop(1, `rgb(${bgChoice[0]},${bgChoice[1]},${bgChoice[2]})`);
+    ctx.fillStyle = gradient;
+  }
   ctx.fillRect(0, 0, size, size);
 
   const mood = palette.mood;
   const [ar, ag, ab] = accentChoice;
+  const [ar2, ag2, ab2] = accent2;
 
   if (mood === "smoky") {
-    for (let i = 0; i < 12; i++) {
-      const cx = rand(size*0.1, size*0.9), cy = rand(size*0.1, size*0.9), radius = rand(20, 80);
+    // Vary cloud count and size with album
+    const cloudCount = 8 + complexity * 2;
+    const focusX = rand(0.2, 0.8) * size;
+    const focusY = rand(0.2, 0.8) * size;
+    for (let i = 0; i < cloudCount; i++) {
+      const useSecondary = i > cloudCount * 0.7;
+      const [cr, cg, cb] = useSecondary ? [ar2, ag2, ab2] : [ar, ag, ab];
+      // Cluster some clouds near a focal point
+      const drift = i < cloudCount / 2 ? 0.3 : 1.0;
+      const cx = focusX + rand(-size*drift, size*drift);
+      const cy = focusY + rand(-size*drift, size*drift);
+      const radius = rand(15, 60 + complexity * 15);
       const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
-      grad.addColorStop(0, `rgba(${ar},${ag},${ab},${rand(0.08,0.2)})`);
-      grad.addColorStop(1, `rgba(${ar},${ag},${ab},0)`);
+      grad.addColorStop(0, `rgba(${cr},${cg},${cb},${rand(0.06,0.22)})`);
+      grad.addColorStop(1, `rgba(${cr},${cg},${cb},0)`);
       ctx.fillStyle = grad;
       ctx.beginPath(); ctx.arc(cx, cy, radius, 0, Math.PI*2); ctx.fill();
     }
-    for (let i = 0; i < 5; i++) {
+    // Arcs — vary count and center offset per album
+    const arcCount = 3 + Math.floor(rand(0, 5));
+    const arcOffX = rand(-30, 30);
+    const arcOffY = rand(-30, 30);
+    for (let i = 0; i < arcCount; i++) {
       ctx.beginPath();
       const sa = rand(0, Math.PI*2);
-      ctx.arc(size/2, size/2, rand(30,120), sa, sa + rand(1,4));
-      ctx.strokeStyle = `rgba(${ar},${ag},${ab},${rand(0.1,0.3)})`;
-      ctx.lineWidth = rand(0.5,2); ctx.stroke();
+      ctx.arc(size/2 + arcOffX, size/2 + arcOffY, rand(25,130), sa, sa + rand(0.8,4.5));
+      const useAlt = rand() > 0.6;
+      ctx.strokeStyle = `rgba(${useAlt ? ar2 : ar},${useAlt ? ag2 : ag},${useAlt ? ab2 : ab},${rand(0.08,0.3)})`;
+      ctx.lineWidth = rand(0.5,2.5); ctx.stroke();
+    }
+    // Older albums get a subtle haze overlay
+    if (age < 0.4) {
+      ctx.fillStyle = `rgba(${ar},${ag},${ab},${0.03 + (1-age)*0.03})`;
+      ctx.fillRect(0, 0, size, size);
     }
   } else if (mood === "warm" || mood === "groovy") {
-    for (let layer = 0; layer < 6; layer++) {
-      ctx.beginPath(); ctx.moveTo(0, size * rand(0.2, 0.8));
-      for (let x = 0; x <= size; x += 4) {
-        const y = size*0.5 + Math.sin(x*0.015 + layer*1.2)*(30+layer*15) + Math.cos(x*0.008+layer*0.7)*20 + (layer-3)*25;
+    // Vary wave parameters per album
+    const waveCount = 4 + complexity;
+    const phaseShift = rand(0, Math.PI * 2);
+    const freqBase = 0.01 + rand(0, 0.01);
+    for (let layer = 0; layer < waveCount; layer++) {
+      ctx.beginPath(); ctx.moveTo(0, size * rand(0.15, 0.85));
+      for (let x = 0; x <= size; x += 3) {
+        const y = size*0.5 + Math.sin(x*freqBase + layer*1.2 + phaseShift)*(25+layer*12)
+                  + Math.cos(x*(freqBase*0.6)+layer*0.7)*18 + (layer - waveCount/2)*22;
         ctx.lineTo(x, y);
       }
       ctx.lineTo(size, size); ctx.lineTo(0, size); ctx.closePath();
-      ctx.fillStyle = `rgba(${ar-layer*10},${ag-layer*8},${ab},${rand(0.06,0.15)})`; ctx.fill();
+      const useAlt = layer % 3 === 0;
+      const [wr, wg, wb] = useAlt ? [ar2, ag2, ab2] : [ar, ag, ab];
+      ctx.fillStyle = `rgba(${wr-layer*8},${wg-layer*6},${wb},${rand(0.05,0.16)})`; ctx.fill();
     }
-    for (let i = 0; i < 4; i++) {
-      const gx = rand(0,size), gy = rand(0,size);
-      const grad = ctx.createRadialGradient(gx,gy,0,gx,gy,rand(40,100));
-      grad.addColorStop(0, `rgba(${ar},${ag},${ab},0.12)`);
+    // Glow spots — vary placement pattern
+    const glowCount = 3 + Math.floor(rand(0, 4));
+    for (let i = 0; i < glowCount; i++) {
+      const gx = rand(size*0.1, size*0.9), gy = rand(size*0.1, size*0.9);
+      const useAlt = i === 0;
+      const [gr, gg, gb] = useAlt ? [ar2, ag2, ab2] : [ar, ag, ab];
+      const grad = ctx.createRadialGradient(gx,gy,0,gx,gy,rand(30,90));
+      grad.addColorStop(0, `rgba(${gr},${gg},${gb},${rand(0.08,0.15)})`);
       grad.addColorStop(1, "transparent");
       ctx.fillStyle = grad; ctx.fillRect(0,0,size,size);
     }
   } else if (mood === "bold") {
-    for (let i = 0; i < 8; i++) {
-      ctx.save(); ctx.translate(rand(0,size), rand(0,size)); ctx.rotate(rand(-0.5,0.5));
-      ctx.fillStyle = `rgba(${ar},${ag},${ab},${rand(0.08,0.25)})`;
-      ctx.fillRect(-rand(20,80), -rand(1.5,10), rand(40,160), rand(3,20));
+    // Vary stroke count and angle range per album
+    const strokeCount = 5 + complexity * 2;
+    const dominant = rand(0, 1) > 0.5; // horizontal vs vertical tendency
+    for (let i = 0; i < strokeCount; i++) {
+      ctx.save(); ctx.translate(rand(0,size), rand(0,size));
+      ctx.rotate(dominant ? rand(-0.3,0.3) : rand(-1.2,1.2));
+      const useAlt = i > strokeCount * 0.65;
+      const [br, bg2, bb] = useAlt ? [ar2, ag2, ab2] : [ar, ag, ab];
+      ctx.fillStyle = `rgba(${br},${bg2},${bb},${rand(0.06,0.25)})`;
+      ctx.fillRect(-rand(15,90), -rand(1,8), rand(30,170), rand(2,22));
       ctx.restore();
     }
-    ctx.beginPath();
-    const sx = rand(size*0.2, size*0.8);
-    ctx.moveTo(sx, 0); ctx.lineTo(sx + rand(-60,60), size);
-    ctx.strokeStyle = `rgba(${ar},${ag},${ab},${rand(0.15,0.35)})`;
-    ctx.lineWidth = rand(2,6); ctx.stroke();
-    ctx.fillStyle = `rgba(${ar},${ag},${ab},0.1)`;
-    ctx.fillRect(0, 0, rand(40,120), rand(40,120));
-  } else if (mood === "organic") {
-    for (let i = 0; i < 20; i++) {
+    // Diagonal slash — vary direction and count
+    const slashCount = 1 + Math.floor(rand(0, 3));
+    for (let i = 0; i < slashCount; i++) {
       ctx.beginPath();
-      const sx2 = rand(0,size), sy2 = rand(0,size); ctx.moveTo(sx2, sy2);
-      for (let step = 0; step < 6; step++) ctx.lineTo(sx2+rand(-50,50), sy2+rand(-50,50));
-      ctx.strokeStyle = `rgba(${ar},${ag},${ab},${rand(0.04,0.12)})`;
-      ctx.lineWidth = rand(0.5,2); ctx.stroke();
+      const sx = rand(size*0.1, size*0.9);
+      const drift = rand(-80, 80);
+      ctx.moveTo(sx, 0); ctx.lineTo(sx + drift, size);
+      const useAlt = i > 0;
+      ctx.strokeStyle = `rgba(${useAlt ? ar2 : ar},${useAlt ? ag2 : ag},${useAlt ? ab2 : ab},${rand(0.12,0.35)})`;
+      ctx.lineWidth = rand(1.5,6); ctx.stroke();
     }
-    for (let i = 0; i < 30; i++) {
-      ctx.beginPath(); ctx.arc(rand(0,size), rand(0,size), rand(1,3), 0, Math.PI*2);
-      ctx.fillStyle = `rgba(${ar},${ag},${ab},${rand(0.1,0.3)})`; ctx.fill();
+    // Corner block — vary which corner
+    const cornerX = rand() > 0.5 ? 0 : size - rand(30,100);
+    const cornerY = rand() > 0.5 ? 0 : size - rand(30,100);
+    ctx.fillStyle = `rgba(${ar},${ag},${ab},${rand(0.06,0.14)})`;
+    ctx.fillRect(cornerX, cornerY, rand(30,120), rand(30,120));
+  } else if (mood === "organic") {
+    // Vary wandering path count and behavior per album
+    const pathCount = 12 + complexity * 5;
+    const stepCount = 4 + Math.floor(rand(0, 5));
+    const clusterCenter = { x: rand(size*0.2, size*0.8), y: rand(size*0.2, size*0.8) };
+    for (let i = 0; i < pathCount; i++) {
+      ctx.beginPath();
+      const clustered = i < pathCount / 3;
+      const sx2 = clustered ? clusterCenter.x + rand(-60,60) : rand(0,size);
+      const sy2 = clustered ? clusterCenter.y + rand(-60,60) : rand(0,size);
+      ctx.moveTo(sx2, sy2);
+      for (let step = 0; step < stepCount; step++) {
+        ctx.lineTo(sx2+rand(-40-complexity*8, 40+complexity*8), sy2+rand(-40-complexity*8, 40+complexity*8));
+      }
+      const useAlt = i % 4 === 0;
+      const [or2, og, ob] = useAlt ? [ar2, ag2, ab2] : [ar, ag, ab];
+      ctx.strokeStyle = `rgba(${or2},${og},${ob},${rand(0.03,0.14)})`;
+      ctx.lineWidth = rand(0.3,2.2); ctx.stroke();
+    }
+    // Dots — vary density and size range
+    const dotCount = 20 + complexity * 8;
+    for (let i = 0; i < dotCount; i++) {
+      ctx.beginPath();
+      const near = i < dotCount / 3;
+      const dx = near ? clusterCenter.x + rand(-50,50) : rand(0,size);
+      const dy = near ? clusterCenter.y + rand(-50,50) : rand(0,size);
+      ctx.arc(dx, dy, rand(0.5, 2.5 + complexity*0.5), 0, Math.PI*2);
+      const useAlt = rand() > 0.7;
+      ctx.fillStyle = `rgba(${useAlt ? ar2 : ar},${useAlt ? ag2 : ag},${useAlt ? ab2 : ab},${rand(0.08,0.35)})`; ctx.fill();
     }
   } else if (mood === "electric") {
-    const gs = Math.floor(rand(4,8)), cs = size/gs;
+    // Vary grid density and fill pattern per album
+    const gs = Math.floor(rand(3,9)), cs = size/gs;
+    const fillThreshold = 0.4 + complexity * 0.08;
     for (let gx2 = 0; gx2 < gs; gx2++) {
       for (let gy2 = 0; gy2 < gs; gy2++) {
-        if (rand() > 0.6) {
+        if (rand() > fillThreshold) {
           const a2 = palette.accent[Math.floor(rand(0,palette.accent.length))];
-          ctx.fillStyle = `rgba(${a2[0]},${a2[1]},${a2[2]},${rand(0.05,0.2)})`;
-          ctx.fillRect(gx2*cs+2, gy2*cs+2, cs-4, cs-4);
+          const useCircle = rand() > 0.7;
+          ctx.fillStyle = `rgba(${a2[0]},${a2[1]},${a2[2]},${rand(0.04,0.22)})`;
+          if (useCircle) {
+            ctx.beginPath();
+            ctx.arc(gx2*cs + cs/2, gy2*cs + cs/2, (cs-4)/2, 0, Math.PI*2);
+            ctx.fill();
+          } else {
+            ctx.fillRect(gx2*cs+2, gy2*cs+2, cs-4, cs-4);
+          }
         }
       }
     }
-    ctx.beginPath(); ctx.moveTo(rand(0,size*0.3), rand(0,size));
-    ctx.bezierCurveTo(rand(0,size),rand(0,size),rand(0,size),rand(0,size),rand(size*0.7,size),rand(0,size));
-    ctx.strokeStyle = `rgba(${ar},${ag},${ab},0.4)`; ctx.lineWidth = rand(1,3); ctx.stroke();
-  } else if (mood === "raw") {
-    for (let i = 0; i < 2000; i++) {
-      ctx.fillStyle = `rgba(${ar+rand(-30,30)},${ag+rand(-20,20)},${ab+rand(-20,20)},${rand(0.01,0.06)})`;
-      ctx.fillRect(rand(0,size), rand(0,size), rand(1,4), rand(1,4));
+    // Curves — vary count and sweep
+    const curveCount = 1 + Math.floor(rand(0, 3));
+    for (let i = 0; i < curveCount; i++) {
+      ctx.beginPath(); ctx.moveTo(rand(0,size*0.3), rand(0,size));
+      ctx.bezierCurveTo(rand(0,size),rand(0,size),rand(0,size),rand(0,size),rand(size*0.7,size),rand(0,size));
+      const useAlt = i > 0;
+      ctx.strokeStyle = `rgba(${useAlt ? ar2 : ar},${useAlt ? ag2 : ag},${useAlt ? ab2 : ab},${rand(0.2,0.45)})`;
+      ctx.lineWidth = rand(0.8,3); ctx.stroke();
     }
-    for (let i = 0; i < 6; i++) {
-      const y2 = rand(size*0.1, size*0.9); ctx.beginPath(); ctx.moveTo(0, y2);
-      for (let x = 0; x < size; x += 3) ctx.lineTo(x, y2 + rand(-2,2));
-      ctx.strokeStyle = `rgba(${ar},${ag},${ab},${rand(0.08,0.2)})`;
-      ctx.lineWidth = rand(0.5,1.5); ctx.stroke();
+  } else if (mood === "raw") {
+    // Vary grain density with album age
+    const grainCount = 1500 + Math.floor(age * 1000);
+    for (let i = 0; i < grainCount; i++) {
+      const useAlt = i > grainCount * 0.8;
+      const [rr, rg, rb] = useAlt ? [ar2, ag2, ab2] : [ar, ag, ab];
+      ctx.fillStyle = `rgba(${rr+rand(-30,30)},${rg+rand(-20,20)},${rb+rand(-20,20)},${rand(0.01,0.07)})`;
+      ctx.fillRect(rand(0,size), rand(0,size), rand(1,3+complexity), rand(1,3+complexity));
+    }
+    // Tremor lines — vary count and direction
+    const lineCount = 4 + complexity;
+    const horizontal = rand() > 0.3;
+    for (let i = 0; i < lineCount; i++) {
+      const pos = rand(size*0.08, size*0.92);
+      ctx.beginPath();
+      if (horizontal) {
+        ctx.moveTo(0, pos);
+        for (let x = 0; x < size; x += 3) ctx.lineTo(x, pos + rand(-3,3));
+      } else {
+        ctx.moveTo(pos, 0);
+        for (let y = 0; y < size; y += 3) ctx.lineTo(pos + rand(-3,3), y);
+      }
+      const useAlt = i > lineCount * 0.6;
+      ctx.strokeStyle = `rgba(${useAlt ? ar2 : ar},${useAlt ? ag2 : ag},${useAlt ? ab2 : ab},${rand(0.06,0.22)})`;
+      ctx.lineWidth = rand(0.5,1.8); ctx.stroke();
     }
   }
 
-  // Film grain
+  // Per-album "signature mark" — a subtle unique element
+  if (complexity >= 2) {
+    ctx.save();
+    ctx.globalAlpha = rand(0.03, 0.08);
+    ctx.beginPath();
+    const cx = size * rand(0.3, 0.7), cy = size * rand(0.3, 0.7);
+    const r = rand(40, 100);
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.strokeStyle = `rgb(${ar2},${ag2},${ab2})`;
+    ctx.lineWidth = rand(1, 4);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // Decade tint — older records get a warm sepia touch, newer ones stay clean
+  if (record.year < 1975) {
+    ctx.fillStyle = `rgba(${40 + yearTint}, 30, 15, ${0.02 + (1-age)*0.03})`;
+    ctx.fillRect(0, 0, size, size);
+  }
+
+  // Film grain — vary intensity with album age
   const imageData = ctx.getImageData(0, 0, size, size);
   const d = imageData.data;
+  const grainIntensity = 6 + (1-age) * 6; // older = grainier
   for (let i = 0; i < d.length; i += 4) {
-    const n = rand(-1,1) * 8;
+    const n = rand(-1,1) * grainIntensity;
     d[i] = Math.min(255, Math.max(0, d[i]+n));
     d[i+1] = Math.min(255, Math.max(0, d[i+1]+n));
     d[i+2] = Math.min(255, Math.max(0, d[i+2]+n));
