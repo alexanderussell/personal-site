@@ -1296,7 +1296,8 @@ export default function RecordCollection() {
             {result && showResult && (
               <div style={{
                 animation: "fadeUp 0.8s ease-out",
-                maxWidth: 370, margin: "0 auto",
+                maxWidth: 500, width: "100%", padding: "0 20px", boxSizing: "border-box",
+                margin: "0 auto",
               }}>
                 {/* Album art + metadata row */}
                 <div style={{
@@ -1359,7 +1360,7 @@ export default function RecordCollection() {
             }}>
               What else are you feeling?
             </p>
-            <div style={{ maxWidth: 370, margin: "0 auto", display: "flex", gap: 8 }}>
+            <div style={{ maxWidth: 500, width: "100%", padding: "0 20px", boxSizing: "border-box", margin: "0 auto", display: "flex", gap: 8 }}>
               <input
                 type="text"
                 value={askAgainMood}
