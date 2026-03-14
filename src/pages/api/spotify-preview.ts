@@ -67,6 +67,7 @@ export const GET: APIRoute = async ({ url }) => {
           url: bestTrack.preview,
           name: bestTrack.title,
           album: match.title,
+          cover: match.cover_medium || match.cover_big || null,
           spotifyId: spotifyId || null,
         }), {
           headers: { 'Content-Type': 'application/json' },
@@ -87,6 +88,7 @@ export const GET: APIRoute = async ({ url }) => {
           url: directMatch.preview,
           name: directMatch.title,
           album: directMatch.album?.title || album,
+          cover: directMatch.album?.cover_medium || directMatch.album?.cover_big || null,
           spotifyId: spotifyId || null,
         }), {
           headers: { 'Content-Type': 'application/json' },

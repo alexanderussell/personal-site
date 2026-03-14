@@ -3,6 +3,7 @@ import type { APIRoute } from 'astro';
 // Simple in-memory rate limiter (resets on cold start, which is fine for serverless)
 const rateLimit = new Map<string, { count: number; resetAt: number }>();
 const MAX_REQUESTS = 8;
+const MAX_RECENT = 10;
 const WINDOW_MS = 60 * 60 * 1000; // 1 hour
 
 function isRateLimited(ip: string): boolean {
@@ -38,11 +39,16 @@ export const POST: APIRoute = async ({ request }) => {
     }), { status: 429 });
   }
 
-  const { mood, recordList } = await request.json();
+  const { mood, recordList, recentPicks } = await request.json();
 
   if (!mood || !recordList) {
     return new Response(JSON.stringify({ error: 'Missing mood or recordList' }), { status: 400 });
   }
+
+  // Build "avoid repeats" instruction if there are recent picks
+  const recentList = Array.isArray(recentPicks) && recentPicks.length > 0
+    ? recentPicks.slice(-MAX_RECENT).map((a: string) => `"${a}"`).join(', ')
+    : '';
 
   const safeMood = sanitizeMood(mood);
   if (!safeMood) {
@@ -81,6 +87,8 @@ Your records and when you played them:
 ${recordList}
 
 Someone comes to you feeling: "${safeMood}"
+
+${recentList ? `These records were already pulled recently — pick something different this time: ${recentList}. Only repeat one of these if nothing else fits at all.` : ''}
 
 Pick the ONE record that fits best. You MUST choose from the list above — these are the only records in your collection. Do not recommend anything that isn't on your shelf.
 

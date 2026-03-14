@@ -84,8 +84,9 @@ const CURATED_RECORDS = [
   { artist: "Father John Misty", album: "Anthem +3", year: 2020, genre: "Folk", track: "Trouble", tag: "Covered Cat Stevens' Trouble. That's how you know somebody gets it.", spotifyId: "4MsCxk1m3oX1NFKGsVZ2Xm" },
 
   // Van Morrison — additions
-  { artist: "Van Morrison", album: "Tupelo Honey", year: 1971, genre: "Folk Rock", track: "Tupelo Honey", tag: "Picked this up at an estate sale in a box of fifty records. The rest were junk. This one paid for all of them.", spotifyId: "1fRnysUhiECVtlgdFN8Io4" },
+  { artist: "Van Morrison", album: "Magic Time", year: 2005, genre: "Folk Rock", track: "They Sold Me Out", tag: "Picked this up at an estate sale in a box of fifty records. The rest were junk. This one paid for all of them.", spotifyId: "2Y4iYwTsE3Xx5kcI6HCiXi" },
   { artist: "Van Morrison", album: "Moondance", year: 1970, genre: "Folk Rock", track: "And It Stoned Me", tag: "Road trips. Van on the stereo. Nobody needed to say a word.", spotifyId: "3n5iUh2Z6P7cnWins22W0F" },
+  { artist: "Van Morrison", album: "It's Too Late to Stop Now", year: 1974, genre: "Folk Rock", track: "I Believe to My Soul", tag: "Decware warmed up, Fortes humming — sounds like you're right there in the crowd.", spotifyId: "7ycOIZnRNdpnAEaHXZwah4" },
 
   // Rock — more additions
   { artist: "The Band", album: "Music from Big Pink", year: 1968, genre: "Rock", track: "The Weight", tag: "The kind of song you play when you punch the card and head into the weekend.", spotifyId: "0P7DoyGrr4Wp9w5TotEtUC" },
@@ -818,6 +819,18 @@ export default function RecordCollection() {
   const [askAgainMood, setAskAgainMood] = useState("");
   const artCanvasRef = useRef(null);
 
+  // Recently recommended albums — avoid repeats across sessions
+  const RECENT_KEY = "dan_recent_picks";
+  const MAX_RECENT = 10;
+  const getRecentPicks = () => {
+    try { return JSON.parse(localStorage.getItem(RECENT_KEY) || "[]"); } catch { return []; }
+  };
+  const addRecentPick = (album) => {
+    const recent = getRecentPicks().filter(a => a !== album);
+    recent.push(album);
+    localStorage.setItem(RECENT_KEY, JSON.stringify(recent.slice(-MAX_RECENT)));
+  };
+
   // Audio state — lifted from SpotifyPlayer so vinyl controls playback
   const audioRef = useRef(null);
   const [preview, setPreview] = useState(null);
@@ -940,7 +953,7 @@ export default function RecordCollection() {
       const response = await fetch("/api/recommend", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mood: moodText, recordList }),
+        body: JSON.stringify({ mood: moodText, recordList, recentPicks: getRecentPicks() }),
       });
 
       if (response.status === 429) {
@@ -968,6 +981,7 @@ export default function RecordCollection() {
       // If the AI hallucinated a record not in the collection, fall back
       if (!found) throw new Error("Off-shelf");
       setResult({ ...rec, record: found, artist: found.artist, album: found.album, year: found.year });
+      addRecentPick(found.album);
       saveMood(moodText, found.album);
       setTimeout(() => setIsSpinning(true), 400);
       setTimeout(() => setShowResult(true), 1000);
@@ -980,6 +994,7 @@ export default function RecordCollection() {
         reason: "Sometimes you don't overthink it. You pull one off the shelf because the spine catches your eye. Trust that.",
         record: fb,
       });
+      addRecentPick(fb.album);
       saveMood(moodText, fb.album);
       setTimeout(() => setIsSpinning(true), 400);
       setTimeout(() => setShowResult(true), 1000);
@@ -1266,23 +1281,58 @@ export default function RecordCollection() {
                   preload="auto"
                 />
               )}
+              {/* Play status — anchored near the vinyl */}
+              {preview && result && showResult && (
+                <p style={{
+                  position: "absolute", bottom: -14, left: 0, right: 0,
+                  fontSize: 10, color: "#6a5a4a", fontFamily: "'Courier New', monospace",
+                  letterSpacing: 1, textAlign: "center", margin: 0,
+                }}>
+                  {isAudioPlaying ? `Playing: ${preview.name}` : "Hover the vinyl to play"}
+                </p>
+              )}
             </div>
 
             {result && showResult && (
-              <div style={{ textAlign: "center", animation: "fadeUp 0.8s ease-out" }}>
-                <p style={{ fontSize: 12, letterSpacing: 3, textTransform: "uppercase",
-                  color: "#6a5a4a", marginBottom: 8, fontFamily: "'Courier New', monospace" }}>
-                  {result.record?.genre || "Vinyl"} &middot; {result.year}
-                </p>
-                <h2 style={{ fontSize: 24, fontWeight: 400, color: "#efe5d5",
-                  marginBottom: 4, fontStyle: "italic" }}>
-                  {result.album}
-                </h2>
-                <p style={{ fontSize: 15, color: "#9a8a7a", marginBottom: 20 }}>
-                  {result.artist}
-                </p>
+              <div style={{
+                animation: "fadeUp 0.8s ease-out",
+                maxWidth: 370, margin: "0 auto",
+              }}>
+                {/* Album art + metadata row */}
                 <div style={{
-                  maxWidth: 370, margin: "0 auto", padding: "16px 20px",
+                  display: "flex", alignItems: "center",
+                  gap: 16, marginBottom: 16,
+                }}>
+                  {/* Album cover */}
+                  {preview?.cover && (
+                    <img
+                      src={preview.cover}
+                      alt={`${result.album} cover`}
+                      style={{
+                        width: 80, height: 80, borderRadius: 4,
+                        boxShadow: "0 2px 8px rgba(0,0,0,0.25)",
+                        flexShrink: 0, objectFit: "cover",
+                      }}
+                    />
+                  )}
+                  {/* Text info — left aligned, wraps within remaining space */}
+                  <div style={{ textAlign: "left", minWidth: 0 }}>
+                    <p style={{ fontSize: 11, letterSpacing: 3, textTransform: "uppercase",
+                      color: "#6a5a4a", marginBottom: 4, fontFamily: "'Courier New', monospace" }}>
+                      {result.record?.genre || "Vinyl"} &middot; {result.year}
+                    </p>
+                    <h2 style={{ fontSize: 22, fontWeight: 400, color: "#efe5d5",
+                      marginBottom: 2, fontStyle: "italic", wordWrap: "break-word" }}>
+                      {result.album}
+                    </h2>
+                    <p style={{ fontSize: 14, color: "#9a8a7a", margin: 0 }}>
+                      {result.artist}
+                    </p>
+                  </div>
+                </div>
+                {/* Quote */}
+                <div style={{
+                  padding: "16px 20px",
                   background: "rgba(255,255,255,0.015)",
                   borderLeft: "2px solid rgba(180,140,80,0.25)",
                 }}>
@@ -1291,14 +1341,6 @@ export default function RecordCollection() {
                   </p>
                 </div>
                 <SpotifyLinks artist={result.artist} album={result.album} spotifyId={result.record?.spotifyId} />
-                {preview && (
-                  <p style={{
-                    marginTop: 8, fontSize: 10, color: "#6a5a4a", fontFamily: "'Courier New', monospace",
-                    letterSpacing: 1, textAlign: "center",
-                  }}>
-                    {isAudioPlaying ? `Playing: ${preview.name}` : "Hover the vinyl to play"}
-                  </p>
-                )}
               </div>
             )}
           </div>
@@ -1307,17 +1349,17 @@ export default function RecordCollection() {
         {/* "Ask again" section — visible below result */}
         {showResult && result && (
           <div style={{
-            textAlign: "center", marginTop: 40, marginBottom: 8,
+            textAlign: "center", marginTop: 28, marginBottom: 8,
             animation: "fadeUp 0.6s ease-out 0.3s both",
           }}>
-            <div style={{ width: 36, height: 1, background: "#4a3a2a", margin: "0 auto 20px" }} />
+            <div style={{ width: 36, height: 1, background: "#4a3a2a", margin: "0 auto 16px" }} />
             <p style={{
               fontSize: 13, color: "#7a6a5a", fontStyle: "italic",
               fontFamily: "'Georgia', serif", marginBottom: 14,
             }}>
               What else are you feeling?
             </p>
-            <div style={{ maxWidth: 400, margin: "0 auto", display: "flex", gap: 8 }}>
+            <div style={{ maxWidth: 370, margin: "0 auto", display: "flex", gap: 8 }}>
               <input
                 type="text"
                 value={askAgainMood}
@@ -1383,7 +1425,7 @@ export default function RecordCollection() {
           <div style={{ width: 18, height: 1, background: "#4a3a2a", margin: "0 auto 12px" }} />
           <p style={{ fontSize: 12, color: "#6a5a4a", fontFamily: "'Courier New', monospace",
             letterSpacing: 1.5, lineHeight: 1.8 }}>
-            For Daniel Mark Russell<br />Brick mason. Audiophile. Father.
+            For Daniel Mark Russell<br />Brick Mason. Husband. Audiophile. Father.
           </p>
         </div>
       </div>
