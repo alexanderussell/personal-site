@@ -59,12 +59,13 @@ const timeline: TimelineEntry[] = [
     </p>
     <p class="font-mono text-base leading-7 text-text-secondary fade-in-hidden" data-stagger>
       Before that, I spent years inside agencies, dev shops, and startups — wearing every hat, shipping everything from
-      brand systems to full product builds. Somewhere in the middle I started a design collective called <a href="https://collectivelymade.com" target="_blank" rel="noopener noreferrer" class="font-semibold prose dark:prose-invert hover:underline">Collectively Made</a>.
+      brand systems to full product builds. Somewhere in the middle I started a design collective called <a href="https://collectivelymade.com" id="cm-link" target="_blank" rel="noopener noreferrer" class="font-semibold prose dark:prose-invert hover:underline">Collectively Made</a>.
     </p>
   </section>
 
-  <!-- Marriott tooltip -->
-  <div class="marriott-tooltip" id="marriott-tooltip">🏨 yes, the hotel people</div>
+  <!-- Tooltips -->
+  <div class="hover-tooltip" id="marriott-tooltip"></div>
+  <div class="hover-tooltip" id="cm-tooltip"></div>
 
   <script>
     // ── Stagger animate all [data-stagger] and [data-timeline-animate] ──
@@ -84,22 +85,39 @@ const timeline: TimelineEntry[] = [
       delay += 60;
     });
 
-    // ── Marriott tooltip ──
-    const link = document.getElementById('marriott-link')!;
-    const tooltip = document.getElementById('marriott-tooltip')!;
+    // ── Rotating tooltips ──
+    function setupTooltip(linkId: string, tooltipId: string, phrases: string[]) {
+      const link = document.getElementById(linkId)!;
+      const tooltip = document.getElementById(tooltipId)!;
+      let index = 0;
 
-    link.addEventListener('mouseenter', () => {
-      tooltip.classList.add('is-visible');
-    });
+      link.addEventListener('mouseenter', () => {
+        tooltip.textContent = phrases[index % phrases.length];
+        index++;
+        tooltip.classList.add('is-visible');
+      });
 
-    link.addEventListener('mouseleave', () => {
-      tooltip.classList.remove('is-visible');
-    });
+      link.addEventListener('mouseleave', () => {
+        tooltip.classList.remove('is-visible');
+      });
 
-    link.addEventListener('mousemove', (e: MouseEvent) => {
-      tooltip.style.left = `${e.clientX + 12}px`;
-      tooltip.style.top = `${e.clientY - 32}px`;
-    });
+      link.addEventListener('mousemove', (e: MouseEvent) => {
+        tooltip.style.left = `${e.clientX + 12}px`;
+        tooltip.style.top = `${e.clientY - 32}px`;
+      });
+    }
+
+    setupTooltip('marriott-link', 'marriott-tooltip', [
+      '🏨 yes, the hotel people',
+      '🛎️ the towel-folding empire',
+      '✈️ points guy paradise',
+    ]);
+
+    setupTooltip('cm-link', 'cm-tooltip', [
+      '🤝 we made things, collectively',
+      '🧥 a bunch of designers in a trench coat',
+      '💭 the "we should start a studio" phase',
+    ]);
   </script>
 
   <!-- Timeline -->
