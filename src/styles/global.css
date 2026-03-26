@@ -425,3 +425,105 @@
     }
   }
 }
+
+/* ── Subscribe form ── */
+.subscribe-form {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.subscribe-input {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  background: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+  padding: 8px 12px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.subscribe-input::placeholder {
+  color: var(--color-text-secondary);
+}
+
+.subscribe-input:focus {
+  border-color: var(--color-accent);
+}
+
+.subscribe-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.subscribe-button {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+  padding: 8px 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 100px;
+}
+
+.subscribe-button:hover:not(:disabled) {
+  color: var(--color-text-primary);
+  border-color: var(--color-accent);
+}
+
+.subscribe-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.subscribe-spinner {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--color-border);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: subscribe-spin 0.6s linear infinite;
+}
+
+@keyframes subscribe-spin {
+  to { transform: rotate(360deg); }
+}
+
+.subscribe-message {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--color-text-secondary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.subscribe-message[data-status="success"] {
+  color: var(--color-accent);
+}
+
+.subscribe-retry {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  background: none;
+  border: none;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 0;
+}
