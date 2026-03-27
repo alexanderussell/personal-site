@@ -1,0 +1,268 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="404 — Alex Russell" description="Page not found.">
+  <div class="lost-page">
+    <div class="lost-scene" aria-hidden="true">
+      <!-- Drifting glyphs -->
+      <span class="lost-glyph lost-glyph--1">404</span>
+      <span class="lost-glyph lost-glyph--2">/</span>
+      <span class="lost-glyph lost-glyph--3">~</span>
+      <span class="lost-glyph lost-glyph--4">?</span>
+      <span class="lost-glyph lost-glyph--5">_</span>
+      <span class="lost-glyph lost-glyph--6">.</span>
+      <span class="lost-glyph lost-glyph--7">...</span>
+      <span class="lost-glyph lost-glyph--8">0</span>
+
+      <!-- Floating broken window -->
+      <div class="lost-window">
+        <div class="lost-window__bar">
+          <span class="lost-window__dot"></span>
+          <span class="lost-window__dot"></span>
+          <span class="lost-window__dot"></span>
+        </div>
+        <div class="lost-window__body">
+          <div class="lost-window__line"></div>
+          <div class="lost-window__line lost-window__line--short"></div>
+          <div class="lost-window__line lost-window__line--med"></div>
+          <div class="lost-window__cursor">_</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lost-content fade-in-hidden" data-lost-animate>
+      <h1 class="lost-title">Nothing here</h1>
+      <p class="lost-body">
+        This page doesn't exist — or it used to and moved on.
+      </p>
+      <a href="/" class="lost-link">Back to home</a>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  const items = document.querySelectorAll('[data-lost-animate]');
+  let delay = 400;
+  items.forEach((item) => {
+    setTimeout(() => item.classList.add('is-visible'), delay);
+    delay += 140;
+  });
+</script>
+
+<style>
+  .lost-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 3rem 1rem 6rem;
+    min-height: 60vh;
+    justify-content: center;
+  }
+
+  /* ── Scene ── */
+  .lost-scene {
+    position: relative;
+    width: 260px;
+    height: 220px;
+    margin-bottom: 2rem;
+    perspective: 500px;
+  }
+
+  /* ── Floating window ── */
+  .lost-window {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 120px;
+    transform: translate(-50%, -50%) rotateY(-8deg) rotateX(4deg);
+    transform-style: preserve-3d;
+    animation: window-float 4.5s ease-in-out infinite;
+  }
+
+  .lost-window__bar {
+    display: flex;
+    gap: 4px;
+    padding: 5px 8px;
+    background: var(--color-border);
+    border-radius: 5px 5px 0 0;
+    opacity: 0.6;
+  }
+
+  .lost-window__dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.25;
+  }
+
+  .lost-window__body {
+    background: var(--color-bg-secondary);
+    border: 1px solid var(--color-border);
+    border-top: none;
+    border-radius: 0 0 5px 5px;
+    padding: 12px 10px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .lost-window__line {
+    height: 2px;
+    background: currentColor;
+    opacity: 0.12;
+    border-radius: 1px;
+    width: 80%;
+  }
+
+  .lost-window__line--short { width: 45%; }
+  .lost-window__line--med { width: 65%; }
+
+  .lost-window__cursor {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    opacity: 0.2;
+    margin-top: 4px;
+    animation: cursor-blink 1s step-end infinite;
+  }
+
+  /* ── Drifting glyphs ── */
+  .lost-glyph {
+    position: absolute;
+    font-family: var(--font-mono);
+    opacity: 0;
+    pointer-events: none;
+    color: var(--color-text-secondary);
+    animation: glyph-drift 7s ease-in-out infinite;
+  }
+
+  .lost-glyph--1 {
+    top: 5%;
+    left: 8%;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    animation-delay: 0s;
+  }
+
+  .lost-glyph--2 {
+    top: 70%;
+    right: 10%;
+    font-size: 18px;
+    animation-delay: 1.2s;
+  }
+
+  .lost-glyph--3 {
+    top: 15%;
+    right: 5%;
+    font-size: 14px;
+    animation-delay: 2.5s;
+  }
+
+  .lost-glyph--4 {
+    bottom: 10%;
+    left: 12%;
+    font-size: 16px;
+    animation-delay: 3.8s;
+  }
+
+  .lost-glyph--5 {
+    top: 45%;
+    left: 2%;
+    font-size: 12px;
+    animation-delay: 0.8s;
+  }
+
+  .lost-glyph--6 {
+    top: 30%;
+    right: 0%;
+    font-size: 20px;
+    animation-delay: 4.2s;
+  }
+
+  .lost-glyph--7 {
+    bottom: 25%;
+    right: 15%;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    animation-delay: 1.8s;
+  }
+
+  .lost-glyph--8 {
+    bottom: 5%;
+    left: 35%;
+    font-size: 13px;
+    animation-delay: 3s;
+  }
+
+  /* ── Content ── */
+  .lost-content {
+    max-width: 320px;
+  }
+
+  .lost-title {
+    font-family: var(--font-heading);
+    font-size: clamp(1.8rem, 5vw, 2.5rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--color-text-primary);
+    margin: 0 0 0.6rem;
+  }
+
+  .lost-body {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+    margin: 0 0 1.5rem;
+  }
+
+  .lost-link {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    padding: 6px 16px;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .lost-link:hover {
+    color: var(--color-text-primary);
+    border-color: var(--color-accent);
+  }
+
+  /* ── Animations ── */
+  @keyframes window-float {
+    0%, 100% { transform: translate(-50%, -50%) rotateY(-8deg) rotateX(4deg) translateY(0); }
+    50% { transform: translate(-50%, -50%) rotateY(-8deg) rotateX(4deg) translateY(-10px); }
+  }
+
+  @keyframes cursor-blink {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 0; }
+  }
+
+  @keyframes glyph-drift {
+    0% { opacity: 0; transform: translateY(8px) scale(0.9); }
+    12% { opacity: 0.3; transform: translateY(0) scale(1); }
+    35% { opacity: 0.3; transform: translateY(-5px) scale(1); }
+    50% { opacity: 0; transform: translateY(-12px) scale(0.9); }
+    100% { opacity: 0; transform: translateY(8px) scale(0.9); }
+  }
+
+  :where(.dark) .lost-window__body {
+    box-shadow: 0 0 20px oklch(100% 0 0 / 0.03);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .lost-window { animation: none; }
+    .lost-window__cursor { animation: none; }
+    .lost-glyph { animation: none; opacity: 0.15; }
+  }
+</style>
