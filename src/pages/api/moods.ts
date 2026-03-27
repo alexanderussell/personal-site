@@ -1,46 +1,39 @@
 import type { APIRoute } from 'astro';
-import { createClient } from '@supabase/supabase-js';
+import { ConvexHttpClient } from 'convex/browser';
+import { api } from '../../../convex/_generated/api';
 
-function getSupabase() {
-  return createClient(
-    import.meta.env.SUPABASE_URL,
-    import.meta.env.SUPABASE_ANON_KEY
-  );
+function getConvex() {
+  return new ConvexHttpClient(import.meta.env.CONVEX_URL);
 }
 
 export const GET: APIRoute = async () => {
-  const supabase = getSupabase();
+  const convex = getConvex();
 
-  const { data, error } = await supabase
-    .from('moods')
-    .select('mood, album, created_at')
-    .order('created_at', { ascending: false })
-    .limit(200);
-
-  if (error) {
+  try {
+    const moods = await convex.query(api.moods.list);
+    return new Response(JSON.stringify({ moods }), {
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch {
     return new Response(JSON.stringify({ moods: [] }), {
       headers: { 'Content-Type': 'application/json' },
     });
   }
-
-  return new Response(JSON.stringify({ moods: data || [] }), {
-    headers: { 'Content-Type': 'application/json' },
-  });
 };
 
 export const POST: APIRoute = async ({ request }) => {
-  const supabase = getSupabase();
   const { mood, album } = await request.json();
 
   if (!mood) {
     return new Response(JSON.stringify({ error: 'Missing mood' }), { status: 400 });
   }
 
-  const { error } = await supabase
-    .from('moods')
-    .insert({ mood, album });
+  const convex = getConvex();
 
-  if (error) {
+  try {
+    await convex.mutation(api.moods.add, { mood, album });
+  } catch (err) {
+    console.error('Convex moods error:', err);
     return new Response(JSON.stringify({ error: 'Failed to save' }), { status: 500 });
   }
 
