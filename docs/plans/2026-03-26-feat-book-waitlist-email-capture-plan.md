@@ -10,7 +10,7 @@ origin: docs/brainstorms/2026-03-26-book-waitlist-brainstorm.md
 
 ## Overview
 
-Add a book interest-validation system to the personal site: a `/book` landing page with email capture, a homepage CTA button linking to it, and a footer newsletter signup on all log/guide/experiment pages. All signups are stored via **Resend** (contact management + transactional welcome email) with **Supabase** used for duplicate detection. Two separate Resend segments distinguish book waitlist vs. newsletter subscribers.
+Add a book interest-validation system to the personal site: a `/book` landing page with email capture, a homepage CTA button linking to it, and a footer newsletter signup on all log/guide/experiment pages. All signups are stored via **Resend** (contact management + transactional welcome email) with **Convex** used for subscriber storage and duplicate detection. Two separate Resend segments distinguish book waitlist vs. newsletter subscribers.
 
 **Goal:** Reach enough signups to validate demand before committing to writing the book.
 

@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { Resend } from 'resend';
-import { createClient } from '@supabase/supabase-js';
+import { ConvexHttpClient } from 'convex/browser';
+import { api } from '../../../convex/_generated/api';
 import { BookWaitlistWelcome } from '../../emails/BookWaitlistWelcome';
 import { NewsletterWelcome } from '../../emails/NewsletterWelcome';
 import * as React from 'react';
@@ -28,11 +29,8 @@ function getResend() {
   return new Resend(import.meta.env.RESEND_API_KEY);
 }
 
-function getSupabase() {
-  return createClient(
-    import.meta.env.SUPABASE_URL,
-    import.meta.env.SUPABASE_ANON_KEY
-  );
+function getConvex() {
+  return new ConvexHttpClient(import.meta.env.CONVEX_URL);
 }
 
 function isValidEmail(email: string): boolean {
@@ -79,96 +77,62 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     );
   }
 
-  const supabase = getSupabase();
+  // Insert into Convex (mutation handles duplicate check atomically)
+  const convex = getConvex();
+  let result: { status: 'subscribed' | 'already_subscribed' };
 
-  // Check for duplicate
-  const { data: existing, error: lookupError } = await supabase
-    .from('subscribers')
-    .select('id')
-    .eq('email', email)
-    .eq('list', list)
-    .maybeSingle();
-
-  if (lookupError) {
-    console.error('Supabase lookup error:', lookupError);
+  try {
+    result = await convex.mutation(api.subscribers.add, { email, list });
+  } catch (err) {
+    console.error('Convex mutation error:', err);
     return new Response(
       JSON.stringify({ error: 'Something went wrong. Try again.' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
 
-  if (existing) {
+  if (result.status === 'already_subscribed') {
     return new Response(
       JSON.stringify({ ok: true, status: 'already_subscribed' }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
   }
 
-  // Insert into Supabase
-  const { error: insertError } = await supabase
-    .from('subscribers')
-    .insert({ email, list });
-
-  if (insertError) {
-    // Handle race condition: unique constraint violation means already subscribed
-    if (insertError.code === '23505') {
-      return new Response(
-        JSON.stringify({ ok: true, status: 'already_subscribed' }),
-        { status: 200, headers: { 'Content-Type': 'application/json' } }
-      );
-    }
-    console.error('Supabase insert error:', insertError);
-    return new Response(
-      JSON.stringify({ error: 'Something went wrong. Try again.' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
-  }
-
+  // New subscriber — sync to Resend + send welcome email
   const resend = getResend();
 
-  // Add contact to the appropriate Resend segment
   const segmentId =
     list === 'book'
       ? import.meta.env.RESEND_BOOK_SEGMENT_ID
       : import.meta.env.RESEND_NEWSLETTER_SEGMENT_ID;
 
-  const { error: contactError } = await resend.contacts.create({
-    email,
-    unsubscribed: false,
-    ...(segmentId && segmentId !== 'seg_placeholder_replace_with_book_segment_id' && segmentId !== 'seg_placeholder_replace_with_newsletter_segment_id'
-      ? { segments: [{ id: segmentId }] }
-      : {}),
-  });
-
-  if (contactError) {
-    console.error('Resend contact error:', contactError);
-    // Don't fail the request — the subscriber is saved in Supabase
-    // Resend sync can be retried manually if needed
-  }
-
-  // Send welcome email
   const fromEmail = import.meta.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
   const emailTemplate =
     list === 'book'
       ? React.createElement(BookWaitlistWelcome)
       : React.createElement(NewsletterWelcome);
-
   const subject =
     list === 'book'
       ? "You're on the list — Alex Russell"
       : "You're in — Alex Russell";
 
-  const { error: emailError } = await resend.emails.send({
-    from: `Alex Russell <${fromEmail}>`,
-    to: email,
-    subject,
-    react: emailTemplate,
-  });
+  const [{ error: contactError }, { error: emailError }] = await Promise.all([
+    resend.contacts.create({
+      email,
+      unsubscribed: false,
+      ...(segmentId ? { segments: [{ id: segmentId }] } : {}),
+    }),
+    resend.emails.send({
+      from: `Alex Russell <${fromEmail}>`,
+      replyTo: 'alex@collectivelymade.com',
+      to: email,
+      subject,
+      react: emailTemplate,
+    }),
+  ]);
 
-  if (emailError) {
-    console.error('Resend email error:', emailError);
-    // Don't fail — subscriber is saved, email is best-effort
-  }
+  if (contactError) console.error('Resend contact error:', contactError);
+  if (emailError) console.error('Resend email error:', emailError);
 
   return new Response(
     JSON.stringify({ ok: true, status: 'subscribed' }),

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 
 type Status = 'idle' | 'loading' | 'success' | 'already_subscribed' | 'error';
 
@@ -16,7 +16,7 @@ export function SubscribeForm({ list }: Props) {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<Status>('idle');
 
-  const handleSubmit = useCallback(async () => {
+  async function handleSubmit() {
     const trimmed = email.trim();
     if (!trimmed) return;
 
@@ -42,7 +42,7 @@ export function SubscribeForm({ list }: Props) {
     } catch {
       setStatus('error');
     }
-  }, [email, list]);
+  }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') handleSubmit();
