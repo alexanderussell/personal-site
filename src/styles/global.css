@@ -22,7 +22,7 @@
   --color-bg-secondary: oklch(93% .005 48);
   --color-text-primary: oklch(21.6% .006 56.043);
   --color-text-secondary: color-mix(in srgb, oklch(21.6% .006 56.043) 60%, transparent);
-  --color-accent: #0d9b6d;
+  --color-accent: oklch(15% .006 56);
   --color-border: oklch(88% .012 58);
 }
 
@@ -32,7 +32,7 @@
     --color-bg-secondary: oklch(26.8% .007 34.298);
     --color-text-primary: oklch(92.3% .003 48.717);
     --color-text-secondary: color-mix(in srgb, oklch(92.3% .003 48.717) 70%, transparent);
-    --color-accent: #2eefb5;
+    --color-accent: oklch(97% .003 56);
     --color-border: oklch(44.4% .014 55);
   }
 
@@ -47,7 +47,7 @@
 
   ::selection {
     background-color: var(--color-accent);
-    color: white;
+    color: var(--color-bg-primary);
   }
 }
 
@@ -437,12 +437,12 @@
   flex: 1;
   min-width: 0;
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: 12px;
   background: var(--color-bg-secondary);
   color: var(--color-text-primary);
   border: 1px solid var(--color-border);
-  border-radius: 3px;
-  padding: 8px 12px;
+  border-radius: 6px;
+  padding: 6px 10px;
   outline: none;
   transition: border-color 0.2s;
 }
@@ -453,6 +453,11 @@
 
 .subscribe-input:focus {
   border-color: var(--color-accent);
+  box-shadow: 0 0 8px oklch(0% 0 0 / 0.08);
+}
+
+:where(.dark) .subscribe-input:focus {
+  box-shadow: 0 0 10px oklch(100% 0 0 / 0.1);
 }
 
 .subscribe-input:disabled {
@@ -462,25 +467,30 @@
 
 .subscribe-button {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-text-secondary);
   background: transparent;
   border: 1px solid var(--color-border);
-  border-radius: 3px;
-  padding: 8px 18px;
+  border-radius: 6px;
+  padding: 6px 14px;
   cursor: pointer;
   transition: all 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 100px;
+  min-width: 88px;
 }
 
 .subscribe-button:hover:not(:disabled) {
   color: var(--color-text-primary);
   border-color: var(--color-accent);
+  box-shadow: 0 0 8px oklch(0% 0 0 / 0.08);
+}
+
+:where(.dark) .subscribe-button:hover:not(:disabled) {
+  box-shadow: 0 0 10px oklch(100% 0 0 / 0.1);
 }
 
 .subscribe-button:disabled {
