@@ -99,40 +99,47 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
   }
 
   // New subscriber — sync to Resend + send welcome email
-  const resend = getResend();
+  // Resend is best-effort: if it fails, the subscriber is still saved in Convex
+  try {
+    const resend = getResend();
 
-  const segmentId =
-    list === 'book'
-      ? import.meta.env.RESEND_BOOK_SEGMENT_ID
-      : import.meta.env.RESEND_NEWSLETTER_SEGMENT_ID;
+    const rawSegmentId =
+      list === 'book'
+        ? import.meta.env.RESEND_BOOK_SEGMENT_ID
+        : import.meta.env.RESEND_NEWSLETTER_SEGMENT_ID;
+    // Skip segments if the ID is a placeholder or missing
+    const segmentId = rawSegmentId?.startsWith('seg_placeholder') ? undefined : rawSegmentId;
 
-  const fromEmail = import.meta.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
-  const emailTemplate =
-    list === 'book'
-      ? React.createElement(BookWaitlistWelcome)
-      : React.createElement(NewsletterWelcome);
-  const subject =
-    list === 'book'
-      ? "You're on the list — Alex Russell"
-      : "You're in — Alex Russell";
+    const fromEmail = import.meta.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+    const emailTemplate =
+      list === 'book'
+        ? React.createElement(BookWaitlistWelcome)
+        : React.createElement(NewsletterWelcome);
+    const subject =
+      list === 'book'
+        ? "You're on the list — Alex Russell"
+        : "You're in — Alex Russell";
 
-  const [{ error: contactError }, { error: emailError }] = await Promise.all([
-    resend.contacts.create({
-      email,
-      unsubscribed: false,
-      ...(segmentId ? { segments: [{ id: segmentId }] } : {}),
-    }),
-    resend.emails.send({
-      from: `Alex Russell <${fromEmail}>`,
-      replyTo: 'alex@collectivelymade.com',
-      to: email,
-      subject,
-      react: emailTemplate,
-    }),
-  ]);
+    const [{ error: contactError }, { error: emailError }] = await Promise.all([
+      resend.contacts.create({
+        email,
+        unsubscribed: false,
+        ...(segmentId ? { segments: [{ id: segmentId }] } : {}),
+      }),
+      resend.emails.send({
+        from: `Alex Russell <${fromEmail}>`,
+        replyTo: 'alex@collectivelymade.com',
+        to: email,
+        subject,
+        react: emailTemplate,
+      }),
+    ]);
 
-  if (contactError) console.error('Resend contact error:', contactError);
-  if (emailError) console.error('Resend email error:', emailError);
+    if (contactError) console.error('Resend contact error:', contactError);
+    if (emailError) console.error('Resend email error:', emailError);
+  } catch (err) {
+    console.error('Resend failed (subscriber saved, email skipped):', err);
+  }
 
   return new Response(
     JSON.stringify({ ok: true, status: 'subscribed' }),

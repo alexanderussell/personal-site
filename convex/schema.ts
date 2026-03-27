@@ -8,4 +8,9 @@ export default defineSchema({
   })
     .index("by_email_list", ["email", "list"])
     .index("by_list", ["list"]),
+
+  moods: defineTable({
+    mood: v.string(),
+    album: v.optional(v.string()),
+  }),
 });
