@@ -38,7 +38,7 @@ export const POST: APIRoute = async ({ request }) => {
   const authToken = import.meta.env.NEWSLETTER_SEND_TOKEN;
   const providedToken = request.headers.get('x-send-token');
 
-  if (authToken && providedToken !== authToken) {
+  if (!authToken || providedToken !== authToken) {
     return new Response(
       JSON.stringify({ error: 'Unauthorized' }),
       { status: 401, headers: { 'Content-Type': 'application/json' } }
@@ -60,6 +60,14 @@ export const POST: APIRoute = async ({ request }) => {
   if (!slug || !type || !['log', 'guide', 'experiment'].includes(type)) {
     return new Response(
       JSON.stringify({ error: 'slug and type (log|guide|experiment) are required' }),
+      { status: 400, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
+
+  // Prevent path traversal — slugs must be lowercase alphanumeric + hyphens only
+  if (!/^[a-z0-9-]+$/.test(slug)) {
+    return new Response(
+      JSON.stringify({ error: 'Invalid slug' }),
       { status: 400, headers: { 'Content-Type': 'application/json' } }
     );
   }

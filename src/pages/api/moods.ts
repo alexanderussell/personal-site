@@ -22,10 +22,24 @@ export const GET: APIRoute = async () => {
 };
 
 export const POST: APIRoute = async ({ request }) => {
-  const { mood, album } = await request.json();
+  let body: { mood?: string; album?: string };
+  try {
+    body = await request.json();
+  } catch {
+    return new Response(
+      JSON.stringify({ error: 'Invalid request body' }),
+      { status: 400, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
 
-  if (!mood) {
-    return new Response(JSON.stringify({ error: 'Missing mood' }), { status: 400 });
+  const { mood, album } = body;
+
+  if (!mood || typeof mood !== 'string' || mood.length > 500) {
+    return new Response(JSON.stringify({ error: 'Missing or invalid mood' }), { status: 400 });
+  }
+
+  if (album && (typeof album !== 'string' || album.length > 500)) {
+    return new Response(JSON.stringify({ error: 'Invalid album' }), { status: 400 });
   }
 
   const convex = getConvex();
