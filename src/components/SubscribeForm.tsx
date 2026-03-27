@@ -44,10 +44,6 @@ export function SubscribeForm({ list }: Props) {
     }
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') handleSubmit();
-  };
-
   if (status === 'success' || status === 'already_subscribed' || status === 'error') {
     return (
       <p className="subscribe-message" data-status={status}>
@@ -68,23 +64,22 @@ export function SubscribeForm({ list }: Props) {
   const isLoading = status === 'loading';
 
   return (
-    <div className="subscribe-form">
+    <form className="subscribe-form" onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
       <input
         type="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        onKeyDown={handleKeyDown}
         placeholder="your@email.com"
         disabled={isLoading}
         className="subscribe-input"
         autoComplete="email"
         inputMode="email"
+        required
       />
       <button
-        onClick={handleSubmit}
         disabled={isLoading || !email.trim()}
         className="subscribe-button"
-        type="button"
+        type="submit"
       >
         {isLoading ? (
           <span className="subscribe-spinner" aria-label="Submitting…" />
@@ -92,6 +87,6 @@ export function SubscribeForm({ list }: Props) {
           'Notify me'
         )}
       </button>
-    </div>
+    </form>
   );
 }

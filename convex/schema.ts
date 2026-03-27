@@ -13,4 +13,9 @@ export default defineSchema({
     mood: v.string(),
     album: v.optional(v.string()),
   }),
+
+  sentPosts: defineTable({
+    slug: v.string(),
+    type: v.string(),
+  }).index("by_slug_type", ["slug", "type"]),
 });
