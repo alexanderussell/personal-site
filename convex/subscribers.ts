@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { mutation } from "./_generated/server";
+import { mutation, query } from "./_generated/server";
 
 export const add = mutation({
   args: {
@@ -24,5 +24,15 @@ export const add = mutation({
     });
 
     return { status: "subscribed" as const };
+  },
+});
+
+export const listByList = query({
+  args: { list: v.union(v.literal("book"), v.literal("newsletter")) },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("subscribers")
+      .withIndex("by_list", (q) => q.eq("list", args.list))
+      .collect();
   },
 });
