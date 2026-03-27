@@ -3,7 +3,6 @@ export const prerender = true;
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import TimelineItem from '../components/TimelineItem.astro';
-import { SubscribeForm } from '../components/SubscribeForm';
 const allLogs = await getCollection('logs', ({ data }) => !data.draft);
 const allGuides = await getCollection('guides', ({ data }) => !data.draft);
 const allExperiments = await getCollection('experiments', ({ data }) => !data.draft);
@@ -121,15 +120,11 @@ const timeline: TimelineEntry[] = [
     ]);
   </script>
 
-  <!-- CTA row -->
-  <div class="cta-row fade-in-hidden" data-stagger>
-    <div class="cta-newsletter-card">
-      <p class="cta-newsletter-label">Logs Newsletter</p>
-      <SubscribeForm list="newsletter" client:load />
-    </div>
+  <!-- CTA row — extensible flex container for homepage buttons -->
+  <div class="flex gap-3 mt-16 fade-in-hidden" data-stagger>
     <a
       href="/book"
-      class="font-mono text-[11px] uppercase tracking-[0.12em] text-text-secondary border border-border px-3.5 py-1.5 rounded-md hover:text-text-primary hover:border-accent transition-all duration-300 self-start whitespace-nowrap"
+      class="font-mono text-[11px] uppercase tracking-[0.12em] text-text-secondary border border-border px-3.5 py-1.5 rounded-md hover:text-text-primary hover:border-accent transition-all duration-300"
     >
       My Book
     </a>
