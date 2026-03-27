@@ -120,6 +120,16 @@ const timeline: TimelineEntry[] = [
     ]);
   </script>
 
+  <!-- CTA row — extensible flex container for homepage buttons -->
+  <div class="flex gap-3 mt-16 fade-in-hidden" data-stagger>
+    <a
+      href="/book"
+      class="font-mono text-[11px] uppercase tracking-[0.12em] text-text-secondary border border-border px-3.5 py-1.5 rounded-md hover:text-text-primary hover:border-accent transition-all duration-300"
+    >
+      My Book
+    </a>
+  </div>
+
   <!-- Timeline -->
   {timeline.length > 0 && (
     <section class="py-16" id="timeline-section">

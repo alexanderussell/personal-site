@@ -1,5 +1,6 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import { SubscribeForm } from '../components/SubscribeForm';
 
 interface Props {
   title: string;
@@ -131,11 +132,48 @@ const formattedNumber =
       <div class="prose dark:prose-invert mx-auto mt-8 px-4 md:mt-12 lg:mt-16 xl:mt-20">
         <slot />
       </div>
+
+      <div class="newsletter-footer">
+        <div class="newsletter-footer__divider"></div>
+        <p class="newsletter-footer__label">Stay in the loop</p>
+        <p class="newsletter-footer__body">
+          Get notified when I publish new logs and guides.
+        </p>
+        <SubscribeForm list="newsletter" client:load />
+      </div>
     </div>
   </article>
 </BaseLayout>
 
 <style>
+  .newsletter-footer {
+    margin-top: 4rem;
+    padding: 0 1rem;
+  }
+
+  .newsletter-footer__divider {
+    height: 1px;
+    background: var(--color-border);
+    margin-bottom: 2rem;
+  }
+
+  .newsletter-footer__label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    margin: 0 0 0.5rem;
+  }
+
+  .newsletter-footer__body {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    margin: 0 0 1.25rem;
+    line-height: 1.6;
+  }
+
   .post-type-badge__icon {
     line-height: 0;
   }
