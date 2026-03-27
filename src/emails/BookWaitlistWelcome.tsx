@@ -20,12 +20,14 @@ export function BookWaitlistWelcome() {
         <Container style={container}>
           <Text style={heading}>You're on the list.</Text>
           <Text style={paragraph}>
-            Thanks for signing up. I'm working on a book and wanted to gauge
-            interest before committing. The fact that you're here means a lot.
+            I'm building a framework for making UX decisions in the era of AI —
+            part book, part course, part hands-on toolkit. It's rooted in the
+            workflows and skills I use every day to ship real products with AI.
           </Text>
           <Text style={paragraph}>
-            I'll reach out when there's something worth sharing — no spam, no
-            filler. Just a note when the book is real.
+            This is still taking shape, and your interest helps me know it's
+            worth building. I'll reach out when there's something concrete — no
+            spam, no filler.
           </Text>
           <Hr style={hr} />
           <Text style={footer}>
