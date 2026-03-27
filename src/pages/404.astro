@@ -75,8 +75,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 120px;
-    transform: translate(-50%, -50%) rotateY(-8deg) rotateX(4deg);
+    width: 160px;
+    transform: translate(-50%, -50%) rotateY(10deg) rotateX(-4deg);
     transform-style: preserve-3d;
     animation: window-float 4.5s ease-in-out infinite;
   }
@@ -239,8 +239,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   /* ── Animations ── */
   @keyframes window-float {
-    0%, 100% { transform: translate(-50%, -50%) rotateY(-8deg) rotateX(4deg) translateY(0); }
-    50% { transform: translate(-50%, -50%) rotateY(-8deg) rotateX(4deg) translateY(-10px); }
+    0%, 100% { transform: translate(-50%, -50%) rotateY(10deg) rotateX(-4deg) translateY(0); }
+    50% { transform: translate(-50%, -50%) rotateY(10deg) rotateX(-4deg) translateY(-10px); }
   }
 
   @keyframes cursor-blink {
