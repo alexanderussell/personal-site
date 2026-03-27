@@ -11,8 +11,8 @@ const sharedSchema = z.object({
   draft: z.boolean().default(false),
 });
 
-const logs = defineCollection({
-  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/logs' }),
+const notes = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/notes' }),
   schema: sharedSchema,
 });
 
@@ -26,4 +26,4 @@ const experiments = defineCollection({
   schema: sharedSchema,
 });
 
-export const collections = { logs, guides, experiments };
+export const collections = { notes, guides, experiments };

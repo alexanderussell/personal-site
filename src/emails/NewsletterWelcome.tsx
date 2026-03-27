@@ -20,7 +20,7 @@ export function NewsletterWelcome() {
         <Container style={container}>
           <Text style={heading}>You're in.</Text>
           <Text style={paragraph}>
-            Thanks for subscribing. I write logs, guides, and the occasional
+            Thanks for subscribing. I write notes, guides, and the occasional
             experiment — things I'm building, figuring out, or just find worth
             documenting.
           </Text>

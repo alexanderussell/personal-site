@@ -3,7 +3,7 @@ import ExperimentRenderer from './ExperimentRenderer.astro';
 
 interface Props {
   href: string;
-  type: 'log' | 'guide' | 'experiment';
+  type: 'note' | 'guide' | 'experiment';
   title?: string;
   description?: string;
   date: Date;
@@ -94,7 +94,7 @@ const {
     <a href={href} class={`timeline-item timeline-item--${type} group grid grid-cols-1 sm:grid-cols-[2rem_1fr] gap-x-4 gap-y-0`}>
       <div class="timeline-rail hidden sm:block">
         <span class="timeline-icon" aria-hidden="true">
-          {type === 'log' && (
+          {type === 'note' && (
             <svg viewBox="0 0 24 24" class="size-5" fill="currentColor"><path d="M8 2h12v2H8zM6 4h2v16H6zm14 0h2v16h-2zM4 20h16v2H4zm-2-9h2v9H2zm2-2h2v2H4zm6-3h8v2h-8zm0 4h8v2h-8zm0-2h2v2h-2zm6 0h2v2h-2zm-6 5h8v2h-8zm0 3h4v2h-4z"/></svg>
           )}
           {type === 'guide' && (
@@ -111,7 +111,7 @@ const {
         <!-- Mobile: icon + type inline, stacked above title -->
         <div class="flex items-center gap-2 sm:hidden">
           <span class="timeline-icon-inline text-text-secondary" aria-hidden="true">
-            {type === 'log' && (
+            {type === 'note' && (
               <svg viewBox="0 0 24 24" class="size-4" fill="currentColor"><path d="M8 2h12v2H8zM6 4h2v16H6zm14 0h2v16h-2zM4 20h16v2H4zm-2-9h2v9H2zm2-2h2v2H4zm6-3h8v2h-8zm0 4h8v2h-8zm0-2h2v2h-2zm6 0h2v2h-2zm-6 5h8v2h-8zm0 3h4v2h-4z"/></svg>
             )}
             {type === 'guide' && (

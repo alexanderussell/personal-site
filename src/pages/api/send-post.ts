@@ -7,8 +7,8 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-type PostType = 'log' | 'guide' | 'experiment';
-const VALID_TYPES: PostType[] = ['log', 'guide', 'experiment'];
+type PostType = 'note' | 'guide' | 'experiment';
+const VALID_TYPES: PostType[] = ['note', 'guide', 'experiment'];
 
 function isValidType(t: string): t is PostType {
   return VALID_TYPES.includes(t as PostType);
@@ -69,7 +69,7 @@ export const POST: APIRoute = async ({ request }) => {
 
   if (!slug || !type || !isValidType(type)) {
     return new Response(
-      JSON.stringify({ error: 'slug and type (log|guide|experiment) are required' }),
+      JSON.stringify({ error: 'slug and type (note|guide|experiment) are required' }),
       { status: 400, headers: { 'Content-Type': 'application/json' } }
     );
   }

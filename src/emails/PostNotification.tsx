@@ -15,7 +15,7 @@ import { body, container, heading, paragraph, hr, footer, unsubscribe, link } fr
 
 interface PostNotificationProps {
   title: string;
-  type: 'log' | 'guide' | 'experiment';
+  type: 'note' | 'guide' | 'experiment';
   description: string;
   content?: string;
   url: string;
@@ -23,7 +23,7 @@ interface PostNotificationProps {
 
 export function PostNotification({
   title = 'New Post',
-  type = 'log',
+  type = 'note',
   description = '',
   content,
   url = 'https://alexanderussell.com',
@@ -72,7 +72,7 @@ export function PostNotification({
             </Link>
           </Text>
           <Text style={unsubscribe}>
-            You're getting this because you subscribed to the logs newsletter.
+            You're getting this because you subscribed to the newsletter.
             Reply to this email if you'd like to be removed.
           </Text>
         </Container>
@@ -126,10 +126,10 @@ const markdownStyles = {
 
 PostNotification.PreviewProps = {
   title: 'We Swapped the Motor',
-  type: 'log' as const,
+  type: 'note' as const,
   description: 'A story about fixing what was broken.',
   content: 'This is the **full post content** rendered as markdown.\n\nIt supports headings, lists, and code.',
-  url: 'https://alexanderussell.com/logs/we-swapped-the-motor',
+  url: 'https://alexanderussell.com/notes/we-swapped-the-motor',
 };
 
 export default PostNotification;

@@ -1,6 +1,6 @@
 # alexanderrussell.com
 
-Personal site and portfolio of Alex Russell — logs, guides, and experiments on design, engineering, and the things in between.
+Personal site and portfolio of Alex Russell — notes, guides, and experiments on design, engineering, and the things in between.
 
 Built with [Astro](https://astro.build), [Tailwind CSS](https://tailwindcss.com), and [MDX](https://mdxjs.com/).
 
@@ -9,7 +9,7 @@ Built with [Astro](https://astro.build), [Tailwind CSS](https://tailwindcss.com)
 ```
 src/
   content/
-    logs/          # Short-form writing
+    notes/         # Short-form writing
     guides/        # Long-form tutorials and walkthroughs
     experiments/   # Interactive demos (Bricklayer, Generative Logo, Hold to Provision)
   components/      # Astro components including experiment renderers

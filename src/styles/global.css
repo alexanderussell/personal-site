@@ -88,7 +88,7 @@
   }
 
   .timeline-item--guide { --timeline-icon-hover: #e67e22; }
-  .timeline-item--log { --timeline-icon-hover: #60a5fa; }
+  .timeline-item--note { --timeline-icon-hover: #60a5fa; }
   .timeline-item--experiment { --timeline-icon-hover: #eab308; }
 
   .timeline-rail {

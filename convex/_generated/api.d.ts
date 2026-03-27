@@ -8,6 +8,8 @@
  * @module
  */
 
+import type * as moods from "../moods.js";
+import type * as sentPosts from "../sentPosts.js";
 import type * as subscribers from "../subscribers.js";
 
 import type {
@@ -17,6 +19,8 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  moods: typeof moods;
+  sentPosts: typeof sentPosts;
   subscribers: typeof subscribers;
 }>;
 

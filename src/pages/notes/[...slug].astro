@@ -5,8 +5,8 @@ import PostLayout from '../../layouts/PostLayout.astro';
 export const prerender = true;
 
 export async function getStaticPaths() {
-  const logs = (await getCollection('logs')).sort((a, b) => a.data.date.getTime() - b.data.date.getTime());
-  return logs.map((entry, i) => ({
+  const notes = (await getCollection('notes')).sort((a, b) => a.data.date.getTime() - b.data.date.getTime());
+  return notes.map((entry, i) => ({
     params: { slug: entry.id },
     props: { entry, number: i + 1 },
   }));
@@ -20,7 +20,7 @@ const { Content } = await render(entry);
   title={entry.data.title}
   description={entry.data.description}
   date={entry.data.date}
-  type="log"
+  type="note"
   subtitle={entry.data.subtitle}
   number={number}
 >
