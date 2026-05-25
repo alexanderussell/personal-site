@@ -1,0 +1,185 @@
+---
+title: The Claude Code + Obsidian Vault Pattern for Design Teams
+subtitle: A vault is a design system for an AI
+description: A working setup using Obsidian, Claude Code, and Design Decision Records — durable context that compounds across sessions instead of evaporating with each new chat.
+date: '2026-05-25'
+type: 'guide'
+---
+
+Every Claude session starts from zero, and you've been compensating without realizing it. The running context doc you paste in. The prompt snippets folder. The Notion page with the project brief you re-share every Monday. None of these are wrong. They just don't compound.
+
+What follows is a working setup: Obsidian, Claude Code, a folder of decision records, and a small library of skills. None of it is exotic. None of it requires engineering. The rest of this post is the implementation.
+
+## A vault is a design system for an AI
+
+A vault does for an AI agent what a design system does for a designer: it lets the next piece of work start at step 40 instead of step 1. The token is already named. The component is already built. The decision is already made. You don't relitigate it – you extend it.
+
+The vault holds three things: what's true about the project, how decisions get made here, and what to do in specific situations.
+
+Claude Code reads context before it generates. That's the distinction. A prompt tells the AI what to do. A vault tells it who it's working for and what has already been decided.
+
+## The four ingredients
+
+**Obsidian** is a folder of markdown files with backlinks. That's almost the whole description. No database. No vendor. No sync subscription. Plain text any tool can read, any script can process, any AI can consume. When Obsidian becomes irrelevant, your files are still there. The format is the moat.
+
+**CLAUDE.md** is the project's front door. Claude Code reads it automatically on every session. Yours should be short: it tells the agent where the vault lives and which folders to consult first. Everything else in the vault is reachable from there.
+
+Here's a directive version:
+
+```
+# Project: Harness Design
+
+This is the design context for the Harness CI/CD product. Before generating
+any screen, component, or copy:
+
+1. Read /10-context/product-brief.md and /10-context/audience.md.
+2. Scan /30-decisions/ for any DDR whose title matches the current task.
+   Filenames are descriptive; you can filter by keyword.
+3. Check /20-patterns/ for established component patterns before proposing new ones.
+4. If a relevant DDR or pattern is missing, flag it before generating.
+   Do not invent doctrine.
+
+Skills in /40-skills/ are symlinked to .claude/skills/ and trigger automatically
+based on their descriptions. You don't need to load them manually.
+```
+
+**Claude Code** is not the chat app. This is the critical distinction most designers miss. Claude.ai is a conversation. Claude Code is a collaborator with desk access. It reads files. It edits files. It runs commands. It holds one project's context across an entire session instead of asking you to re-explain it every message.
+
+**Skills** are folders, each containing a `SKILL.md` with YAML frontmatter that codifies a pattern: when X happens, do Y. They are versioned, reviewable, and composable. You're not writing a prompt. You're writing a reusable agentic behavior.
+
+**DDRs – Design Decision Records** – are borrowed from engineering's Architecture Decision Records. One markdown file per significant decision. Dated. With context and consequences. When Claude Code reads the DDRs before generating a screen, it stops asking you questions you've already answered.
+
+## The folder structure
+
+Here is a structure that works:
+
+```
+/00-meta          README, how this vault works
+/10-context       who, what, brand, audience, constraints
+/20-patterns      the design pattern registry
+/30-decisions     DDRs, one per file
+/40-skills        Claude Skills folders
+/50-projects      active project notes
+/90-archive
+```
+
+The numbers are intentional. They sort cleanly, they leave room to grow, and they give every folder a stable address. When a Skill references a DDR, it can do it by path. That path doesn't change when you add a new folder.
+
+What lives in the vault: markdown files, decision records, pattern documentation, links to Figma files, design token references. What does not live in the vault: the Figma files themselves, exported assets, anything binary. The vault is a knowledge base, not a file dump.
+
+## The DDR, in detail
+
+This section earns the post. Walk past it and you'll under-build the most important piece.
+
+A DDR is a markdown file that captures one design decision. Not a brainstorm. Not a discussion summary. One decision, declaratively stated, with the context that forced it and the consequences it creates.
+
+Here's the template I use:
+
+````markdown
+# DDR-014: Loading States for Async Pipeline Triggers
+
+**Date:** 2025-11-03
+**Status:** Accepted
+
+## Context
+
+Pipeline run triggers can take 3 – 45 seconds to return a status. Early designs used a spinner. User testing showed the spinner created uncertainty about whether the action had registered at all – users were clicking the trigger button multiple times.
+
+## Decision
+
+We show an inline progress indicator with a plain-language status label ("Starting run…", "Waiting for agent…") rather than a generic spinner. The trigger button disables immediately on click.
+
+## Consequences
+
+All async interactions in this product use labeled progress, not spinners. New engineers and designers should default to this pattern before proposing alternatives. Requires copywriting sign-off for each status label.
+
+## Related
+
+- /20-patterns/async-states.md
+- DDR-008: Button disabled states
+````
+
+That's it. Short, declarative, linked. Now here's what this does at scale.
+
+When Claude Code reads `/30-decisions` before designing a screen with an async trigger, it knows the spinner is wrong without you explaining it. The doctrine is in the file. You wrote it once. You never explain it again. Every new session starts from that foundation.
+
+DDRs are how taste gets codified. Once it's in the file, the agent has it. So does the next designer you hire. So does the version of you that comes back to this project in eight months.
+
+## Skills as codified patterns
+
+A Skill is a folder. Inside it: a `SKILL.md` with YAML frontmatter and whatever supporting files the skill needs.
+
+Skills live in `.claude/skills/` at the project level, or `~/.claude/skills/` for personal use across projects. Your `/40-skills` vault folder is the authoring location – symlink it to one of those paths, or copy skills over when you update them. Either way, note the convention once in your `CLAUDE.md` so you don't have to remember it.
+
+Here's a minimal example:
+
+````markdown
+---
+name: loading-states
+description: Applied when designing any interaction with an async operation –
+  API calls, background jobs, file uploads, pipeline triggers. Covers skeleton
+  states, progress indicators, error recovery, and empty-to-filled transitions.
+---
+
+# Loading States
+
+1. Read DDR-014 for the project's loading state doctrine.
+2. Read /20-patterns/async-states.md for the component library.
+3. Apply labeled progress indicators (not spinners) per established patterns.
+4. Disable the triggering control immediately on interaction.
+5. Plan the error state before the success state.
+````
+
+The description field is the most important part. Claude Code reads only the description at startup. The body stays on disk until the description matches a task. This is why fuzzy descriptions are expensive: they pull skill bodies into the context window when they don't belong there. Write descriptions that are narrow and specific.
+
+Skills compose. A screen design for a complex async workflow might pull in three skills at once – loading states, error handling, empty states – each reading from the same underlying DDRs. Ask for "the empty state for a failed pipeline run," and Claude Code can pull all three simultaneously, resolve them against the relevant DDRs, and produce a single coherent design. You're not chaining prompts. You're letting the agent assemble the relevant doctrine for the problem at hand.
+
+## A real session
+
+First time I tried this, I asked for an empty state on a pipeline that had never run. Claude gave me a spinner and "Loading…" placeholder text. Confidently wrong. The vault had no DDR about loading patterns yet, so it pattern-matched to defaults.
+
+I wrote DDR-014 that afternoon. Twenty minutes, including the meeting notes I dug up to justify the decision. Next session, same prompt: labeled progress indicator, disabled trigger, error state planned. Not because I prompted better. Because the decision was on disk.
+
+The loop is: prompt, observe, diagnose. If the output is wrong because Claude erred, regenerate. If it's wrong because the doctrine is missing, write the DDR. Fix the file, not the prompt.
+
+## What this replaces
+
+Be specific, so you can audit your own setup.
+
+**Shared prompt docs.** Redundant. The vault carries the same information with better structure.
+
+**Re-explaining the project at session start.** Eliminated when CLAUDE.md is in place. You don't paste in the brief. It's already there.
+
+**Inconsistent output across sessions.** Reduced. Variance shrinks to the gaps in the vault.
+
+**Onboarding yourself after a long break.** Faster. Open the vault, read the README, run one session. The same loop works when you hand the vault to someone else, but I haven't run that experiment yet.
+
+Team usage is a separate problem. I'll write that post when I've solved it.
+
+## Where this breaks
+
+Senior designers smell hype. Here is where this actually falls apart.
+
+**Vault hygiene is a job.** If nobody owns the vault, it rots. DDRs go unwritten. Skills drift out of sync with what you've already figured out. You end up with an agent reading outdated material and producing confidently wrong output. Assign an owner. For a solo setup, that's you.
+
+**DDRs have a real time cost.** A focused DDR takes 15 – 20 minutes to write well. You won't write one after every decision – nor should you. The threshold I use: if I'd have to re-explain this decision in a future session, it belongs in the vault. Debates that took more than 30 minutes to resolve almost always qualify. Pixel-level calls rarely do.
+
+**Skills can over-fire.** A skill with a vague description – "used when designing UI" – gets pulled into every session, regardless of relevance. The context window fills with noise. Write descriptions that are narrow and specific.
+
+**Context windows are not infinite.** A large vault pointed at Claude Code in its entirety will hit limits. Scope by project: open `/50-projects/your-project` and the relevant skills, not the whole vault at once. The numbering convention helps here – you know exactly what to include.
+
+## How to start this weekend
+
+No theory. Just steps.
+
+1. Install Obsidian. Install Claude Code.
+2. Create a vault with the folders above. Write a `CLAUDE.md` using the directive template above.
+3. Write one DDR about a decision you made last week. Use the template. Keep it under 200 words.
+4. Write one Skill for a pattern you reuse – loading states, empty states, error states. Whatever you reach for most.
+5. Open the vault in Claude Code. Ask it to design the most recent screen you built. Watch for it reading files before it generates. Watch for "Reading DDR-014…" or similar in the output. That's the behavior you're building toward.
+
+That's the first session. It won't be magic. The vault has one DDR and one Skill. But you'll see it – the agent reaching for context before it produces output.
+
+Three months in, you'll stop thinking of this as a prompting setup. The prompts will get shorter. The outputs will get sharper. You'll notice you're spending more time writing DDRs and less time arguing with the agent. That's the work moving up a layer. You're not prompting an AI. You're maintaining the decisions the AI works from.
+
+Fix the file, not the prompt.
