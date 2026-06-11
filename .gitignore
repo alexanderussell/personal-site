@@ -19,3 +19,6 @@ dist
 # Task files
 tasks.json
 skills-lock.json
+
+# Playwright MCP debug artifacts
+.playwright-mcp/

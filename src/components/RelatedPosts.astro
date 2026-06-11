@@ -1,0 +1,185 @@
+---
+import { getCollection } from 'astro:content';
+import TypeIcon from './TypeIcon.astro';
+
+interface Props {
+  /** "collection/slug" ref of the current entry, e.g. "notes/the-ladder-pulled-up". */
+  currentRef: string;
+  /** Explicit related refs from frontmatter — shown first, in order. */
+  related?: string[];
+  /** Tags of the current entry — used to fill remaining slots by overlap. */
+  tags?: string[];
+}
+
+const { currentRef, related = [], tags = [] } = Astro.props;
+
+const MAX_ITEMS = 3;
+
+type Pool = {
+  ref: string;
+  type: 'note' | 'guide' | 'experiment';
+  title: string;
+  date: Date;
+  tags: string[];
+};
+
+const [allNotes, allGuides, allExperiments] = await Promise.all([
+  getCollection('notes', ({ data }) => !data.draft),
+  getCollection('guides', ({ data }) => !data.draft),
+  getCollection('experiments', ({ data }) => !data.draft),
+]);
+
+const toPool = (collection: string, type: Pool['type'], entries: typeof allNotes): Pool[] =>
+  entries.map((entry) => ({
+    ref: `${collection}/${entry.id}`,
+    type,
+    title: entry.data.title,
+    date: entry.data.date,
+    tags: entry.data.tags ?? [],
+  }));
+
+const pool: Pool[] = [
+  ...toPool('notes', 'note', allNotes),
+  ...toPool('guides', 'guide', allGuides),
+  ...toPool('experiments', 'experiment', allExperiments),
+];
+
+const byRef = new Map(pool.map((item) => [item.ref, item]));
+
+// Explicit picks first, in frontmatter order. Unresolved refs are dropped
+// from the render but flagged at build time so typos don't vanish silently.
+for (const ref of related) {
+  if (!byRef.has(ref)) {
+    console.warn(`[RelatedPosts] ${currentRef}: related ref "${ref}" does not match any published entry`);
+  }
+}
+
+const picks: Pool[] = related
+  .map((ref) => byRef.get(ref))
+  .filter((item): item is Pool => item !== undefined && item.ref !== currentRef);
+
+// Fill remaining slots by tag overlap, freshest first.
+if (picks.length < MAX_ITEMS && tags.length > 0) {
+  const chosen = new Set([currentRef, ...picks.map((p) => p.ref)]);
+  const fallback = pool
+    .filter((item) => !chosen.has(item.ref))
+    .map((item) => ({ item, overlap: item.tags.filter((t) => tags.includes(t)).length }))
+    .filter(({ overlap }) => overlap > 0)
+    .sort((a, b) => b.overlap - a.overlap || b.item.date.getTime() - a.item.date.getTime())
+    .map(({ item }) => item);
+  picks.push(...fallback.slice(0, MAX_ITEMS - picks.length));
+}
+
+const items = picks.slice(0, MAX_ITEMS);
+---
+
+{items.length > 0 && (
+  <aside class="related-posts">
+    <div class="related-posts__divider"></div>
+    <p class="related-posts__label">Keep pulling the thread</p>
+    <div class="related-posts__list">
+      {items.map((item) => (
+        <a href={`/${item.ref}`} class={`related-post related-post--${item.type}`}>
+          <span class="related-post__icon" aria-hidden="true">
+            <TypeIcon type={item.type} class="size-4" />
+          </span>
+          <span class="related-post__body">
+            <span class="related-post__meta">
+              <span class="related-post__type">{item.type}</span>
+              <time datetime={item.date.toISOString()}>
+                {item.date.toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' })}
+              </time>
+            </span>
+            <span class="related-post__title">{item.title}</span>
+          </span>
+        </a>
+      ))}
+    </div>
+  </aside>
+)}
+
+<style>
+  .related-posts {
+    margin-top: 4rem;
+    padding: 0 1rem;
+  }
+
+  .related-posts__divider {
+    height: 1px;
+    background: var(--color-border);
+    margin-bottom: 2rem;
+  }
+
+  .related-posts__label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    margin: 0 0 1.25rem;
+  }
+
+  .related-posts__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .related-post {
+    --related-hover: var(--color-text-primary);
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .related-post--note { --related-hover: var(--color-type-note); }
+  .related-post--guide { --related-hover: var(--color-type-guide); }
+  .related-post--experiment { --related-hover: var(--color-type-experiment); }
+
+  .related-post__icon {
+    line-height: 0;
+    color: var(--color-text-secondary);
+    margin-top: 0.18rem;
+    transition: color 150ms ease, transform 150ms ease;
+  }
+
+  .related-post:hover .related-post__icon {
+    color: var(--related-hover);
+    transform: translateY(-1px);
+  }
+
+  .related-post__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    min-width: 0;
+  }
+
+  .related-post__meta {
+    display: flex;
+    align-items: baseline;
+    gap: 0.65rem;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-text-secondary);
+  }
+
+  .related-post__type {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .related-post__title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  .related-post:hover .related-post__title {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>

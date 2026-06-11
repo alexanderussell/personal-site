@@ -56,6 +56,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     </style>
     <script is:inline>
       (function () {
+        // Gate entrance-animation hidden states on JS being present,
+        // so content stays visible for no-JS visitors and crawlers.
+        document.documentElement.classList.add('js');
         var stored = localStorage.getItem('theme');
         if (stored === 'light') {
           document.documentElement.classList.remove('dark');

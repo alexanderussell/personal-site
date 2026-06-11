@@ -1,0 +1,72 @@
+---
+interface Props {
+  status: 'seedling' | 'growing' | 'evergreen';
+}
+
+const { status } = Astro.props;
+
+const stageNotes: Record<Props['status'], string> = {
+  seedling: 'Seedling — early, unfinished thinking. Could be wrong.',
+  growing: 'Growing — a position in progress. Still being argued with.',
+  evergreen: 'Evergreen — settled. I stand behind this one.',
+};
+
+const stageIcons: Record<Props['status'], string> = {
+  seedling: 'M11 13h2v7h-2zM6 9h3v2H6zm2 2h3v2H8zm7-4h3v2h-3zm-2 2h3v2h-3zm-2 2h2v2h-2zM5 20h14v2H5z',
+  growing: 'M11 7h2v13h-2zM9 3h2v2H9zm4 0h2v2h-2zM5 11h4v2H5zm4 2h2v2H9zm6-6h4v2h-4zm-2 2h2v2h-2zM5 20h14v2H5z',
+  evergreen: 'M11 1h2v2h-2zM10 3h4v2h-4zM9 5h6v2H9zM8 7h8v2H8zM7 9h10v2H7zM6 11h12v2H6zM5 13h14v2H5zM11 15h2v6h-2z',
+};
+---
+
+<span class={`growth-stage growth-stage--${status}`} title={stageNotes[status]} aria-label={stageNotes[status]}>
+  <span class="growth-stage__icon" aria-hidden="true">
+    <svg viewBox="0 0 24 24" class="size-3.5" fill="currentColor"><path d={stageIcons[status]} /></svg>
+  </span>
+  {status}
+</span>
+
+<style>
+  .growth-stage {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    padding: 0.25rem 0.65rem;
+    cursor: help;
+    transition: color 150ms ease, border-color 150ms ease;
+  }
+
+  .growth-stage:hover {
+    color: var(--color-text-primary);
+  }
+
+  /* Border firms up as the thinking does. */
+  .growth-stage--seedling {
+    --growth-color: #a3e635;
+    border-style: dashed;
+  }
+
+  .growth-stage--growing {
+    --growth-color: #4ade80;
+    border-style: dashed;
+    border-color: color-mix(in srgb, var(--color-border) 50%, var(--growth-color));
+  }
+
+  .growth-stage--evergreen {
+    --growth-color: #22c55e;
+    border-style: solid;
+    border-color: color-mix(in srgb, var(--color-border) 35%, var(--growth-color));
+  }
+
+  .growth-stage__icon {
+    line-height: 0;
+    color: var(--growth-color);
+  }
+</style>

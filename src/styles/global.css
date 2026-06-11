@@ -24,6 +24,11 @@
   --color-text-secondary: color-mix(in srgb, oklch(21.6% .006 56.043) 60%, transparent);
   --color-accent: oklch(15% .006 56);
   --color-border: oklch(88% .012 58);
+
+  /* Per-content-type accents (note / guide / experiment) */
+  --color-type-note: #60a5fa;
+  --color-type-guide: #e67e22;
+  --color-type-experiment: #eab308;
 }
 
 @layer base {
@@ -87,9 +92,9 @@
     margin-bottom: 1.15rem;
   }
 
-  .timeline-item--guide { --timeline-icon-hover: #e67e22; }
-  .timeline-item--note { --timeline-icon-hover: #60a5fa; }
-  .timeline-item--experiment { --timeline-icon-hover: #eab308; }
+  .timeline-item--guide { --timeline-icon-hover: var(--color-type-guide); }
+  .timeline-item--note { --timeline-icon-hover: var(--color-type-note); }
+  .timeline-item--experiment { --timeline-icon-hover: var(--color-type-experiment); }
 
   .timeline-rail {
     display: flex;
@@ -328,17 +333,36 @@
     opacity: 1;
   }
 
-  /* ── Fade-in utility ── */
+  /* ── Fade-in utilities ──
+     Hidden state is gated on html.js (set in BaseLayout) so content stays
+     visible without JavaScript. .fade-in-hidden reveals via timed stagger;
+     .fade-in-scroll reveals via IntersectionObserver. */
 
-  .fade-in-hidden {
+  html.js .fade-in-hidden {
     opacity: 0;
     transform: translateY(4px);
     transition: opacity 0.4s ease, transform 0.4s ease;
   }
 
-  .fade-in-hidden.is-visible {
+  html.js .fade-in-scroll {
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+  }
+
+  html.js .fade-in-hidden.is-visible,
+  html.js .fade-in-scroll.is-visible {
     opacity: 1;
     transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html.js .fade-in-hidden,
+    html.js .fade-in-scroll {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
   }
 
   .prose {
