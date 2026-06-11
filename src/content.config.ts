@@ -9,6 +9,12 @@ const sharedSchema = z.object({
   number: z.union([z.string(), z.number()]).optional(),
   tags: z.array(z.string()).optional(),
   draft: z.boolean().default(false),
+  /** Growth stage of the thinking — rendered as a badge on the post page. */
+  status: z.enum(['seedling', 'growing', 'evergreen']).optional(),
+  /** Explicit related pieces as "collection/slug" refs, e.g. "notes/we-swapped-the-motor". */
+  related: z.array(z.string()).optional(),
+  /** Provenance — what prompted this piece. Rendered as a quiet line in the header. */
+  via: z.string().optional(),
 });
 
 const notes = defineCollection({

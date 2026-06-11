@@ -24,6 +24,11 @@ const { Content } = await render(entry);
   type="experiment"
   subtitle={entry.data.subtitle}
   number={number}
+  status={entry.data.status}
+  via={entry.data.via}
+  currentRef={`experiments/${entry.id}`}
+  tags={entry.data.tags}
+  related={entry.data.related}
 >
   <ExperimentRenderer id={entry.id} />
   <Content />

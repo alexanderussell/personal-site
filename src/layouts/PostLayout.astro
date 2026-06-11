@@ -1,6 +1,8 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import { SubscribeForm } from '../components/SubscribeForm';
+import GrowthStage from '../components/GrowthStage.astro';
+import RelatedPosts from '../components/RelatedPosts.astro';
 
 interface Props {
   title: string;
@@ -9,9 +11,15 @@ interface Props {
   type: 'note' | 'guide' | 'experiment';
   subtitle?: string;
   number?: string | number;
+  status?: 'seedling' | 'growing' | 'evergreen';
+  via?: string;
+  /** "collection/slug" ref of this entry, used to resolve related posts. */
+  currentRef?: string;
+  tags?: string[];
+  related?: string[];
 }
 
-const { title, description, date, type, subtitle, number } = Astro.props;
+const { title, description, date, type, subtitle, number, status, via, currentRef, tags, related } = Astro.props;
 
 const backLinks: Record<string, { href: string; label: string }> = {
   note: { href: '/notes', label: 'Notes' },
@@ -71,12 +79,25 @@ const formattedNumber =
       <time class="text-text-secondary block text-center text-sm" datetime={date.toISOString()}>
         {formattedDate}
       </time>
+
+      {(status || via) && (
+        <div class="mt-4 flex flex-col items-center gap-2.5">
+          {status && <GrowthStage status={status} />}
+          {via && (
+            <p class="text-text-secondary m-0 max-w-md px-4 text-center font-mono text-xs leading-relaxed">
+              via {via}
+            </p>
+          )}
+        </div>
+      )}
     </header>
 
     <div class="mx-auto max-w-2xl">
       <div class="prose dark:prose-invert mx-auto mt-8 px-4 md:mt-12 lg:mt-16 xl:mt-20">
         <slot />
       </div>
+
+      {currentRef && <RelatedPosts currentRef={currentRef} related={related} tags={tags} />}
 
       <div class="newsletter-footer">
         <div class="newsletter-footer__divider"></div>
