@@ -1,5 +1,12 @@
 import type { APIRoute } from 'astro';
 
+// Preview URLs per album are stable — cache at the edge so repeat picks
+// skip the multi-step Deezer lookup (~550ms).
+const CACHE_HEADERS = {
+  'Content-Type': 'application/json',
+  'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800',
+};
+
 export const GET: APIRoute = async ({ url }) => {
   const artist = url.searchParams.get('artist');
   const album = url.searchParams.get('album');
@@ -69,9 +76,7 @@ export const GET: APIRoute = async ({ url }) => {
           album: match.title,
           cover: match.cover_medium || match.cover_big || null,
           spotifyId: spotifyId || null,
-        }), {
-          headers: { 'Content-Type': 'application/json' },
-        });
+        }), { headers: CACHE_HEADERS });
       }
     }
 
@@ -90,18 +95,17 @@ export const GET: APIRoute = async ({ url }) => {
           album: directMatch.album?.title || album,
           cover: directMatch.album?.cover_medium || directMatch.album?.cover_big || null,
           spotifyId: spotifyId || null,
-        }), {
-          headers: { 'Content-Type': 'application/json' },
-        });
+        }), { headers: CACHE_HEADERS });
       }
     }
 
     // No match — return spotifyId for fallback link
+    // Cache "no preview" results briefly — Deezer's catalog can change
     return new Response(JSON.stringify({
       url: null,
       spotifyId: spotifyId || null,
     }), {
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'public, s-maxage=3600' },
     });
   } catch (e) {
     return new Response(JSON.stringify({ url: null, spotifyId: spotifyId || null }), {

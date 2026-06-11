@@ -157,7 +157,7 @@ function seededRandom(seed) {
 
 function generateGenreArt(record, canvas) {
   if (!canvas) return;
-  const ctx = canvas.getContext("2d");
+  const ctx = canvas.getContext("2d", { willReadFrequently: true });
   const size = 300;
   canvas.width = size;
   canvas.height = size;
@@ -425,7 +425,7 @@ function generateGenreArt(record, canvas) {
 // ============================================================
 // VINYL — drag-to-spin
 // ============================================================
-function VinylRecord({ record, isSpinning, artCanvasRef, isAudioPlaying, onTogglePlay, isDecelerating }) {
+function VinylRecord({ record, isSpinning, artCanvasRef, isAudioPlaying, onTogglePlay, isDecelerating, canPlay }) {
   const discRef = useRef(null);
   const isDragging = useRef(false);
   const lastAngle = useRef(0);
@@ -479,7 +479,7 @@ function VinylRecord({ record, isSpinning, artCanvasRef, isAudioPlaying, onToggl
     <div ref={discRef} onMouseDown={onDown} onTouchStart={onDown}
       onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}
       style={{ width: 300, height: 300, position: "relative", cursor: isSpinning ? "pointer" : "grab" }}>
-      <div style={{
+      <div className="vinyl-disc" aria-hidden="true" style={{
         position: "absolute", inset: 0, borderRadius: "50%",
         background: `radial-gradient(circle at center,
           #1a1a1a 0%, #0d0d0d 14%, #1a1a1a 15%, #111 28%, #1a1a1a 29%,
@@ -506,33 +506,42 @@ function VinylRecord({ record, isSpinning, artCanvasRef, isAudioPlaying, onToggl
           }} />
         </div>
       </div>
-      <div style={{
+      <div className="vinyl-sheen" aria-hidden="true" style={{
         position: "absolute", inset: 0, borderRadius: "50%", pointerEvents: "none",
         background: "conic-gradient(from 200deg, transparent 0%, rgba(255,255,255,0.04) 10%, transparent 20%, transparent 100%)",
         animation: spinAnim,
         transform: isSpinning || isDecelerating ? undefined : `rotate(${rot}deg)`,
       }} />
 
-      {/* Hover pause/play overlay */}
-      {(isSpinning || isDecelerating || (isAudioPlaying !== undefined && !isSpinning)) && hovered && (
-        <div onClick={(e) => { e.stopPropagation(); onTogglePlay?.(); }}
+      {/* Play/pause control — always in the tab order when a preview exists.
+          Visible whenever paused (the affordance touch users need), and on
+          hover/focus while playing. */}
+      {canPlay && (
+        <button
+          type="button"
+          className="vinyl-toggle"
+          data-visible={hovered || !isAudioPlaying}
+          onClick={(e) => { e.stopPropagation(); onTogglePlay?.(); }}
+          aria-label={isAudioPlaying
+            ? `Pause preview of ${record?.track || record?.album || "this record"}`
+            : `Play preview of ${record?.track || record?.album || "this record"}`}
           style={{
             position: "absolute", inset: 0, borderRadius: "50%",
             display: "flex", alignItems: "center", justifyContent: "center",
             background: "rgba(0,0,0,0.35)", cursor: "pointer",
-            transition: "opacity 0.2s", zIndex: 10,
+            border: "none", padding: 0, zIndex: 10,
           }}>
           {isAudioPlaying ? (
-            <svg width="28" height="32" viewBox="0 0 28 32" fill="none">
+            <svg width="28" height="32" viewBox="0 0 28 32" fill="none" aria-hidden="true">
               <rect x="4" y="2" width="7" height="28" rx="1.5" fill="rgba(212,200,184,0.85)" />
               <rect x="17" y="2" width="7" height="28" rx="1.5" fill="rgba(212,200,184,0.85)" />
             </svg>
           ) : (
-            <svg width="28" height="32" viewBox="0 0 28 32" fill="none">
+            <svg width="28" height="32" viewBox="0 0 28 32" fill="none" aria-hidden="true">
               <path d="M4 2L26 16L4 30V2Z" fill="rgba(212,200,184,0.85)" />
             </svg>
           )}
-        </div>
+        </button>
       )}
     </div>
   );
@@ -650,7 +659,7 @@ function MoodWall({ moodHistory, onSelectMood }) {
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
         <div style={{ flex: 1, height: 1, background: "rgba(138,122,106,0.08)" }} />
         <p style={{ fontSize: 10, letterSpacing: 3, textTransform: "uppercase",
-          color: "#6a5a4a", fontFamily: "'Courier New', monospace" }}>
+          color: "#857565", fontFamily: "'Courier New', monospace" }}>
           Written on the wall
         </p>
         <div style={{ flex: 1, height: 1, background: "rgba(138,122,106,0.08)" }} />
@@ -670,15 +679,20 @@ function MoodWall({ moodHistory, onSelectMood }) {
           const rotDeg = (r - 0.5) * 8; // -4 to 4 degrees
           const font = WALL_FONTS[Math.floor(r2 * WALL_FONTS.length)];
           const fontSize = 12 + Math.floor(r3 * 4); // 12-15px
-          const opacity = 0.45 + r * 0.35; // 0.45-0.80
+          const opacity = 0.65 + r * 0.25; // 0.65-0.90 — keeps the faded-graffiti variance above contrast minimums
           const marginTop = Math.floor((r2 - 0.5) * 12); // -6 to 6
           const marginLeft = Math.floor((r3 - 0.5) * 6); // -3 to 3
           const isClickable = !!entry.album;
+          // Clickable notes are real buttons so keyboard and screen-reader
+          // visitors can replay them; the handwriting styling carries over.
+          const NoteTag = isClickable ? "button" : "div";
 
           return (
-            <div
+            <NoteTag
               key={i}
-              onClick={() => isClickable && onSelectMood?.(entry)}
+              type={isClickable ? "button" : undefined}
+              onClick={isClickable ? () => onSelectMood?.(entry) : undefined}
+              aria-label={isClickable ? `"${entry.mood}" — pulls ${entry.album}` : undefined}
               className="mood-note"
               style={{
                 padding: "8px 14px",
@@ -689,9 +703,13 @@ function MoodWall({ moodHistory, onSelectMood }) {
                 position: "relative",
                 maxWidth: 200,
                 flexShrink: 0,
+                background: "transparent",
+                border: "none",
+                textAlign: "left",
               }}
             >
-              <p style={{
+              <span style={{
+                display: "block",
                 fontSize,
                 fontFamily: font,
                 fontStyle: r > 0.4 ? "italic" : "normal",
@@ -701,9 +719,10 @@ function MoodWall({ moodHistory, onSelectMood }) {
                 whiteSpace: "pre-wrap",
               }}>
                 {entry.mood}
-              </p>
+              </span>
               {isClickable && (
-                <p style={{
+                <span style={{
+                  display: "block",
                   fontSize: 9,
                   fontFamily: "'Courier New', monospace",
                   color: "rgba(180,140,80,0)",
@@ -713,9 +732,9 @@ function MoodWall({ moodHistory, onSelectMood }) {
                 }}
                 className="mood-note-album">
                   {entry.album}
-                </p>
+                </span>
               )}
-            </div>
+            </NoteTag>
           );
         })}
       </div>
@@ -745,7 +764,7 @@ function ShelfView({ onSelectRecord }) {
         return (
           <div key={label} style={{ marginBottom: 28 }}>
             <p style={{ fontSize: 11, letterSpacing: 3, textTransform: "uppercase",
-              color: "#6a5a4a", fontFamily: "'Courier New', monospace", marginBottom: 10 }}>
+              color: "#857565", fontFamily: "'Courier New', monospace", marginBottom: 10 }}>
               {label} ({records.length})
             </p>
             <div style={{
@@ -756,13 +775,16 @@ function ShelfView({ onSelectRecord }) {
                 const pal = GENRE_PALETTES[record.genre] || GENRE_PALETTES["Rock"];
                 const c = pal.accent[idx % pal.accent.length];
                 return (
-                  <div key={`${record.artist}-${record.album}`} onClick={() => onSelectRecord(record)}
+                  <button key={`${record.artist}-${record.album}`} type="button" onClick={() => onSelectRecord(record)}
+                    className="record-spine"
                     title={`${record.album} — ${record.artist}\n${record.tag}`}
+                    aria-label={`${record.album} — ${record.artist}, ${record.year}. ${record.tag}`}
                     style={{
                       width: shelf.spineWidth, minHeight: shelf.spineHeight, flexShrink: 0, borderRadius: 2, cursor: "pointer",
                       background: `linear-gradient(180deg, rgba(${c[0]},${c[1]},${c[2]},0.55) 0%, rgba(${c[0]-20},${c[1]-15},${c[2]-10},0.75) 100%)`,
                       boxShadow: "inset -1px 0 2px rgba(0,0,0,0.3), 1px 0 1px rgba(0,0,0,0.1)",
                       transition: "transform 0.2s, box-shadow 0.2s", position: "relative",
+                      border: "none", padding: 0,
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = `translateY(-${shelf.hoverLift}px)`;
@@ -781,9 +803,9 @@ function ShelfView({ onSelectRecord }) {
                       display: "flex", gap: 6,
                     }}>
                       <span style={{ fontWeight: 500 }}>{record.artist.split(" ").pop()}</span>
-                      <span style={{ opacity: 0.5, fontSize: shelf.fontSize - 1 }}>{record.album}</span>
+                      <span style={{ opacity: 0.8, fontSize: shelf.fontSize - 1 }}>{record.album}</span>
                     </div>
-                  </div>
+                  </button>
                 );
               })}
             </div>
@@ -795,7 +817,7 @@ function ShelfView({ onSelectRecord }) {
           </div>
         );
       })}
-      <p style={{ textAlign: "center", fontSize: 13, color: "#6a5a4a", fontStyle: "italic",
+      <p style={{ textAlign: "center", fontSize: 13, color: "#857565", fontStyle: "italic",
         fontFamily: "'Georgia', serif", marginTop: 12 }}>
         Pull a record to hear what Daniel would say
       </p>
@@ -819,6 +841,13 @@ export default function RecordCollection() {
   const [askAgainMood, setAskAgainMood] = useState("");
   const artCanvasRef = useRef(null);
 
+  // Every ask/pick bumps this; in-flight responses that don't match are
+  // stale (the visitor already picked something else) and get dropped.
+  const requestSeqRef = useRef(0);
+  // Synchronous double-submit guard — isLoading state lags a tick
+  const inFlightRef = useRef(false);
+  const resultHeadingRef = useRef(null);
+
   // Recently recommended albums — avoid repeats across sessions
   const RECENT_KEY = "dan_recent_picks";
   const MAX_RECENT = 10;
@@ -826,9 +855,13 @@ export default function RecordCollection() {
     try { return JSON.parse(localStorage.getItem(RECENT_KEY) || "[]"); } catch { return []; }
   };
   const addRecentPick = (album) => {
-    const recent = getRecentPicks().filter(a => a !== album);
-    recent.push(album);
-    localStorage.setItem(RECENT_KEY, JSON.stringify(recent.slice(-MAX_RECENT)));
+    // Best-effort only — storage can be unavailable (private mode, quota)
+    // and repeat-avoidance is never worth breaking the reveal over
+    try {
+      const recent = getRecentPicks().filter(a => a !== album);
+      recent.push(album);
+      localStorage.setItem(RECENT_KEY, JSON.stringify(recent.slice(-MAX_RECENT)));
+    } catch {}
   };
 
   // Audio state — lifted from SpotifyPlayer so vinyl controls playback
@@ -840,10 +873,12 @@ export default function RecordCollection() {
   const lastAudioKey = useRef(null);
 
   const resetPlayer = useCallback((targetView = "turntable") => {
+    requestSeqRef.current++;
     if (audioRef.current) audioRef.current.pause();
     setResult(null); setShowResult(false); setIsSpinning(false);
     setIsDecelerating(false); setIsAudioPlaying(false);
     setPreview(null); setAudioFailed(false); lastAudioKey.current = null;
+    setRateLimited(false);
     setMood(""); setAskAgainMood(""); setCurrentView(targetView);
   }, []);
 
@@ -864,7 +899,9 @@ export default function RecordCollection() {
         const resp = await fetch("/api/moods");
         if (resp.ok) {
           const data = await resp.json();
-          setMoodHistory(data.moods || []);
+          // API returns newest-first; keep history oldest→newest so the
+          // wall's slice(-40) shows recent moods and appends stay in order
+          setMoodHistory((data.moods || []).slice().reverse());
         }
       } catch (e) {}
     })();
@@ -889,26 +926,37 @@ export default function RecordCollection() {
     }
   }, [result]);
 
-  // Fetch audio preview when result changes
+  // Move focus to the revealed record so keyboard/screen-reader visitors
+  // land on the answer instead of a collapsed input
   useEffect(() => {
-    if (!result?.artist || !result?.album || !showResult) return;
+    if (showResult && result) {
+      resultHeadingRef.current?.focus({ preventScroll: true });
+    }
+  }, [showResult, result]);
+
+  // Fetch audio preview as soon as a record is picked — not gated on the
+  // reveal animation, so the needle-drop is ready when the result shows
+  useEffect(() => {
+    if (!result?.artist || !result?.album) return;
     const key = `${result.artist}-${result.album}`;
     if (key === lastAudioKey.current) return;
     lastAudioKey.current = key;
 
+    if (audioRef.current) audioRef.current.pause();
     setPreview(null);
     setIsAudioPlaying(false);
     setAudioFailed(false);
 
     (async () => {
       const data = await getPreviewUrl(result.artist, result.album, result.record?.spotifyId, result.record?.track);
+      if (lastAudioKey.current !== key) return; // a newer pick superseded this one
       if (data && data.url) {
         setPreview(data);
       } else {
         setAudioFailed(true);
       }
     })();
-  }, [result, showResult]);
+  }, [result]);
 
   // Auto-play when preview loads and vinyl is spinning
   useEffect(() => {
@@ -931,6 +979,11 @@ export default function RecordCollection() {
       setIsSpinning(false);
       setTimeout(() => setIsDecelerating(false), 1800);
     } else {
+      // A finished preview stays pinned at the end — drop the needle back
+      // at the start so the record can be replayed
+      if (audioRef.current.ended || audioRef.current.currentTime >= (audioRef.current.duration || Infinity)) {
+        audioRef.current.currentTime = 0;
+      }
       audioRef.current.play().then(() => {
         setIsAudioPlaying(true);
         setIsDecelerating(false);
@@ -940,7 +993,13 @@ export default function RecordCollection() {
   }, [preview, isAudioPlaying]);
 
   const fetchRecommendation = useCallback(async (moodText) => {
+    if (inFlightRef.current) return; // double-click / double-Enter in the same tick
+    inFlightRef.current = true;
+    const seq = ++requestSeqRef.current;
+
+    if (audioRef.current) audioRef.current.pause();
     setIsLoading(true); setShowResult(false); setIsSpinning(false);
+    setRateLimited(false);
     setHasInteracted(true); setCurrentView("turntable");
 
     const recordList = CURATED_RECORDS.map(
@@ -954,10 +1013,13 @@ export default function RecordCollection() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mood: moodText, recordList, recentPicks: getRecentPicks() }),
+        // A hung request would otherwise brick the page; the abort lands in
+        // the catch below, which already plays the graceful fallback
+        signal: AbortSignal.timeout(20_000),
       });
+      if (seq !== requestSeqRef.current) return; // visitor picked something else meanwhile
 
       if (response.status === 429) {
-        setIsLoading(false);
         setRateLimited(true);
         setCurrentView("shelf");
         return;
@@ -986,6 +1048,7 @@ export default function RecordCollection() {
       setTimeout(() => setIsSpinning(true), 400);
       setTimeout(() => setShowResult(true), 1000);
     } catch (err) {
+      if (seq !== requestSeqRef.current) return; // stale — don't clobber the newer pick
       console.error("Fallback:", err);
       const idx = Math.abs(moodText.split("").reduce((a,c) => a+c.charCodeAt(0), 0)) % CURATED_RECORDS.length;
       const fb = CURATED_RECORDS[idx];
@@ -998,7 +1061,10 @@ export default function RecordCollection() {
       saveMood(moodText, fb.album);
       setTimeout(() => setIsSpinning(true), 400);
       setTimeout(() => setShowResult(true), 1000);
-    } finally { setIsLoading(false); }
+    } finally {
+      inFlightRef.current = false;
+      setIsLoading(false);
+    }
   }, [moodHistory]);
 
   // Select a pre-mapped sample mood — no AI call
@@ -1007,6 +1073,8 @@ export default function RecordCollection() {
       r.artist === sample.artist && r.album === sample.album
     );
     if (!record) return;
+    requestSeqRef.current++; // supersede any in-flight ask
+    if (audioRef.current) audioRef.current.pause();
     setIsLoading(true); setShowResult(false); setIsSpinning(false);
     setHasInteracted(true); setCurrentView("turntable");
     setResult({ artist: record.artist, album: record.album, year: record.year, reason: record.tag, record });
@@ -1015,6 +1083,9 @@ export default function RecordCollection() {
   };
 
   const selectFromShelf = (record) => {
+    requestSeqRef.current++; // an explicit pick beats any in-flight ask
+    if (audioRef.current) audioRef.current.pause();
+    setIsLoading(false);
     setHasInteracted(true);
     setShowResult(false);
     setIsSpinning(false);
@@ -1040,33 +1111,43 @@ export default function RecordCollection() {
         width: 500, height: 500, borderRadius: "50%", pointerEvents: "none",
         background: "radial-gradient(circle, rgba(180,120,60,0.05) 0%, transparent 70%)" }} />
 
-      <div style={{ maxWidth: 640, margin: "0 auto", padding: "48px 20px", position: "relative" }}>
+      <main style={{ maxWidth: 640, margin: "0 auto", padding: "48px 20px", position: "relative" }}>
 
-        {/* Persistent "← Back to shelf" — anchored to content column */}
+        {/* Announces the async flow to screen readers — visually hidden */}
+        <div role="status" aria-live="polite" className="sr-only">
+          {isLoading
+            ? "Pulling a record from the shelf…"
+            : showResult && result
+              ? `Daniel pulled ${result.album} by ${result.artist}. ${result.reason || ""}`
+              : ""}
+        </div>
+
+        {/* Persistent "← Browse the shelf" — anchored to content column */}
         <div style={{
           position: "fixed", top: 20, left: "50%", zIndex: 20,
           transform: "translateX(max(-380px, calc(-50vw + 20px)))",
           opacity: showResult && result ? 1 : 0,
+          visibility: showResult && result ? "visible" : "hidden",
           pointerEvents: showResult && result ? "auto" : "none",
-          transition: "opacity 0.3s ease",
+          transition: "opacity 0.3s ease, visibility 0.3s",
         }}>
           <button onClick={() => resetPlayer("shelf")} style={{
             background: "rgba(10,8,8,0.7)", backdropFilter: "blur(8px)",
             border: "1px solid rgba(180,140,80,0.15)", borderRadius: 4,
             cursor: "pointer", padding: "8px 14px",
             fontSize: 11, fontFamily: "'Courier New', monospace", letterSpacing: 1.5,
-            color: "#7a6a5a", transition: "color 0.2s, border-color 0.2s",
+            color: "#94826e", transition: "color 0.2s, border-color 0.2s",
           }}
           onMouseEnter={e => { e.target.style.color = "#d4b870"; e.target.style.borderColor = "rgba(180,140,80,0.35)"; }}
-          onMouseLeave={e => { e.target.style.color = "#7a6a5a"; e.target.style.borderColor = "rgba(180,140,80,0.15)"; }}>
-            ← Back to shelf
+          onMouseLeave={e => { e.target.style.color = "#94826e"; e.target.style.borderColor = "rgba(180,140,80,0.15)"; }}>
+            ← Browse the shelf
           </button>
         </div>
 
         {/* Header — smoothly collapses when showing a result */}
-        <div style={{ textAlign: "center", marginBottom: showResult && result ? 12 : 36, transition: "margin-bottom 0.3s ease" }}>
+        <header style={{ textAlign: "center", marginBottom: showResult && result ? 12 : 36, transition: "margin-bottom 0.3s ease" }}>
           <p style={{ fontSize: 11, letterSpacing: 4, textTransform: "uppercase",
-            color: "#7a6a5a", marginBottom: 12, fontFamily: "'Courier New', monospace" }}>
+            color: "#94826e", marginBottom: 12, fontFamily: "'Courier New', monospace" }}>
             The Collection of Daniel Russell
           </p>
 
@@ -1074,30 +1155,32 @@ export default function RecordCollection() {
           <div style={{
             maxHeight: showResult && result ? 0 : 200,
             opacity: showResult && result ? 0 : 1,
+            visibility: showResult && result ? "hidden" : "visible",
             overflow: "hidden",
             transition: showResult && result
-              ? "opacity 0.15s ease, max-height 0.01s ease 0.15s"
-              : "opacity 0.3s ease 0.1s, max-height 0.01s ease",
+              ? "opacity 0.15s ease, max-height 0.01s ease 0.15s, visibility 0.15s"
+              : "opacity 0.3s ease 0.1s, max-height 0.01s ease, visibility 0s",
           }}>
             <h1 style={{ fontSize: "clamp(32px, 5vw, 44px)", fontWeight: 400, lineHeight: 1.2, color: "#efe5d5", marginBottom: 8,
               fontFamily: "'Georgia', 'Times New Roman', serif" }}>
               Ask My Dad's Record Collection
             </h1>
             <div style={{ width: 36, height: 1, background: "#4a3a2a", margin: "14px auto" }} />
-            <p style={{ fontSize: 14, color: "#7a6a5a", lineHeight: 1.6, maxWidth: 340, margin: "0 auto" }}>
+            <p style={{ fontSize: 14, color: "#94826e", lineHeight: 1.6, maxWidth: 340, margin: "0 auto" }}>
               Tell it your mood, your moment, the weather outside.<br />It'll pull the right record.
             </p>
           </div>
-        </div>
+        </header>
 
         {/* Controls — quickly fade when result is showing */}
         <div style={{
           maxHeight: showResult && result ? 0 : 2000,
           opacity: showResult && result ? 0 : 1,
+          visibility: showResult && result ? "hidden" : "visible",
           overflow: showResult && result ? "hidden" : "visible",
           transition: showResult && result
-            ? "opacity 0.15s ease, max-height 0.01s ease 0.15s"
-            : "opacity 0.3s ease 0.1s, max-height 0.01s ease",
+            ? "opacity 0.15s ease, max-height 0.01s ease 0.15s, visibility 0.15s"
+            : "opacity 0.3s ease 0.1s, max-height 0.01s ease, visibility 0s",
         }}>
           {/* Side A / Side B toggle */}
           <div style={{
@@ -1126,7 +1209,8 @@ export default function RecordCollection() {
               { id: "turntable", side: "Side A", label: "Ask the Collection", desc: "Tell it your mood" },
               { id: "shelf", side: "Side B", label: "Browse the Shelf", desc: "Pull one yourself" },
             ].map(v => (
-              <button key={v.id} onClick={() => setCurrentView(v.id)} style={{
+              <button key={v.id} type="button" onClick={() => setCurrentView(v.id)}
+                aria-pressed={currentView === v.id} style={{
                 flex: 1, padding: "14px 16px", background: "transparent", border: "none",
                 cursor: "pointer", position: "relative", textAlign: "center",
                 transition: "color 0.3s",
@@ -1134,19 +1218,19 @@ export default function RecordCollection() {
                 <span style={{
                   display: "block", fontSize: 9, letterSpacing: 3, textTransform: "uppercase",
                   fontFamily: "'Courier New', monospace",
-                  color: currentView === v.id ? "rgba(212,184,112,0.7)" : "rgba(106,90,74,0.5)",
+                  color: currentView === v.id ? "rgba(212,184,112,0.7)" : "rgba(133,117,101,0.85)",
                   marginBottom: 4, transition: "color 0.3s",
                 }}>{v.side}</span>
                 <span style={{
                   display: "block", fontSize: 14,
                   fontFamily: "'Georgia', 'Times New Roman', serif",
-                  color: currentView === v.id ? "#efe5d5" : "#7a6a5a",
+                  color: currentView === v.id ? "#efe5d5" : "#94826e",
                   fontWeight: 400, transition: "color 0.3s",
                 }}>{v.label}</span>
                 <span style={{
                   display: "block", fontSize: 11, marginTop: 3,
                   fontFamily: "'Georgia', serif", fontStyle: "italic",
-                  color: currentView === v.id ? "rgba(154,138,122,0.8)" : "rgba(106,90,74,0.4)",
+                  color: currentView === v.id ? "rgba(154,138,122,0.8)" : "rgba(133,117,101,0.8)",
                   transition: "color 0.3s",
                 }}>{v.desc}</span>
               </button>
@@ -1157,11 +1241,12 @@ export default function RecordCollection() {
           <div style={{
             opacity: currentView === "shelf" ? 1 : 0,
             maxHeight: currentView === "shelf" ? 2000 : 0,
+            visibility: currentView === "shelf" ? "visible" : "hidden",
             overflow: currentView === "shelf" ? "visible" : "hidden",
-            transition: "opacity 0.4s ease, max-height 0.4s ease",
+            transition: "opacity 0.4s ease, max-height 0.4s ease, visibility 0.4s",
           }}>
             {rateLimited && (
-              <p style={{
+              <p role="alert" style={{
                 textAlign: "center", color: "#b48c50", fontStyle: "italic",
                 fontFamily: "'Georgia', serif", fontSize: "14px",
                 margin: "0 0 1rem", padding: "0 1rem",
@@ -1177,15 +1262,21 @@ export default function RecordCollection() {
         <div style={{
           opacity: currentView === "turntable" && !(showResult && result) ? 1 : 0,
           maxHeight: currentView === "turntable" && !(showResult && result) ? 500 : 0,
+          visibility: currentView === "turntable" && !(showResult && result) ? "visible" : "hidden",
           overflow: "hidden",
-          transition: "opacity 0.4s ease, max-height 0.4s ease",
+          transition: "opacity 0.4s ease, max-height 0.4s ease, visibility 0.4s",
         }}>
           <>
-            <div style={{ marginBottom: 36 }}>
+            <form style={{ marginBottom: 36 }}
+              onSubmit={e => {
+                e.preventDefault();
+                if (mood.trim() && !isLoading) fetchRecommendation(mood.trim());
+              }}>
               <input type="text" value={mood}
                 onChange={e => setMood(e.target.value)}
-                onKeyDown={e => e.key === "Enter" && !isLoading && mood.trim() && fetchRecommendation(mood.trim())}
                 placeholder="How are you feeling right now?"
+                aria-label="Tell the collection your mood"
+                maxLength={200}
                 disabled={isLoading}
                 style={{
                   width: "100%", padding: "14px 16px", fontSize: 15,
@@ -1198,14 +1289,14 @@ export default function RecordCollection() {
                 onBlur={e => e.target.style.borderColor = "rgba(138,122,106,0.15)"}
               />
               <button
-                onClick={() => mood.trim() && !isLoading && fetchRecommendation(mood.trim())}
+                type="submit"
                 disabled={!mood.trim() || isLoading}
                 style={{
                   width: "100%", padding: "12px 16px", fontSize: 13,
                   fontFamily: "'Courier New', monospace", letterSpacing: 2, textTransform: "uppercase",
                   background: isLoading ? "rgba(180,140,80,0.06)" : "rgba(180,140,80,0.1)",
                   border: "1px solid rgba(180,140,80,0.25)", borderRadius: 3,
-                  color: !mood.trim() || isLoading ? "#6a5a4a" : "#d4b870",
+                  color: !mood.trim() || isLoading ? "#857565" : "#d4b870",
                   cursor: !mood.trim() || isLoading ? "default" : "pointer", transition: "all 0.3s",
                 }}>
                 {isLoading ? "Pulling from the shelf..." : "Drop the needle"}
@@ -1213,13 +1304,13 @@ export default function RecordCollection() {
 
               {!hasInteracted && (
                 <div style={{ marginTop: 16, textAlign: "center" }}>
-                  <p style={{ fontSize: 12, color: "#6a5a4a", letterSpacing: 1.5,
+                  <p style={{ fontSize: 12, color: "#857565", letterSpacing: 1.5,
                     textTransform: "uppercase", marginBottom: 10, fontFamily: "'Courier New', monospace" }}>
                     Or try
                   </p>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: 6, justifyContent: "center" }}>
                     {SAMPLE_MOODS.map(s => (
-                      <button key={s.mood} onClick={() => { setMood(s.mood); selectPreMapped(s); }}
+                      <button key={s.mood} type="button" onClick={() => { setMood(s.mood); selectPreMapped(s); }}
                         style={{
                           padding: "6px 14px", fontSize: 13, fontFamily: "'Georgia', serif",
                           fontStyle: "italic", background: "rgba(255,255,255,0.015)",
@@ -1232,7 +1323,7 @@ export default function RecordCollection() {
                   </div>
                 </div>
               )}
-            </div>
+            </form>
 
           </>
         </div>
@@ -1262,6 +1353,7 @@ export default function RecordCollection() {
                     isDecelerating={isDecelerating}
                     isAudioPlaying={isAudioPlaying}
                     onTogglePlay={togglePlay}
+                    canPlay={!!preview}
                     artCanvasRef={artCanvasRef}
                   />
                   <Tonearm isPlaying={isSpinning} />
@@ -1282,13 +1374,17 @@ export default function RecordCollection() {
                 />
               )}
               {/* Play status — anchored near the vinyl */}
-              {preview && result && showResult && (
+              {(preview || audioFailed) && result && showResult && (
                 <p style={{
                   position: "absolute", bottom: -14, left: 0, right: 0,
-                  fontSize: 10, color: "#6a5a4a", fontFamily: "'Courier New', monospace",
+                  fontSize: 10, color: "#857565", fontFamily: "'Courier New', monospace",
                   letterSpacing: 1, textAlign: "center", margin: 0,
                 }}>
-                  {isAudioPlaying ? `Playing: ${preview.name}` : "Hover the vinyl to play"}
+                  {audioFailed
+                    ? "No needle drop for this one — listen on Spotify below"
+                    : isAudioPlaying
+                      ? `Playing: ${preview.name}`
+                      : "Tap the record to play"}
                 </p>
               )}
             </div>
@@ -1319,11 +1415,12 @@ export default function RecordCollection() {
                   {/* Text info — left aligned, wraps within remaining space */}
                   <div style={{ textAlign: "left", minWidth: 0 }}>
                     <p style={{ fontSize: 11, letterSpacing: 3, textTransform: "uppercase",
-                      color: "#6a5a4a", marginBottom: 4, fontFamily: "'Courier New', monospace" }}>
+                      color: "#857565", marginBottom: 4, fontFamily: "'Courier New', monospace" }}>
                       {result.record?.genre || "Vinyl"} &middot; {result.year}
                     </p>
-                    <h2 style={{ fontSize: 22, fontWeight: 400, color: "#efe5d5",
-                      marginBottom: 2, fontStyle: "italic", wordWrap: "break-word" }}>
+                    <h2 ref={resultHeadingRef} tabIndex={-1}
+                      style={{ fontSize: 22, fontWeight: 400, color: "#efe5d5",
+                      marginBottom: 2, fontStyle: "italic", wordWrap: "break-word", outline: "none" }}>
                       {result.album}
                     </h2>
                     <p style={{ fontSize: 14, color: "#9a8a7a", margin: 0 }}>
@@ -1355,28 +1452,30 @@ export default function RecordCollection() {
           }}>
             <div style={{ width: 36, height: 1, background: "#4a3a2a", margin: "0 auto 16px" }} />
             <p style={{
-              fontSize: 13, color: "#7a6a5a", fontStyle: "italic",
+              fontSize: 13, color: "#94826e", fontStyle: "italic",
               fontFamily: "'Georgia', serif", marginBottom: 14,
             }}>
               What else are you feeling?
             </p>
-            <div style={{ maxWidth: 500, width: "100%", padding: "0 20px", boxSizing: "border-box", margin: "0 auto", display: "flex", gap: 8 }}>
+            <form style={{ maxWidth: 500, width: "100%", padding: "0 20px", boxSizing: "border-box", margin: "0 auto", display: "flex", gap: 8 }}
+              onSubmit={e => {
+                e.preventDefault();
+                if (!askAgainMood.trim() || isLoading) return;
+                const m = askAgainMood.trim();
+                resetPlayer("turntable");
+                // Small delay to let reset clear, then fire the new ask
+                setTimeout(() => {
+                  setMood(m);
+                  fetchRecommendation(m);
+                }, 50);
+              }}>
               <input
                 type="text"
                 value={askAgainMood}
                 onChange={e => setAskAgainMood(e.target.value)}
-                onKeyDown={e => {
-                  if (e.key === "Enter" && askAgainMood.trim()) {
-                    const m = askAgainMood.trim();
-                    resetPlayer("turntable");
-                    // Small delay to let reset clear, then fire the new ask
-                    setTimeout(() => {
-                      setMood(m);
-                      fetchRecommendation(m);
-                    }, 50);
-                  }
-                }}
                 placeholder="Try another mood..."
+                aria-label="Try another mood"
+                maxLength={200}
                 style={{
                   flex: 1, padding: "10px 14px", fontSize: 14,
                   fontFamily: "'Georgia', serif", background: "rgba(255,255,255,0.02)",
@@ -1387,28 +1486,20 @@ export default function RecordCollection() {
                 onBlur={e => e.target.style.borderColor = "rgba(138,122,106,0.18)"}
               />
               <button
-                onClick={() => {
-                  if (!askAgainMood.trim()) return;
-                  const m = askAgainMood.trim();
-                  resetPlayer("turntable");
-                  setTimeout(() => {
-                    setMood(m);
-                    fetchRecommendation(m);
-                  }, 50);
-                }}
-                disabled={!askAgainMood.trim()}
+                type="submit"
+                disabled={!askAgainMood.trim() || isLoading}
                 style={{
                   padding: "10px 18px", fontSize: 11,
                   fontFamily: "'Courier New', monospace", letterSpacing: 2, textTransform: "uppercase",
                   background: askAgainMood.trim() ? "rgba(180,140,80,0.1)" : "transparent",
                   border: "1px solid rgba(180,140,80,0.25)", borderRadius: 3,
-                  color: askAgainMood.trim() ? "#d4b870" : "#6a5a4a",
+                  color: askAgainMood.trim() ? "#d4b870" : "#857565",
                   cursor: askAgainMood.trim() ? "pointer" : "default",
                   transition: "all 0.3s", whiteSpace: "nowrap",
                 }}>
                 Ask
               </button>
-            </div>
+            </form>
           </div>
         )}
 
@@ -1422,28 +1513,36 @@ export default function RecordCollection() {
           if (record) selectFromShelf(record);
         }} />
 
-        <div style={{ marginTop: 56, textAlign: "center", paddingBottom: 28 }}>
+        <footer style={{ marginTop: 56, textAlign: "center", paddingBottom: 28 }}>
           <div style={{ width: 18, height: 1, background: "#4a3a2a", margin: "0 auto 12px" }} />
-          <p style={{ fontSize: 12, color: "#6a5a4a", fontFamily: "'Courier New', monospace",
+          <p style={{ fontSize: 12, color: "#857565", fontFamily: "'Courier New', monospace",
             letterSpacing: 1.5, lineHeight: 1.8 }}>
             For Daniel Mark Russell<br />Brick Mason. Husband. Audiophile. Father.
           </p>
-        </div>
-      </div>
+        </footer>
+      </main>
 
       <style>{`
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes spinDecel { from { transform: rotate(0deg); } to { transform: rotate(120deg); } }
         @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes pulse { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.5); } }
-        .mood-note:hover { transform: rotate(0deg) scale(1.05) !important; opacity: 1; z-index: 2; }
-        .mood-note:hover .mood-note-album { color: rgba(180,140,80,0.5) !important; }
-        input::placeholder { color: #6a5a4a; font-style: italic; }
+        .mood-note:hover, .mood-note:focus-visible { transform: rotate(0deg) scale(1.05) !important; opacity: 1; z-index: 2; }
+        .mood-note:hover .mood-note-album, .mood-note:focus-visible .mood-note-album { color: rgba(180,140,80,0.9) !important; }
+        input::placeholder { color: #857565; font-style: italic; }
         button:hover { filter: brightness(1.2); }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         ::-webkit-scrollbar { height: 3px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(138,122,106,0.15); border-radius: 2px; }
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+        input:focus-visible, button:focus-visible, a:focus-visible { outline: 2px solid rgba(212,184,112,0.85); outline-offset: 2px; }
+        .record-spine:focus-visible { transform: translateY(-24px) !important; }
+        .vinyl-toggle { opacity: 0; transition: opacity 0.2s; }
+        .vinyl-toggle[data-visible="true"], .vinyl-toggle:focus-visible { opacity: 1; }
+        @media (prefers-reduced-motion: reduce) {
+          .vinyl-disc, .vinyl-sheen { animation: none !important; }
+        }
       `}</style>
     </div>
   );
