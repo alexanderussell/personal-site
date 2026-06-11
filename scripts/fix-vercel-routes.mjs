@@ -13,6 +13,15 @@ const config = JSON.parse(readFileSync(configPath, 'utf-8'));
 // Find the index of the filesystem handler
 const fsIndex = config.routes.findIndex(r => r.handle === 'filesystem');
 
+// Hashed build assets are immutable — cache them for a year. The adapter
+// emits this same header route, but places it AFTER the filesystem handler
+// where it never applies; injecting it before makes it actually take effect.
+config.routes.splice(fsIndex, 0, {
+  src: '^/_astro/(.*)$',
+  headers: { 'cache-control': 'public, max-age=31536000, immutable' },
+  continue: true,
+});
+
 // Only intercept page requests on the subdomain — NOT static assets or API routes.
 // Static assets (/_astro/, /favicon, /fonts, /images) need the filesystem handler.
 // API routes (already SSR) are handled by their own route entries after filesystem.

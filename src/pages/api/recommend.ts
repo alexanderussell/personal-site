@@ -36,7 +36,10 @@ export const POST: APIRoute = async ({ request }) => {
   if (isRateLimited(ip)) {
     return new Response(JSON.stringify({
       error: 'Easy there — even Daniel needed a break between records. Try again in a bit.',
-    }), { status: 429 });
+    }), {
+      status: 429,
+      headers: { 'Content-Type': 'application/json', 'Retry-After': '3600' },
+    });
   }
 
   const { mood, recordList, recentPicks } = await request.json();
@@ -57,6 +60,9 @@ export const POST: APIRoute = async ({ request }) => {
 
   const resp = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
+    // Bail before the platform function timeout so the client's graceful
+    // fallback runs instead of a hung request
+    signal: AbortSignal.timeout(25_000),
     headers: {
       'Content-Type': 'application/json',
       'x-api-key': import.meta.env.ANTHROPIC_API_KEY,
@@ -101,8 +107,7 @@ Use the exact artist name and album title from the list. The reason should be 1-
   });
 
   if (!resp.ok) {
-    const error = await resp.text();
-    return new Response(JSON.stringify({ error: 'Claude API error', detail: error }), { status: 502 });
+    return new Response(JSON.stringify({ error: 'Claude API error' }), { status: 502 });
   }
 
   const data = await resp.json();
