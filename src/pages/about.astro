@@ -1,0 +1,618 @@
+---
+export const prerender = true;
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SubscribeForm } from '../components/SubscribeForm';
+import { now } from '../data/now';
+
+type ReceiptType = 'note' | 'guide' | 'experiment';
+
+const beliefs: {
+  statement: string;
+  body: string;
+  receipt: { type: ReceiptType; title: string; href: string };
+}[] = [
+  {
+    statement: 'Taste is residue, not talent.',
+    body: "It's what's left over after the reps — the 11pm grid audits, the hundred bad prototypes. The moat everyone says will save designers was built by work we just automated away. That should worry us more than it does.",
+    receipt: { type: 'note', title: 'The Ladder, Pulled Up', href: '/notes/the-ladder-pulled-up' },
+  },
+  {
+    statement: 'Real beats rendered.',
+    body: 'A working prototype on a URL ends arguments that a mockup can only start. Build the thing real enough to fight over.',
+    receipt: { type: 'note', title: 'We Swapped the Motor', href: '/notes/we-swapped-the-motor' },
+  },
+  {
+    statement: 'The best design system is the one you forget about.',
+    body: "Roads don't get feature roadmaps. Infrastructure is measured by what it enables, not what it contains.",
+    receipt: { type: 'note', title: 'Design Systems Are Not a Product', href: '/notes/design-systems-are-not-a-product' },
+  },
+  {
+    statement: 'For experts, trust beats delight.',
+    body: "An engineer clicking 'Provision' doesn't want magic — they want to believe what happens next. That's a harder thing to design than friendly.",
+    receipt: { type: 'note', title: 'What Does UX Mean When Your Users Are Engineers?', href: '/notes/ux-for-engineers' },
+  },
+  {
+    statement: "Friction is a feature — when it's chosen.",
+    body: 'Some actions should cost a deliberate pause. We cut accidental infrastructure provisions in half by making a button harder to press.',
+    receipt: { type: 'experiment', title: 'Hold to Provision', href: '/experiments/hold-to-provision' },
+  },
+  {
+    statement: 'Context should compound.',
+    body: "Notes that don't accumulate are notes you'll write again. Every system I build tries to start the next piece of work at step 40, not step 1.",
+    receipt: { type: 'guide', title: 'The Claude Code + Obsidian Vault Pattern', href: '/guides/claude-code-obsidian-vault-pattern-for-design-teams' },
+  },
+];
+
+const startHere: { title: string; why: string; href: string; type: ReceiptType }[] = [
+  {
+    title: 'The Ladder, Pulled Up',
+    why: 'The thesis. Where taste comes from, and what AI just did to it.',
+    href: '/notes/the-ladder-pulled-up',
+    type: 'note',
+  },
+  {
+    title: 'We Swapped the Motor',
+    why: 'The turn. The friction died, and the hard questions showed up early.',
+    href: '/notes/we-swapped-the-motor',
+    type: 'note',
+  },
+  {
+    title: 'Hold to Provision',
+    why: 'The craft. A button that takes intention seriously.',
+    href: '/experiments/hold-to-provision',
+    type: 'experiment',
+  },
+  {
+    title: "Ask My Dad's Record Collection",
+    why: "The heart. A vinyl collection that won't stop playing.",
+    href: '/experiments/ask-dads-records',
+    type: 'experiment',
+  },
+];
+
+const nowUpdated = now.updated.toLocaleDateString('en-US', {
+  month: 'long',
+  day: 'numeric',
+  year: 'numeric',
+});
+
+const typeIcons: Record<ReceiptType, string> = {
+  note: 'M8 2h12v2H8zM6 4h2v16H6zm14 0h2v16h-2zM4 20h16v2H4zm-2-9h2v9H2zm2-2h2v2H4zm6-3h8v2h-8zm0 4h8v2h-8zm0-2h2v2h-2zm6 0h2v2h-2zm-6 5h8v2h-8zm0 3h4v2h-4z',
+  guide: 'M2 3h9v2H2zM0 19h11v2H0zM13 3h9v2h-9zm0 16h11v2H13zM11 5h2v18h-2zM0 5h2v14H0zm22 0h2v14h-2zm-7 2h5v2h-5zm0 4h5v2h-5zm0 4h2v2h-2z',
+  experiment: 'M8 6h8v2H8zm0-4h8v2H8zm0 6h2v2H8zm6 0h2v2h-2zM6 20h12v2H6zm-2-8h2v8H4zm14 0h2v8h-2zM6 10h2v2H6zm10 0h2v2h-2zM6 4h2v2H6zm10 0h2v2h-2z',
+};
+---
+
+<BaseLayout
+  title="About — Alex Russell"
+  description="Who I am, what I believe about design and software, and where to start reading. Each belief comes with a receipt."
+>
+  <article class="pt-12 pb-8">
+    <!-- The rule -->
+    <header class="about-header">
+      <p class="about-eyebrow fade-in-hidden" data-stagger>About</p>
+      <h1 class="font-heading about-rule fade-in-hidden" data-stagger>
+        &ldquo;If you're going to do it,<br />do it right.&rdquo;
+      </h1>
+      <p class="about-rule-credit fade-in-hidden" data-stagger>
+        My dad's refrain before any project. He laid brick for a living; I ship software.
+        <a href="/notes/dads-eulogy">The rule transfers.</a>
+      </p>
+    </header>
+
+    <!-- Who -->
+    <section class="about-intro fade-in-hidden" data-stagger>
+      <p>
+        I'm Alex — a design engineer with 12 years of making software feel like something. I lead UX for
+        developer tools at Marriott International, designing the internal platforms engineering teams use to
+        ship infrastructure. Before that: agencies, dev shops, startups, and a design collective called
+        <a href="https://collectivelymade.com" target="_blank" rel="noopener noreferrer">Collectively Made</a>.
+      </p>
+      <p>
+        This site is the workshop, not the showroom. Essays argue a position, experiments are the lab work,
+        and the two link to each other on purpose.
+      </p>
+    </section>
+
+    <!-- Beliefs -->
+    <section class="about-section" id="beliefs">
+      <h2 class="about-label fade-in-scroll">What I believe</h2>
+      <p class="about-sublabel fade-in-scroll">Anyone can claim a perspective. Each of these comes with a receipt.</p>
+
+      <div class="belief-list">
+        {beliefs.map((belief, i) => (
+          <div class="belief fade-in-scroll">
+            <span class="belief__number" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <div class="belief__body">
+              <h3 class="font-heading belief__statement">{belief.statement}</h3>
+              <p class="belief__text">{belief.body}</p>
+              <a href={belief.receipt.href} class={`belief-receipt belief-receipt--${belief.receipt.type}`}>
+                <span class="belief-receipt__label">Receipt</span>
+                <span class="belief-receipt__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" class="size-3.5" fill="currentColor"><path d={typeIcons[belief.receipt.type]} /></svg>
+                </span>
+                <span class="belief-receipt__title">{belief.receipt.title}</span>
+                <span class="belief-receipt__arrow" aria-hidden="true">&rarr;</span>
+              </a>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Start here -->
+    <section class="about-section" id="start-here">
+      <h2 class="about-label fade-in-scroll">Start here</h2>
+      <p class="about-sublabel fade-in-scroll">First visit? Four pieces, in this order.</p>
+
+      <ol class="start-here-list">
+        {startHere.map((item, i) => (
+          <li class="fade-in-scroll">
+            <a href={item.href} class={`start-here-item start-here-item--${item.type}`}>
+              <span class="start-here-item__number" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+              <span class="start-here-item__body">
+                <span class="start-here-item__title">
+                  {item.title}
+                  <span class="start-here-item__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" class="size-3.5" fill="currentColor"><path d={typeIcons[item.type]} /></svg>
+                  </span>
+                </span>
+                <span class="start-here-item__why">{item.why}</span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <!-- Now -->
+    <section class="about-section" id="now">
+      <h2 class="about-label fade-in-scroll">Now</h2>
+      <dl class="now-list">
+        {now.items.map((item) => (
+          <div class="now-item fade-in-scroll">
+            <dt class="now-item__label">{item.label}</dt>
+            <dd class="now-item__text">
+              {item.href ? <a href={item.href}>{item.text}</a> : item.text}
+            </dd>
+          </div>
+        ))}
+      </dl>
+      <p class="now-updated fade-in-scroll">Updated {nowUpdated} &middot; by hand, for now.</p>
+    </section>
+
+    <!-- Subscribe -->
+    <section class="about-subscribe fade-in-scroll">
+      <div class="about-subscribe__divider"></div>
+      <p class="about-label">Stick around</p>
+      <p class="about-subscribe__body">New essays and experiments, straight to your inbox.</p>
+      <SubscribeForm list="newsletter" client:visible />
+    </section>
+  </article>
+
+  <noscript>
+    <style>
+      .fade-in-hidden,
+      .fade-in-scroll {
+        opacity: 1 !important;
+        transform: none !important;
+      }
+    </style>
+  </noscript>
+</BaseLayout>
+
+<script>
+  // Top-of-page elements stagger in on load (same rhythm as the homepage).
+  let delay = 100;
+  document.querySelectorAll('[data-stagger]').forEach((item) => {
+    setTimeout(() => item.classList.add('is-visible'), delay);
+    delay += 120;
+  });
+
+  // Everything below the fold fades in as it enters the viewport.
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { rootMargin: '0px 0px -40px 0px', threshold: 0.1 }
+  );
+
+  document.querySelectorAll('.fade-in-scroll').forEach((el) => observer.observe(el));
+</script>
+
+<style>
+  /* ── Header ── */
+
+  .about-header {
+    max-width: 42rem;
+  }
+
+  .about-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    margin: 0 0 1.5rem;
+  }
+
+  .about-rule {
+    font-size: clamp(2.5rem, 7vw, 4rem);
+    line-height: 1.02;
+    letter-spacing: -0.01em;
+    margin: 0 0 1.25rem;
+  }
+
+  .about-rule-credit {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  .about-rule-credit a {
+    color: var(--color-text-primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--color-border);
+    transition: text-decoration-color 150ms ease;
+  }
+
+  .about-rule-credit a:hover {
+    text-decoration-color: currentColor;
+  }
+
+  /* ── Intro ── */
+
+  .about-intro {
+    max-width: 42rem;
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .about-intro p {
+    font-family: var(--font-mono);
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  .about-intro a {
+    color: var(--color-text-primary);
+    font-weight: 600;
+  }
+
+  .about-intro a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* ── Section scaffolding ── */
+
+  .about-section {
+    margin-top: 5.5rem;
+  }
+
+  .about-label {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    margin: 0 0 0.5rem;
+  }
+
+  .about-sublabel {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    margin: 0 0 2.75rem;
+    opacity: 0.75;
+  }
+
+  /* ── Beliefs ── */
+
+  .belief-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3.25rem;
+    max-width: 44rem;
+  }
+
+  .belief {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.4rem 1.25rem;
+  }
+
+  @media (min-width: 640px) {
+    .belief {
+      grid-template-columns: 3rem 1fr;
+    }
+  }
+
+  .belief__number {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    opacity: 0.6;
+    padding-top: 0.6rem;
+  }
+
+  .belief__statement {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    line-height: 1.15;
+    margin: 0 0 0.65rem;
+  }
+
+  .belief__text {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--color-text-secondary);
+    margin: 0 0 0.9rem;
+    max-width: 38rem;
+  }
+
+  .belief-receipt {
+    --receipt-color: var(--color-text-primary);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    text-decoration: none;
+    color: var(--color-text-primary);
+  }
+
+  .belief-receipt--note { --receipt-color: #60a5fa; }
+  .belief-receipt--guide { --receipt-color: #e67e22; }
+  .belief-receipt--experiment { --receipt-color: #eab308; }
+
+  .belief-receipt__label {
+    font-weight: 600;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    border: 1px dashed var(--color-border);
+    border-radius: 999px;
+    padding: 0.18rem 0.55rem;
+    transition: border-color 150ms ease, color 150ms ease;
+  }
+
+  .belief-receipt__icon {
+    line-height: 0;
+    color: var(--color-text-secondary);
+    transition: color 150ms ease, transform 150ms ease;
+  }
+
+  .belief-receipt__title {
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 1px;
+    transition: border-color 150ms ease;
+  }
+
+  .belief-receipt__arrow {
+    color: var(--color-text-secondary);
+    transition: transform 150ms ease, color 150ms ease;
+  }
+
+  .belief-receipt:hover .belief-receipt__icon {
+    color: var(--receipt-color);
+    transform: translateY(-1px);
+  }
+
+  .belief-receipt:hover .belief-receipt__title {
+    border-color: currentColor;
+  }
+
+  .belief-receipt:hover .belief-receipt__arrow {
+    transform: translateX(2px);
+    color: var(--color-text-primary);
+  }
+
+  .belief-receipt:hover .belief-receipt__label {
+    color: var(--color-text-primary);
+    border-color: var(--receipt-color);
+  }
+
+  /* ── Start here ── */
+
+  .start-here-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    max-width: 44rem;
+  }
+
+  .start-here-item {
+    --start-color: var(--color-text-primary);
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 1.25rem;
+    padding: 1.1rem 0;
+    text-decoration: none;
+    color: inherit;
+    border-bottom: 1px dashed var(--color-border);
+  }
+
+  .start-here-list li:first-child .start-here-item {
+    border-top: 1px dashed var(--color-border);
+  }
+
+  .start-here-item--note { --start-color: #60a5fa; }
+  .start-here-item--guide { --start-color: #e67e22; }
+  .start-here-item--experiment { --start-color: #eab308; }
+
+  .start-here-item__number {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--color-text-secondary);
+    opacity: 0.6;
+    padding-top: 0.15rem;
+    transition: color 150ms ease, opacity 150ms ease;
+  }
+
+  .start-here-item:hover .start-here-item__number {
+    color: var(--start-color);
+    opacity: 1;
+  }
+
+  .start-here-item__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .start-here-item__title {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  .start-here-item:hover .start-here-item__title {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .start-here-item__icon {
+    line-height: 0;
+    color: var(--color-text-secondary);
+    transition: color 150ms ease, transform 150ms ease;
+  }
+
+  .start-here-item:hover .start-here-item__icon {
+    color: var(--start-color);
+    transform: translateY(-1px);
+  }
+
+  .start-here-item__why {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+  }
+
+  /* ── Now ── */
+
+  .now-list {
+    margin: 0;
+    max-width: 44rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .now-item {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.15rem 1.25rem;
+    padding: 0.85rem 0;
+    border-bottom: 1px dashed var(--color-border);
+  }
+
+  .now-item:first-child {
+    border-top: 1px dashed var(--color-border);
+  }
+
+  @media (min-width: 640px) {
+    .now-item {
+      grid-template-columns: 8rem 1fr;
+    }
+  }
+
+  .now-item__label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    padding-top: 0.25rem;
+  }
+
+  .now-item__text {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--color-text-primary);
+  }
+
+  .now-item__text a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--color-border);
+    transition: text-decoration-color 150ms ease;
+  }
+
+  .now-item__text a:hover {
+    text-decoration-color: currentColor;
+  }
+
+  .now-updated {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    opacity: 0.7;
+    margin: 1.5rem 0 0;
+  }
+
+  /* ── Subscribe ── */
+
+  .about-subscribe {
+    margin-top: 5.5rem;
+    max-width: 28rem;
+  }
+
+  .about-subscribe__divider {
+    height: 1px;
+    background: var(--color-border);
+    margin-bottom: 2rem;
+  }
+
+  .about-subscribe__body {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    margin: 0 0 1.25rem;
+    line-height: 1.6;
+  }
+
+  /* ── Scroll reveal ── */
+
+  .fade-in-scroll {
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.45s ease, transform 0.45s ease;
+  }
+
+  .fade-in-scroll.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fade-in-scroll,
+    :global(.fade-in-hidden) {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+  }
+</style>
