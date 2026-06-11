@@ -46,7 +46,14 @@ const pool: Pool[] = [
 
 const byRef = new Map(pool.map((item) => [item.ref, item]));
 
-// Explicit picks first, in frontmatter order.
+// Explicit picks first, in frontmatter order. Unresolved refs are dropped
+// from the render but flagged at build time so typos don't vanish silently.
+for (const ref of related) {
+  if (!byRef.has(ref)) {
+    console.warn(`[RelatedPosts] ${currentRef}: related ref "${ref}" does not match any published entry`);
+  }
+}
+
 const picks: Pool[] = related
   .map((ref) => byRef.get(ref))
   .filter((item): item is Pool => item !== undefined && item.ref !== currentRef);
@@ -80,7 +87,7 @@ const items = picks.slice(0, MAX_ITEMS);
             <span class="related-post__meta">
               <span class="related-post__type">{item.type}</span>
               <time datetime={item.date.toISOString()}>
-                {item.date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                {item.date.toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' })}
               </time>
             </span>
             <span class="related-post__title">{item.title}</span>

@@ -18,7 +18,7 @@ const stageIcons: Record<Props['status'], string> = {
 };
 ---
 
-<span class={`growth-stage growth-stage--${status}`} title={stageNotes[status]}>
+<span class={`growth-stage growth-stage--${status}`} title={stageNotes[status]} aria-label={stageNotes[status]}>
   <span class="growth-stage__icon" aria-hidden="true">
     <svg viewBox="0 0 24 24" class="size-3.5" fill="currentColor"><path d={stageIcons[status]} /></svg>
   </span>
