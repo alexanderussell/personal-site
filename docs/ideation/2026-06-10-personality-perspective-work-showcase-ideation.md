@@ -37,7 +37,7 @@ mode: repo-grounded
 **Downsides:** The beliefs section is genuinely hard editorial work; vault distillation needs a public-safety review step.
 **Confidence:** 90%
 **Complexity:** Medium
-**Status:** Unexplored
+**Status:** Explored — shipped in PR #5
 
 ### 2. One Schema Change, Three Features
 **Description:** Add `related` (slugs), `status` (seedling/growing/evergreen), and `via` (what prompted the piece) to the shared zod schema in src/content.config.ts. One edit unlocks related-post footers, garden growth-stage badges (lowering the publishing bar — "strongly held, loosely argued"), and provenance lines across all three collections. Optional extension: a remark plugin resolving Obsidian `[[wikilinks]]` to internal links with "Linked from" backlink footers.
@@ -47,7 +47,7 @@ mode: repo-grounded
 **Downsides:** Payoff compounds with corpus size; modest visible change today.
 **Confidence:** 85%
 **Complexity:** Low
-**Status:** Unexplored
+**Status:** Explored — shipped in PR #5
 
 ### 3. The Reveal Toggle
 **Description:** Each of the 4 experiments gets a "reveal the method" switch: the live piece keeps running but gains an annotated overlay — spring values on Hold to Provision, layout pass order in Bricklayer, seed logic in Generative Logo — with callout lines and one-sentence decision notes. The trick and its method on the same stage, not a separate making-of post.
