@@ -3,6 +3,7 @@ import BaseLayout from './BaseLayout.astro';
 import { SubscribeForm } from '../components/SubscribeForm';
 import GrowthStage from '../components/GrowthStage.astro';
 import RelatedPosts from '../components/RelatedPosts.astro';
+import TypeIcon from '../components/TypeIcon.astro';
 
 interface Props {
   title: string;
@@ -13,13 +14,15 @@ interface Props {
   number?: string | number;
   status?: 'seedling' | 'growing' | 'evergreen';
   via?: string;
-  /** "collection/slug" ref of this entry, used to resolve related posts. */
-  currentRef?: string;
+  /** Entry id (slug) — combined with `type` to resolve related posts. */
+  id?: string;
   tags?: string[];
   related?: string[];
 }
 
-const { title, description, date, type, subtitle, number, status, via, currentRef, tags, related } = Astro.props;
+const { title, description, date, type, subtitle, number, status, via, id, tags, related } = Astro.props;
+
+const currentRef = id ? `${type}s/${id}` : undefined;
 
 const backLinks: Record<string, { href: string; label: string }> = {
   note: { href: '/notes', label: 'Notes' },
@@ -46,21 +49,7 @@ const formattedNumber =
       <div class={`post-type-badge post-type-badge--${type} font-mono mb-8 flex flex-col items-center gap-2.5 text-center text-xs font-semibold uppercase tracking-[0.2em] sm:flex-row sm:justify-center sm:gap-2`}>
         <span class="flex items-center gap-2">
           <span class="post-type-badge__icon" aria-hidden="true">
-            {type === 'note' && (
-              <svg viewBox="0 0 24 24" class="size-4" fill="currentColor">
-                <path d="M8 2h12v2H8zM6 4h2v16H6zm14 0h2v16h-2zM4 20h16v2H4zm-2-9h2v9H2zm2-2h2v2H4zm6-3h8v2h-8zm0 4h8v2h-8zm0-2h2v2h-2zm6 0h2v2h-2zm-6 5h8v2h-8zm0 3h4v2h-4z"/>
-              </svg>
-            )}
-            {type === 'guide' && (
-              <svg viewBox="0 0 24 24" class="size-4" fill="currentColor">
-                <path d="M2 3h9v2H2zM0 19h11v2H0zM13 3h9v2h-9zm0 16h11v2H13zM11 5h2v18h-2zM0 5h2v14H0zm22 0h2v14h-2zm-7 2h5v2h-5zm0 4h5v2h-5zm0 4h2v2h-2z"/>
-              </svg>
-            )}
-            {type === 'experiment' && (
-              <svg viewBox="0 0 24 24" class="size-4" fill="currentColor">
-                <path d="M8 6h8v2H8zm0-4h8v2H8zm0 6h2v2H8zm6 0h2v2h-2zM6 20h12v2H6zm-2-8h2v8H4zm14 0h2v8h-2zM6 10h2v2H6zm10 0h2v2h-2zM6 4h2v2H6zm10 0h2v2h-2z"/>
-              </svg>
-            )}
+            <TypeIcon type={type} class="size-4" />
           </span>
           <span class="text-text-secondary">{type}{formattedNumber ? ` ${formattedNumber}` : ''}</span>
         </span>
@@ -145,14 +134,14 @@ const formattedNumber =
   }
 
   .post-type-badge--note .post-type-badge__icon {
-    color: #60a5fa;
+    color: var(--color-type-note);
   }
 
   .post-type-badge--guide .post-type-badge__icon {
-    color: #e67e22;
+    color: var(--color-type-guide);
   }
 
   .post-type-badge--experiment .post-type-badge__icon {
-    color: #eab308;
+    color: var(--color-type-experiment);
   }
 </style>

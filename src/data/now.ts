@@ -2,7 +2,10 @@
  * The "now" strip on /about. Update by hand (for now) — keep it honest,
  * keep it short, and bump `updated` whenever anything changes.
  */
-export const now = {
+export const now: {
+  updated: Date;
+  items: { label: string; text: string; href?: string }[];
+} = {
   updated: new Date('2026-06-10'),
   items: [
     {

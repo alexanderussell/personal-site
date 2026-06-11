@@ -2,6 +2,7 @@
 export const prerender = true;
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SubscribeForm } from '../components/SubscribeForm';
+import TypeIcon from '../components/TypeIcon.astro';
 import { now } from '../data/now';
 
 type ReceiptType = 'note' | 'guide' | 'experiment';
@@ -75,12 +76,6 @@ const nowUpdated = now.updated.toLocaleDateString('en-US', {
   day: 'numeric',
   year: 'numeric',
 });
-
-const typeIcons: Record<ReceiptType, string> = {
-  note: 'M8 2h12v2H8zM6 4h2v16H6zm14 0h2v16h-2zM4 20h16v2H4zm-2-9h2v9H2zm2-2h2v2H4zm6-3h8v2h-8zm0 4h8v2h-8zm0-2h2v2h-2zm6 0h2v2h-2zm-6 5h8v2h-8zm0 3h4v2h-4z',
-  guide: 'M2 3h9v2H2zM0 19h11v2H0zM13 3h9v2h-9zm0 16h11v2H13zM11 5h2v18h-2zM0 5h2v14H0zm22 0h2v14h-2zm-7 2h5v2h-5zm0 4h5v2h-5zm0 4h2v2h-2z',
-  experiment: 'M8 6h8v2H8zm0-4h8v2H8zm0 6h2v2H8zm6 0h2v2h-2zM6 20h12v2H6zm-2-8h2v8H4zm14 0h2v8h-2zM6 10h2v2H6zm10 0h2v2h-2zM6 4h2v2H6zm10 0h2v2h-2z',
-};
 ---
 
 <BaseLayout
@@ -129,7 +124,7 @@ const typeIcons: Record<ReceiptType, string> = {
               <a href={belief.receipt.href} class={`belief-receipt belief-receipt--${belief.receipt.type}`}>
                 <span class="belief-receipt__label">Receipt</span>
                 <span class="belief-receipt__icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" class="size-3.5" fill="currentColor"><path d={typeIcons[belief.receipt.type]} /></svg>
+                  <TypeIcon type={belief.receipt.type} class="size-3.5" />
                 </span>
                 <span class="belief-receipt__title">{belief.receipt.title}</span>
                 <span class="belief-receipt__arrow" aria-hidden="true">&rarr;</span>
@@ -154,7 +149,7 @@ const typeIcons: Record<ReceiptType, string> = {
                 <span class="start-here-item__title">
                   {item.title}
                   <span class="start-here-item__icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" class="size-3.5" fill="currentColor"><path d={typeIcons[item.type]} /></svg>
+                    <TypeIcon type={item.type} class="size-3.5" />
                   </span>
                 </span>
                 <span class="start-here-item__why">{item.why}</span>
@@ -189,16 +184,6 @@ const typeIcons: Record<ReceiptType, string> = {
       <SubscribeForm list="newsletter" client:visible />
     </section>
   </article>
-
-  <noscript>
-    <style>
-      .fade-in-hidden,
-      .fade-in-scroll {
-        opacity: 1 !important;
-        transform: none !important;
-      }
-    </style>
-  </noscript>
 </BaseLayout>
 
 <script>
@@ -375,9 +360,9 @@ const typeIcons: Record<ReceiptType, string> = {
     color: var(--color-text-primary);
   }
 
-  .belief-receipt--note { --receipt-color: #60a5fa; }
-  .belief-receipt--guide { --receipt-color: #e67e22; }
-  .belief-receipt--experiment { --receipt-color: #eab308; }
+  .belief-receipt--note { --receipt-color: var(--color-type-note); }
+  .belief-receipt--guide { --receipt-color: var(--color-type-guide); }
+  .belief-receipt--experiment { --receipt-color: var(--color-type-experiment); }
 
   .belief-receipt__label {
     font-weight: 600;
@@ -453,9 +438,9 @@ const typeIcons: Record<ReceiptType, string> = {
     border-top: 1px dashed var(--color-border);
   }
 
-  .start-here-item--note { --start-color: #60a5fa; }
-  .start-here-item--guide { --start-color: #e67e22; }
-  .start-here-item--experiment { --start-color: #eab308; }
+  .start-here-item--note { --start-color: var(--color-type-note); }
+  .start-here-item--guide { --start-color: var(--color-type-guide); }
+  .start-here-item--experiment { --start-color: var(--color-type-experiment); }
 
   .start-here-item__number {
     font-family: var(--font-mono);
@@ -594,25 +579,6 @@ const typeIcons: Record<ReceiptType, string> = {
     line-height: 1.6;
   }
 
-  /* ── Scroll reveal ── */
-
-  .fade-in-scroll {
-    opacity: 0;
-    transform: translateY(6px);
-    transition: opacity 0.45s ease, transform 0.45s ease;
-  }
-
-  .fade-in-scroll.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .fade-in-scroll,
-    :global(.fade-in-hidden) {
-      opacity: 1 !important;
-      transform: none !important;
-      transition: none !important;
-    }
-  }
+  /* Scroll reveal styles (.fade-in-scroll) live in global.css next to
+     .fade-in-hidden — both are JS-gated via html.js. */
 </style>

@@ -10,25 +10,17 @@ const stageNotes: Record<Props['status'], string> = {
   growing: 'Growing — a position in progress. Still being argued with.',
   evergreen: 'Evergreen — settled. I stand behind this one.',
 };
+
+const stageIcons: Record<Props['status'], string> = {
+  seedling: 'M11 13h2v7h-2zM6 9h3v2H6zm2 2h3v2H8zm7-4h3v2h-3zm-2 2h3v2h-3zm-2 2h2v2h-2zM5 20h14v2H5z',
+  growing: 'M11 7h2v13h-2zM9 3h2v2H9zm4 0h2v2h-2zM5 11h4v2H5zm4 2h2v2H9zm6-6h4v2h-4zm-2 2h2v2h-2zM5 20h14v2H5z',
+  evergreen: 'M11 1h2v2h-2zM10 3h4v2h-4zM9 5h6v2H9zM8 7h8v2H8zM7 9h10v2H7zM6 11h12v2H6zM5 13h14v2H5zM11 15h2v6h-2z',
+};
 ---
 
 <span class={`growth-stage growth-stage--${status}`} title={stageNotes[status]}>
   <span class="growth-stage__icon" aria-hidden="true">
-    {status === 'seedling' && (
-      <svg viewBox="0 0 24 24" class="size-3.5" fill="currentColor">
-        <path d="M11 13h2v7h-2zM6 9h3v2H6zm2 2h3v2H8zm7-4h3v2h-3zm-2 2h3v2h-3zm-2 2h2v2h-2zM5 20h14v2H5z"/>
-      </svg>
-    )}
-    {status === 'growing' && (
-      <svg viewBox="0 0 24 24" class="size-3.5" fill="currentColor">
-        <path d="M11 7h2v13h-2zM9 3h2v2H9zm4 0h2v2h-2zM5 11h4v2H5zm4 2h2v2H9zm6-6h4v2h-4zm-2 2h2v2h-2zM5 20h14v2H5z"/>
-      </svg>
-    )}
-    {status === 'evergreen' && (
-      <svg viewBox="0 0 24 24" class="size-3.5" fill="currentColor">
-        <path d="M11 1h2v2h-2zM10 3h4v2h-4zM9 5h6v2H9zM8 7h8v2H8zM7 9h10v2H7zM6 11h12v2H6zM5 13h14v2H5zM11 15h2v6h-2z"/>
-      </svg>
-    )}
+    <svg viewBox="0 0 24 24" class="size-3.5" fill="currentColor"><path d={stageIcons[status]} /></svg>
   </span>
   {status}
 </span>
@@ -56,13 +48,22 @@ const stageNotes: Record<Props['status'], string> = {
   }
 
   /* Border firms up as the thinking does. */
-  .growth-stage--seedling { border-style: dashed; }
-  .growth-stage--growing { border-style: dashed; border-color: color-mix(in srgb, var(--color-border) 50%, var(--growth-color, currentColor)); }
-  .growth-stage--evergreen { border-style: solid; border-color: color-mix(in srgb, var(--color-border) 35%, var(--growth-color, currentColor)); }
+  .growth-stage--seedling {
+    --growth-color: #a3e635;
+    border-style: dashed;
+  }
 
-  .growth-stage--seedling { --growth-color: #a3e635; }
-  .growth-stage--growing { --growth-color: #4ade80; }
-  .growth-stage--evergreen { --growth-color: #22c55e; }
+  .growth-stage--growing {
+    --growth-color: #4ade80;
+    border-style: dashed;
+    border-color: color-mix(in srgb, var(--color-border) 50%, var(--growth-color));
+  }
+
+  .growth-stage--evergreen {
+    --growth-color: #22c55e;
+    border-style: solid;
+    border-color: color-mix(in srgb, var(--color-border) 35%, var(--growth-color));
+  }
 
   .growth-stage__icon {
     line-height: 0;
