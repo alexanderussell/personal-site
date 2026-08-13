@@ -33,7 +33,7 @@ const ROUTED_COLLECTIONS = {
  * (newsletter sends, external links), so a 404 here is a real regression.
  * Add an entry when a route becomes permanent — not before.
  */
-const PERMANENT_ROUTES = ['/', '/about', '/book', '/notes', '/guides', '/lab'];
+const PERMANENT_ROUTES = ['/', '/about', '/book', '/notes', '/guides', '/lab', '/writing'];
 
 const errors = [];
 const notes = [];

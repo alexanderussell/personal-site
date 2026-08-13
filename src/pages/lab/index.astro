@@ -2,30 +2,53 @@
 export const prerender = true;
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
-import TimelineItem from '../../components/TimelineItem.astro';
+import LabCard from '../../components/LabCard.astro';
+import { hasPreview } from '../../lib/lab';
 
 const experiments = (await getCollection('lab', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 ---
 
-<BaseLayout title="Experiments — Alex Russell" description="Small interactive prototypes and technical spikes.">
+<BaseLayout
+  title="Lab — Alex Russell"
+  description="Interactive prototypes and technical spikes — small things built to answer a question."
+>
   <section class="py-16">
-    <p class="font-mono text-sm font-semibold tracking-tight uppercase text-text-secondary">Experiments</p>
+    <p class="font-mono text-sm font-semibold tracking-tight uppercase text-text-secondary">Lab</p>
     <h1 class="font-heading mt-3 text-xl leading-snug sm:text-2xl sm:leading-[1.35]">
       Prototypes that started as "what if" and ended as "oh, interesting."
     </h1>
+    <p class="text-text-secondary mt-4 max-w-2xl font-mono text-sm leading-7">
+      Everything here runs in the page. No screenshots, no video — if it's on this list, you can
+      poke at it.
+    </p>
 
-    <div class="mt-12">
-      {experiments.map((experiment, index) => (
-        <TimelineItem
+    <div class="lab-grid mt-12">
+      {experiments.map((experiment) => (
+        <LabCard
+          id={experiment.id}
           href={`/lab/${experiment.id}`}
-          type="experiment"
+          title={experiment.data.title}
+          description={experiment.data.description}
           date={experiment.data.date}
-          isLast={index === experiments.length - 1}
-          showTypeLabel={false}
-          experimentId={experiment.id}
+          status={experiment.data.status}
+          hasPreview={hasPreview(experiment.id)}
         />
       ))}
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .lab-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .lab-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>
