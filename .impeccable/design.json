@@ -1,0 +1,325 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-13T00:00:00.000Z",
+  "title": "Design System: alexanderussell.com",
+  "extensions": {
+    "colorMeta": {
+      "text-primary": {
+        "role": "primary",
+        "displayName": "Warm Ink",
+        "canonical": "oklch(21.6% .006 56.043)",
+        "tonalRamp": [
+          "oklch(15% .006 56)",
+          "oklch(21.6% .006 56)",
+          "oklch(31% .006 56)",
+          "oklch(43% .006 56)",
+          "oklch(56% .005 56)",
+          "oklch(70% .005 56)",
+          "oklch(84% .004 56)",
+          "oklch(95% .003 56)"
+        ]
+      },
+      "bg-primary": {
+        "role": "neutral",
+        "displayName": "Warm Paper",
+        "canonical": "oklch(97% .003 56)",
+        "tonalRamp": [
+          "oklch(20% .003 56)",
+          "oklch(32% .003 56)",
+          "oklch(45% .003 56)",
+          "oklch(58% .003 56)",
+          "oklch(70% .003 56)",
+          "oklch(82% .003 56)",
+          "oklch(91% .003 56)",
+          "oklch(97% .003 56)"
+        ]
+      },
+      "bg-secondary": {
+        "role": "neutral",
+        "displayName": "Bench Surface",
+        "canonical": "oklch(93% .005 48)",
+        "tonalRamp": [
+          "oklch(19% .007 40)",
+          "oklch(26.8% .007 34)",
+          "oklch(38% .006 40)",
+          "oklch(51% .006 44)",
+          "oklch(64% .005 46)",
+          "oklch(77% .005 48)",
+          "oklch(87% .005 48)",
+          "oklch(93% .005 48)"
+        ]
+      },
+      "border": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "oklch(88% .012 58)",
+        "tonalRamp": [
+          "oklch(24% .012 58)",
+          "oklch(34% .013 58)",
+          "oklch(44.4% .014 55)",
+          "oklch(56% .014 57)",
+          "oklch(67% .013 58)",
+          "oklch(78% .012 58)",
+          "oklch(88% .012 58)",
+          "oklch(95% .008 58)"
+        ]
+      },
+      "type-note": {
+        "role": "tertiary",
+        "displayName": "Signal Blue",
+        "canonical": "#60a5fa",
+        "tonalRamp": [
+          "#0b2545",
+          "#12386b",
+          "#1a4d94",
+          "#2563bd",
+          "#3b82f6",
+          "#60a5fa",
+          "#93c5fd",
+          "#dbeafe"
+        ]
+      },
+      "type-guide": {
+        "role": "tertiary",
+        "displayName": "Kiln Orange",
+        "canonical": "#e67e22",
+        "tonalRamp": [
+          "#3d1f06",
+          "#5c2f09",
+          "#80430d",
+          "#a65a12",
+          "#cc6f18",
+          "#e67e22",
+          "#f0a55f",
+          "#fbdcbd"
+        ]
+      },
+      "type-experiment": {
+        "role": "tertiary",
+        "displayName": "Filament Yellow",
+        "canonical": "#eab308",
+        "tonalRamp": [
+          "#2e2202",
+          "#4a3705",
+          "#6b4f07",
+          "#946d09",
+          "#bd8c07",
+          "#eab308",
+          "#f5d33f",
+          "#fdf0b8"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display — PP Mondwest",
+        "purpose": "Page-defining statements only. One per page at most; its authority comes from being alone."
+      },
+      "headline": {
+        "displayName": "Headline — PP Mondwest",
+        "purpose": "Section-leading statements and the hero sentence. Where the site speaks in its own voice."
+      },
+      "title": {
+        "displayName": "Title — Inter",
+        "purpose": "Card and list-item titles, role names. The workhorse for anything scannable."
+      },
+      "body": {
+        "displayName": "Body — Inter",
+        "purpose": "Prose and descriptions, constrained to ~42rem so lines never outrun the eye."
+      },
+      "label": {
+        "displayName": "Label — JetBrains Mono",
+        "purpose": "Machine truth: dates, content types, growth stages, project metadata. Uppercase and letterspaced."
+      }
+    },
+    "shadows": [
+      {
+        "name": "artifact-rest",
+        "value": "0 1px 2px rgba(0, 0, 0, 0.06)",
+        "purpose": "Interactive artifacts at rest in light mode. Barely there — enough to lift off the page."
+      },
+      {
+        "name": "artifact-hover",
+        "value": "0 2px 8px rgba(0, 0, 0, 0.12), 0 1px 3px rgba(0, 0, 0, 0.08)",
+        "purpose": "Light-mode hover lift on artifacts. Never on interface chrome."
+      },
+      {
+        "name": "dark-glow",
+        "value": "0 0 10px rgba(255, 255, 255, 0.15), 0 0 4px rgba(255, 255, 255, 0.08)",
+        "purpose": "The dark-mode counterpart to artifact-hover. Depth is emitted rather than cast."
+      },
+      {
+        "name": "lightbox-scrim",
+        "value": "0 4px 24px rgba(0, 0, 0, 0.15)",
+        "purpose": "Modal separation only."
+      }
+    ],
+    "motion": [
+      {
+        "name": "state-fast",
+        "value": "150ms ease",
+        "purpose": "Default for color, border, and icon state changes. The most-used duration in the system."
+      },
+      {
+        "name": "state-slow",
+        "value": "300ms ease",
+        "purpose": "Button and card hover transitions, where a slower settle reads as considered."
+      },
+      {
+        "name": "entrance",
+        "value": "400ms ease",
+        "purpose": "Stagger-in on page load: opacity plus a 4px rise. Gated on html.js so content stays visible without JavaScript."
+      },
+      {
+        "name": "ease-out-expo",
+        "value": "cubic-bezier(0.22, 1, 0.36, 1)",
+        "purpose": "Artifact and lightbox motion. Fast departure, long settle."
+      },
+      {
+        "name": "ease-overshoot",
+        "value": "cubic-bezier(0.34, 1.8, 0.64, 1)",
+        "purpose": "Reserved for playful artifact motion only. Never for interface chrome."
+      }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "container", "value": "56rem" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "The only button variant. The system has no filled button, because a filled button would need a brand color it deliberately does not have.",
+      "html": "<a class=\"ds-btn-ghost\" href=\"#\"><svg viewBox=\"0 0 24 24\" width=\"14\" height=\"14\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M10 2h4v2h-4zm-2 2h2v2H8zm6 0h2v2h-2zm-6 2h8v4H8zm-4 8h2v-2h2v-2h8v2h2v2h2v6h-2v-4h-2v4H8v-4H6v4H4zm6-2h4v2h-4z\"/></svg>About Me</a>",
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; gap: 0.75rem; font-family: var(--font-mono, ui-monospace, monospace); font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-text-secondary, #6b6b68); text-decoration: none; border: 1px solid var(--color-border, #ddd8d2); border-radius: 6px; padding: 0.375rem 0.875rem; transition: color 300ms ease, border-color 300ms ease; } .ds-btn-ghost svg { opacity: 0.4; } .ds-btn-ghost:hover { color: var(--color-text-primary, #1a1a18); border-color: var(--color-accent, #14100d); } .ds-btn-ghost:focus-visible { outline: 2px solid var(--color-accent, #14100d); outline-offset: 2px; }"
+    },
+    {
+      "name": "Growth Badge",
+      "kind": "chip",
+      "refersTo": "badge-growth",
+      "description": "States the epistemic status of a piece of writing: seedling, growing, or evergreen. The clearest single-component expression of the workshop north star.",
+      "html": "<span class=\"ds-growth\"><svg viewBox=\"0 0 24 24\" width=\"14\" height=\"14\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M11 1h2v2h-2zM10 3h4v2h-4zM9 5h6v2H9zM8 7h8v2H8zM7 9h10v2H7zM6 11h12v2H6zM5 13h14v2H5zM11 15h2v6h-2z\"/></svg>evergreen</span>",
+      "css": ".ds-growth { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--font-mono, ui-monospace, monospace); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-text-secondary, #6b6b68); border: 1px solid var(--color-border, #ddd8d2); border-radius: 999px; padding: 0.25rem 0.65rem; cursor: help; transition: color 150ms ease, border-color 150ms ease; } .ds-growth:hover { color: var(--color-text-primary, #1a1a18); border-color: var(--color-text-secondary, #6b6b68); }"
+    },
+    {
+      "name": "Content Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Case study and lab cards. Flat at rest; the border picks up the relevant accent on hover. The whole card is clickable via a stretched link, while the accessible name stays on the title.",
+      "html": "<article class=\"ds-card\"><div class=\"ds-card-meta\">LEAD UX ENGINEER · ~4 MONTHS</div><h3 class=\"ds-card-title\"><a href=\"#\">Making Infrastructure Legible</a></h3><p class=\"ds-card-desc\">A short description that explains what changed and for whom.</p></article>",
+      "css": ".ds-card { position: relative; display: block; padding: 1.125rem 1.25rem; border: 1px solid var(--color-border, #ddd8d2); border-radius: 10px; transition: border-color 300ms ease; } .ds-card:hover { border-color: var(--color-accent, #14100d); } .ds-card-meta { font-family: var(--font-mono, ui-monospace, monospace); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text-secondary, #6b6b68); } .ds-card-title { margin: 0.375rem 0 0; font-size: 1.0625rem; font-weight: 600; color: var(--color-text-primary, #1a1a18); } .ds-card-title a { color: inherit; text-decoration: none; } .ds-card-title a::after { content: ''; position: absolute; inset: 0; } .ds-card:hover .ds-card-title a { text-decoration: underline; text-underline-offset: 3px; } .ds-card-desc { margin: 0.25rem 0 0; font-size: 0.875rem; line-height: 1.6; color: var(--color-text-secondary, #6b6b68); }"
+    },
+    {
+      "name": "Navigation Link",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Monospace, no underline, no background. Active state is carried by weight and color only — never a pill or an underline bar.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-link\" href=\"#\">About</a><a class=\"ds-nav-link is-active\" href=\"#\">Work</a><a class=\"ds-nav-link\" href=\"#\">Lab</a><a class=\"ds-nav-link\" href=\"#\">Writing</a></nav>",
+      "css": ".ds-nav { display: flex; align-items: center; gap: 1.5rem; } .ds-nav-link { font-family: var(--font-mono, ui-monospace, monospace); font-size: 13px; color: var(--color-text-secondary, #6b6b68); text-decoration: none; transition: color 150ms ease; } .ds-nav-link:hover { color: var(--color-text-primary, #1a1a18); } .ds-nav-link.is-active { color: var(--color-text-primary, #1a1a18); font-weight: 500; } .ds-nav-link:focus-visible { outline: 2px solid var(--color-accent, #14100d); outline-offset: 3px; border-radius: 2px; }"
+    },
+    {
+      "name": "Writing Row",
+      "kind": "custom",
+      "refersTo": "card",
+      "description": "A list row in the merged Writing index. Hairline-separated rather than boxed, with the content-type accent appearing only on the type glyph at hover.",
+      "html": "<a class=\"ds-row ds-row--note\" href=\"#\"><span class=\"ds-row-meta\"><span class=\"ds-row-icon\"><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M4 2h14v2H4zm0 18h14v2H4zM2 4h2v16H2zm16 0h2v16h-2zM7 7h8v2H7zm0 4h8v2H7zm0 4h5v2H7z\"/></svg></span><span class=\"ds-row-type\">NOTE</span><time class=\"ds-row-date\">Apr 27, 2026</time></span><h2 class=\"ds-row-title\">The Ladder, Pulled Up</h2><p class=\"ds-row-desc\">A working theory of what the new apprenticeship has to look like.</p></a>",
+      "css": ".ds-row { display: block; padding: 1.25rem 0; border-bottom: 1px solid color-mix(in srgb, var(--color-border, #ddd8d2) 60%, transparent); text-decoration: none; } .ds-row-meta { display: flex; align-items: center; gap: 0.5rem; } .ds-row-icon { color: var(--color-text-secondary, #6b6b68); line-height: 0; transition: color 150ms ease; } .ds-row--note:hover .ds-row-icon { color: #60a5fa; } .ds-row-type { font-family: var(--font-mono, ui-monospace, monospace); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text-secondary, #6b6b68); } .ds-row-date { font-family: var(--font-mono, ui-monospace, monospace); font-size: 13px; color: var(--color-text-secondary, #6b6b68); } .ds-row-title { margin: 0.375rem 0 0; font-size: 1.125rem; font-weight: 600; color: var(--color-text-primary, #1a1a18); } .ds-row:hover .ds-row-title { text-decoration: underline; text-underline-offset: 3px; } .ds-row-desc { margin: 0.25rem 0 0; font-size: 0.875rem; line-height: 1.6; color: var(--color-text-secondary, #6b6b68); }"
+    },
+    {
+      "name": "Empty Slot",
+      "kind": "custom",
+      "description": "The system's consistent signal for a real-but-unfilled slot: 1px dashed border, tonal fill, a pixel glyph, and a monospace hint naming what belongs there. Used by photo frames and draft sections.",
+      "html": "<figure class=\"ds-slot\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M2 4h20v16H2V4Zm2 2v12h16V6H4Zm2 10 3.5-4.5 2.5 3 3.5-4.5L18 16H6Zm2-7a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Z\"/></svg><figcaption class=\"ds-slot-hint\">Hero portrait — head and shoulders</figcaption></figure>",
+      "css": ".ds-slot { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.625rem; margin: 0; padding: 1rem; aspect-ratio: 1 / 1; text-align: center; border: 1px dashed var(--color-border, #ddd8d2); border-radius: 10px; background: color-mix(in srgb, var(--color-bg-secondary, #eae5df) 60%, transparent); color: var(--color-text-secondary, #6b6b68); } .ds-slot svg { opacity: 0.35; } .ds-slot-hint { font-family: var(--font-mono, ui-monospace, monospace); font-size: 11px; line-height: 1.5; max-width: 18rem; opacity: 0.75; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Workshop",
+    "overview": "The site is the workshop, not the showroom. Tools stay visible, work sits on the bench in whatever state it is actually in, and nothing is staged for a photograph. This is why the experiments run live in the page instead of being screenshotted, why unfinished thinking carries a growth badge instead of being hidden until polished, and why metadata — dates, provenance, type — is exposed rather than tucked away. A showroom hides the process because the process is unflattering. A workshop shows it because the process is the evidence.\n\nThe system is quiet by construction. Warm near-black and warm near-white carry almost every surface; the type does the work; color is rationed so tightly that its appearance is meaningful. Dark is the default and the primary composition, not an inverted afterthought. Density is generous rather than tight — this is a place for reading and poking at things, not scanning a dashboard.\n\nThree typefaces divide the labor cleanly and never trade jobs. A pixel display face carries voice, a neutral sans carries prose, and a monospace carries every piece of machine truth: dates, types, labels, counts. The monospace is the workshop's measuring tape — it appears wherever the system is stating a fact rather than making an argument.",
+    "keyCharacteristics": [
+      "Warm neutral foundation (hue ~56) in both themes; never a cold or pure grey",
+      "Dark mode as the default composition, light as a true peer",
+      "Three fonts with strictly separated jobs — display, prose, machine truth",
+      "Color rationed to content-type identification; no decorative accents",
+      "Flat chrome, lifted artifacts",
+      "Metadata is exposed, not hidden",
+      "Every animation degrades to fully visible content without JavaScript"
+    ],
+    "rules": [
+      {
+        "name": "The Rationed Color Rule",
+        "body": "The three content accents identify content types and nothing else. They appear on type icons, hover states, and left-border accents. They never fill a button, never back a surface, never emphasize a word. On a typical page, colored pixels are well under 1% of the composition. That scarcity is the entire reason they read as a system rather than as decoration.",
+        "section": "colors"
+      },
+      {
+        "name": "The Warm Neutral Rule",
+        "body": "Every neutral sits at hue 34–58. There are no cold greys and no pure #000 or #fff anywhere in the system. If a new neutral is needed, it inherits the warmth or it does not belong.",
+        "section": "colors"
+      },
+      {
+        "name": "The Transparency-Over-Grey Rule",
+        "body": "Secondary text is the primary text color at reduced opacity, never a separately-chosen grey. It therefore adapts automatically to whatever surface it lands on, and can never drift out of key with its own theme.",
+        "section": "colors"
+      },
+      {
+        "name": "The Three Jobs Rule",
+        "body": "Mondwest speaks, Inter reads, JetBrains Mono states facts. A font never takes another's job. Prose never gets set in the display face because it looks characterful; a date never gets set in Inter because it fits better.",
+        "section": "typography"
+      },
+      {
+        "name": "The Monospace-Means-Fact Rule",
+        "body": "If it is machine truth — a date, a type, a duration, a count, a status, a file path — it is monospace, uppercase where it is a label, and letterspaced. If it is an argument, an opinion, or a description, it is not.",
+        "section": "typography"
+      },
+      {
+        "name": "The One Display Line Rule",
+        "body": "At most one Display-scale element per page. Its authority comes from being alone.",
+        "section": "typography"
+      },
+      {
+        "name": "The Column Rule",
+        "body": "Everything lives in the 56rem column. If a design idea requires breaking out of it, the idea changes, not the column.",
+        "section": "layout"
+      },
+      {
+        "name": "The Chrome-Is-Flat Rule",
+        "body": "If it is interface — nav, card, button, container, row — it has no shadow at rest. Depth in the interface layer comes from the background tonal step and hairline borders, never from elevation.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Glow-Inverts Rule",
+        "body": "In dark mode, depth is emitted rather than cast. A shadow that works on paper becomes a soft white glow on ink. Never ship a dark-mode surface with a black drop shadow; it is invisible and it reads as a bug.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Square-ish Rule",
+        "body": "Corners soften; they never round away. A 10px radius on a large card is the ceiling. Fully rounded containers belong to a different system.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "Do keep every neutral warm (hue 34–58) and every secondary text value a transparency of its primary, not a separate grey.",
+      "Do set machine truth in JetBrains Mono, uppercase and letterspaced when it functions as a label.",
+      "Do ship the live artifact when one is possible. A running prototype outranks an image of a running prototype, every time.",
+      "Do let the background tonal step and 1px hairlines carry separation in the interface layer.",
+      "Do invert depth to an emitted glow in dark mode.",
+      "Do gate every entrance animation on html.js so content stays visible without JavaScript, and honor prefers-reduced-motion.",
+      "Do use a dashed 1px border for any real-but-empty slot.",
+      "Do format every date in UTC. Frontmatter dates coerce to UTC midnight and shift a day without it — this has already been fixed once."
+    ],
+    "donts": [
+      "Don't use the content accents for anything but content-type identification. No colored buttons, no colored backgrounds, no colored emphasis.",
+      "Don't introduce a brand hue. The absence of one is the position, not a gap.",
+      "Don't put a shadow on interface chrome, or a black drop shadow on a dark surface.",
+      "Don't set prose in PP Mondwest or metadata in Inter.",
+      "Don't exceed one Display-scale element per page.",
+      "Don't break content out of the 56rem column.",
+      "Don't add a raw hex value or a one-off font size. Tokens live in src/styles/global.css.",
+      "Don't fully round a container. 10px is the ceiling; pills are for badges and tooltips.",
+      "Don't compress the timeline rail on mobile — hide it. Narrow screens belong to content."
+    ]
+  }
+}
