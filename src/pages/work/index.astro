@@ -1,0 +1,53 @@
+---
+export const prerender = true;
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import WorkTimeline from '../../components/WorkTimeline.astro';
+import { roles } from '../../data/roles';
+
+const entries = (await getCollection('work', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.getTime() - a.data.date.getTime()
+);
+
+const caseStudies = entries.map((entry) => ({
+  slug: entry.id,
+  title: entry.data.title,
+  description: entry.data.description,
+  company: entry.data.company,
+  role: entry.data.role,
+  timeline: entry.data.timeline,
+  tags: entry.data.tags,
+}));
+
+// A case study whose `company` matches no role would render nowhere. Surface it
+// at build time rather than letting the entry silently disappear from the page.
+const knownCompanies = new Set(roles.map((role) => role.company));
+for (const study of caseStudies) {
+  if (!knownCompanies.has(study.company)) {
+    console.warn(
+      `[work] "${study.slug}" has company "${study.company}", which matches no role in ` +
+        `src/data/roles.ts — it will not appear on /work.`
+    );
+  }
+}
+---
+
+<BaseLayout
+  title="Work — Alex Russell"
+  description="Selected work — developer tools, design systems, and the platforms engineering teams build on."
+>
+  <section class="py-16">
+    <p class="font-mono text-sm font-semibold tracking-tight uppercase text-text-secondary">Work</p>
+    <h1 class="font-heading mt-3 text-xl leading-snug sm:text-2xl sm:leading-[1.35]">
+      Twelve years of making software feel like something.
+    </h1>
+    <p class="text-text-secondary mt-4 max-w-2xl font-mono text-sm leading-7">
+      Mostly developer tools and internal platforms — the software that other people's work
+      depends on.
+    </p>
+
+    <div class="mt-14">
+      <WorkTimeline roles={roles} caseStudies={caseStudies} />
+    </div>
+  </section>
+</BaseLayout>

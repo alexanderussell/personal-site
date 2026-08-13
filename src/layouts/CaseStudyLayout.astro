@@ -1,0 +1,135 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  company: string;
+  role: string;
+  timeline?: string;
+  tags?: string[];
+  outcome?: string;
+}
+
+const { title, description, company, role, timeline, tags = [], outcome } = Astro.props;
+---
+
+<BaseLayout title={`${title} — Alex Russell`} description={description}>
+  <article class="case-study py-16 sm:py-20">
+    <header class="case-study__header">
+      <a href="/work" class="case-study__back font-mono text-[11px] uppercase tracking-[0.12em]">
+        ← Work
+      </a>
+
+      <h1 class="font-heading mt-6 text-2xl leading-tight sm:text-4xl">{title}</h1>
+      <p class="text-text-secondary mt-3 max-w-2xl leading-7">{description}</p>
+
+      {tags.length > 0 && (
+        <ul class="case-study__tags mt-5">
+          {tags.map((tag) => (
+            <li class="case-study__tag font-mono text-[11px] text-text-secondary">{tag}</li>
+          ))}
+        </ul>
+      )}
+    </header>
+
+    <div class="case-study__body prose dark:prose-invert mt-12 max-w-none">
+      <slot />
+    </div>
+
+    {/* Outcome is optional by design — NDA often prevents sharing numbers, and an
+        empty results section reads worse than none at all. */}
+    {outcome && (
+      <section class="case-study__outcome mt-12">
+        <h2 class="font-mono text-[11px] uppercase tracking-[0.12em] text-text-secondary">
+          Outcome
+        </h2>
+        <p class="font-heading mt-3 text-xl leading-snug">{outcome}</p>
+      </section>
+    )}
+
+    <footer class="case-study__details mt-12">
+      <h2 class="font-mono text-[11px] uppercase tracking-[0.12em] text-text-secondary">
+        Project details
+      </h2>
+      <dl class="case-study__dl mt-4">
+        <div>
+          <dt>Company</dt>
+          <dd>{company}</dd>
+        </div>
+        <div>
+          <dt>Role</dt>
+          <dd>{role}</dd>
+        </div>
+        {timeline && (
+          <div>
+            <dt>Timeline</dt>
+            <dd>{timeline}</dd>
+          </div>
+        )}
+      </dl>
+    </footer>
+  </article>
+</BaseLayout>
+
+<style>
+  .case-study__back {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+
+  .case-study__back:hover {
+    color: var(--color-text-primary);
+  }
+
+  .case-study__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.375rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .case-study__tag {
+    border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+    border-radius: 0.25rem;
+    padding: 0.125rem 0.5rem;
+  }
+
+  .case-study__outcome {
+    border-left: 2px solid var(--color-accent);
+    padding-left: 1.25rem;
+  }
+
+  .case-study__details {
+    border-top: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent);
+    padding-top: 1.5rem;
+  }
+
+  .case-study__dl {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  @media (min-width: 640px) {
+    .case-study__dl {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .case-study__dl dt {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-text-secondary);
+  }
+
+  .case-study__dl dd {
+    margin: 0.25rem 0 0;
+    color: var(--color-text-primary);
+  }
+</style>
