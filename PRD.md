@@ -2,14 +2,29 @@
 
 ## 1. App Overview and Objectives
 
+> **Superseded in part — 2026-08-13.** The site is being re-architected around a
+> portfolio-first information architecture (Home / About / Work / Lab / Writing). See
+> [docs/plans/2026-08-13-001-refactor-portfolio-first-ia-plan.md](docs/plans/2026-08-13-001-refactor-portfolio-first-ia-plan.md)
+> and [docs/website-brief.md](docs/website-brief.md). Sections 1 and 5.1 below are amended;
+> the rest of this document still holds.
+
 ### Overview
-A personal portfolio and writing site for Alex Russell, UX Engineer. Built with Astro, inspired by the typography-forward, minimal aesthetic of wking.dev. The site is a lean, content-first platform organized around three content pillars — Logs, Guides, and Experiments — surfaced through a shared chronological timeline on the homepage.
+A personal portfolio and writing site for Alex Russell, design engineer. Built with Astro,
+typography-forward and minimal. The site is organized around five surfaces — Home, About,
+Work, Lab, and Writing — with Work (case studies) as the primary evaluation path and the
+writing and experiments as supporting evidence.
 
 ### Objectives
-- **Showcase thinking, not just work.** Replace the traditional portfolio/case-study model with living content that demonstrates craft in real-time.
+- **Show the work, then the thinking.** Lead with case studies that demonstrate shipped
+  outcomes; use writing and experiments as the proof underneath. *(Amended 2026-08-13 —
+  previously "Showcase thinking, not just work," which explicitly rejected the case-study
+  model. The reversal is deliberate: a chronological feed asks a two-minute visitor to infer
+  competence from a dozen scattered artifacts, where a portfolio asks them to read three.)*
 - **Stay lean.** Use Astro's static-first architecture to ship the minimum JavaScript necessary. No bloat, no over-engineering.
 - **Support future expansion.** Architecture should cleanly support subdomains (e.g., `studio.alexanderrussell.com`, `tools.alexanderrussell.com`) without coupling them to the main site.
-- **Ship fast, iterate later.** The MVP is the homepage + one content section (Logs). Guides and Experiments follow.
+- **Keep publishing frictionless.** Markdown in the repo stays the durable archive and the
+  publishing path stays "write markdown, git push" — regardless of whether distribution
+  later moves to a platform like Substack.
 
 ### Design Philosophy
 The site draws direct inspiration from wking.dev's design language:
