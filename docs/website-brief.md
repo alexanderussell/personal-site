@@ -19,19 +19,15 @@ adapted to Alex Russell.
 
 ## Website goals
 
-**[NEEDS YOUR INPUT]** — this is the section that drives every downstream decision, and it's
-the one I can't infer from the repo. Pat's were "impress design and technology leaders" and
-"make me a prime candidate at Anthropic." Candidate framings for you, pick or replace:
+**Answered 2026-08-13. Canonical version now lives in [PRODUCT.md](../PRODUCT.md).**
 
-- Move from "UX lead at a hotel company" to being read as a design engineer who ships
-- Be legible to AI-native product companies specifically
-- Support the book — site as the credibility layer under it
-- Attract collaborators/clients for Collectively Made
-- Not job-seeking; establish perspective and let inbound follow
+Be read as **a design engineer who ships**. The site corrects an undersell: "leads UX at a
+hotel company" does not convey the building. Success is a design or engineering leader coming
+away with the right impression — not a specific job offer.
 
-Until this is answered, treat the working goal as: **be read as a design engineer with real
-craft by design and engineering leaders who spend two minutes on the site.** (This is the
-audience the existing PRD already names.)
+Audience is split by surface rather than compromised into one: **evaluators first** (design
+leads, EMs, hiring managers, two-minute first visit) carried by Work and About;
+**practitioners second** (peers who read and return) rewarded by Writing and Lab.
 
 ## Overall guidance
 
@@ -145,8 +141,21 @@ Work section can be built:
 
 ## Open questions
 
-1. What are the actual goals? (see Website goals above)
-2. Which prior companies can be named, and what's cleared for the Marriott case study?
-3. Do Figma decks or recorded walkthroughs exist, or is Work text-and-image only?
-4. Social proof: omit, substitute, or gather?
-5. Substack: committed, or still evaluating?
+1. ~~What are the actual goals?~~ **Answered** — see Website goals above and `PRODUCT.md`.
+2. **Partially answered.** Source material exists across Marriott (some NDA-cleared),
+   Collectively Made client work, and personal/Lab projects. Still open: *which specific
+   prior companies are nameable*, and exactly what clears review at Marriott.
+3. ~~Do Figma decks or recorded walkthroughs exist?~~ **Answered — yes, both.** Embedding them
+   is a real requirement, not a conditional. This unblocks the media-embed unit in the plan.
+4. ~~Social proof: omit, substitute, or gather?~~ **Answered by absence** — no testimonials or
+   endorsements exist, so the section is omitted rather than fabricated.
+5. Substack: committed, or still evaluating? **Still open.** Does not block anything — the
+   normalized writing shape in `src/lib/writing.ts` covers either outcome.
+
+### Still needed from Alex
+
+- Role dates and titles for `src/data/roles.ts`
+- Photography for the six slots in `src/data/photos.ts`
+- Location and timezone for the footer detail in `src/data/site.ts`
+- The origin-story section on the About page
+- Source material for the first case study
