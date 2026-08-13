@@ -22,12 +22,23 @@ interface Props {
 
 const { title, description, date, type, subtitle, number, status, via, id, tags, related } = Astro.props;
 
-const currentRef = id ? `${type}s/${id}` : undefined;
+/**
+ * Post type → collection name. Not derivable as `${type}s`: the `experiments`
+ * collection was renamed to `lab`, while the reader-facing type word stayed
+ * "experiment". Ref strings must match the collection, not the label.
+ */
+const COLLECTION: Record<Props['type'], string> = {
+  note: 'notes',
+  guide: 'guides',
+  experiment: 'lab',
+};
+
+const currentRef = id ? `${COLLECTION[type]}/${id}` : undefined;
 
 const backLinks: Record<string, { href: string; label: string }> = {
   note: { href: '/notes', label: 'Notes' },
   guide: { href: '/guides', label: 'Guides' },
-  experiment: { href: '/experiments', label: 'Experiments' },
+  experiment: { href: '/lab', label: 'Lab' },
 };
 
 const back = backLinks[type];

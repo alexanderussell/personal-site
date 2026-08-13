@@ -6,7 +6,8 @@
     "dev": "run-p dev:astro dev:convex",
     "dev:astro": "astro dev",
     "dev:convex": "convex dev",
-    "build": "astro build && node scripts/fix-vercel-routes.mjs",
+    "build": "astro build && node scripts/check-routes.mjs && node scripts/fix-vercel-routes.mjs",
+    "check:routes": "node scripts/check-routes.mjs",
     "preview": "astro preview",
     "astro": "astro"
   },

@@ -4,7 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 import TimelineItem from '../../components/TimelineItem.astro';
 
-const experiments = (await getCollection('experiments', ({ data }) => !data.draft))
+const experiments = (await getCollection('lab', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 ---
 
@@ -18,7 +18,7 @@ const experiments = (await getCollection('experiments', ({ data }) => !data.draf
     <div class="mt-12">
       {experiments.map((experiment, index) => (
         <TimelineItem
-          href={`/experiments/${experiment.id}`}
+          href={`/lab/${experiment.id}`}
           type="experiment"
           date={experiment.data.date}
           isLast={index === experiments.length - 1}

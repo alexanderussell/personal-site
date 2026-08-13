@@ -21,12 +21,12 @@ export const now: {
     {
       label: 'Building',
       text: 'This site, in public — experiments and all',
-      href: '/experiments',
+      href: '/lab',
     },
     {
       label: 'Listening',
       text: "Dad's records. The collection keeps growing",
-      href: '/experiments/ask-dads-records',
+      href: '/lab/ask-dads-records',
     },
   ],
 };
