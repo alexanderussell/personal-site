@@ -3,7 +3,9 @@ export const prerender = true;
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SubscribeForm } from '../components/SubscribeForm';
 import TypeIcon from '../components/TypeIcon.astro';
+import PhotoFrame from '../components/PhotoFrame.astro';
 import { now } from '../data/now';
+import { aboutPortrait, aboutGallery } from '../data/photos';
 
 type ReceiptType = 'note' | 'guide' | 'experiment';
 
@@ -84,29 +86,75 @@ const nowUpdated = now.updated.toLocaleDateString('en-US', {
   description="Who I am, what I believe about design and software, and where to start reading. Each belief comes with a receipt."
 >
   <article class="pt-12 pb-8">
-    <!-- The rule -->
+    <!-- Identity + the rule -->
     <header class="about-header">
-      <p class="about-eyebrow fade-in-hidden" data-stagger>About</p>
-      <h1 class="font-heading about-rule fade-in-hidden" data-stagger>
-        &ldquo;If you're going to do it,<br />do it right.&rdquo;
-      </h1>
-      <p class="about-rule-credit fade-in-hidden" data-stagger>
-        My dad's refrain before any project. He laid brick for a living; I ship software.
-        <a href="/notes/dads-eulogy">The rule transfers.</a>
-      </p>
+      <div class="about-masthead">
+        <div class="about-masthead__copy">
+          <p class="about-eyebrow fade-in-hidden" data-stagger>About</p>
+          <h1 class="font-heading about-name fade-in-hidden" data-stagger>Alex Russell</h1>
+          <p class="about-role font-mono fade-in-hidden" data-stagger>Design Engineer</p>
+
+          <p class="about-rule-credit fade-in-hidden" data-stagger>
+            &ldquo;If you're going to do it, do it right.&rdquo; My dad's refrain before any project.
+            He laid brick for a living; I ship software.
+            <a href="/notes/dads-eulogy">The rule transfers.</a>
+          </p>
+        </div>
+
+        <div class="about-masthead__portrait fade-in-hidden" data-stagger>
+          <PhotoFrame photo={aboutPortrait} eager />
+        </div>
+      </div>
     </header>
 
+    <!-- Gallery strip -->
+    <section class="about-gallery fade-in-scroll" aria-label="Photographs">
+      {aboutGallery.map((photo) => (
+        <PhotoFrame photo={photo} />
+      ))}
+    </section>
+
     <!-- Who -->
-    <section class="about-intro fade-in-hidden" data-stagger>
+    <section class="about-intro fade-in-scroll">
       <p>
-        I'm Alex — a design engineer with 12 years of making software feel like something. I lead UX for
+        I'm a design engineer with 12 years of making software feel like something. I lead UX for
         developer tools at Marriott International, designing the internal platforms engineering teams use to
         ship infrastructure. Before that: agencies, dev shops, startups, and a design collective called
         <a href="https://collectivelymade.com" target="_blank" rel="noopener noreferrer">Collectively Made</a>.
       </p>
       <p>
-        This site is the workshop, not the showroom. Essays argue a position, experiments are the lab work,
-        and the two link to each other on purpose.
+        Most of my work lives where design and engineering stop being separate jobs. The users are
+        engineers, the interfaces are infrastructure, and the thing being designed is usually trust —
+        whether someone believes what happens after they click.
+      </p>
+      <p>
+        This site is the workshop, not the showroom. <a href="/work">Work</a> is what shipped,
+        <a href="/lab">Lab</a> is what I built to find out, and <a href="/writing">Writing</a> is me
+        arguing with myself in public. They link to each other on purpose.
+      </p>
+    </section>
+
+    {/*
+      ── Your narrative goes here ──────────────────────────────────────────
+      The inspiration's About earns its length with an origin story: where he
+      grew up, the formative interests, the winding route into the work. That
+      is the part of this page only you can write, so it is scaffolded rather
+      than invented.
+
+      Three prompts, roughly the arc that structure follows:
+        1. Where you started — place, family, what you were into before design
+        2. The turn — how you ended up doing this, including the detours
+        3. What you're chasing now — the throughline connecting it all
+
+      Delete this comment and the section below once the prose is written, or
+      delete the section entirely if the beliefs list already says enough.
+      ──────────────────────────────────────────────────────────────────────
+    */}
+    <section class="about-section about-draft fade-in-scroll" id="story">
+      <h2 class="about-label">The longer version</h2>
+      <p class="about-draft__note font-mono">
+        Placeholder — an origin story belongs here. See the comment in
+        <code>src/pages/about.astro</code> for the three prompts this section is shaped around.
       </p>
     </section>
 
@@ -215,7 +263,85 @@ const nowUpdated = now.updated.toLocaleDateString('en-US', {
   /* ── Header ── */
 
   .about-header {
+    max-width: none;
+  }
+
+  /* Copy leads; the portrait sits beside it once there's room for both. */
+  .about-masthead {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  @media (min-width: 768px) {
+    .about-masthead {
+      grid-template-columns: minmax(0, 1fr) 14rem;
+      gap: 3rem;
+    }
+  }
+
+  .about-masthead__copy {
     max-width: 42rem;
+  }
+
+  /* At full mobile width a 4:5 portrait fills the viewport before any copy is
+     reachable, so cap it until the two-column layout takes over. */
+  .about-masthead__portrait {
+    max-width: 13rem;
+  }
+
+  @media (min-width: 768px) {
+    .about-masthead__portrait {
+      max-width: none;
+    }
+  }
+
+  .about-name {
+    font-size: clamp(2.5rem, 7vw, 4rem);
+    line-height: 1.02;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+
+  .about-role {
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-secondary);
+    margin: 0.625rem 0 1.5rem;
+  }
+
+  /* ── Gallery ── */
+
+  .about-gallery {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-top: 3rem;
+  }
+
+  @media (min-width: 768px) {
+    .about-gallery {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  /* ── Draft section ── */
+
+  .about-draft__note {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--color-text-secondary);
+    border: 1px dashed var(--color-border);
+    border-radius: 0.5rem;
+    padding: 1rem 1.125rem;
+    margin: 0;
+  }
+
+  .about-draft__note code {
+    font-size: 12px;
+    color: var(--color-text-primary);
   }
 
   .about-eyebrow {

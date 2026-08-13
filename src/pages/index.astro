@@ -6,8 +6,11 @@ import SectionPreview from '../components/SectionPreview.astro';
 import CaseStudyCard from '../components/CaseStudyCard.astro';
 import LabCard from '../components/LabCard.astro';
 import WritingRow from '../components/WritingRow.astro';
+import PhotoFrame from '../components/PhotoFrame.astro';
 import { getWritingEntries } from '../lib/writing';
 import { hasPreview } from '../lib/lab';
+import { heroPortrait } from '../data/photos';
+import { site } from '../data/site';
 
 const workEntries = (await getCollection('work', ({ data }) => !data.draft))
   .sort((a, b) => {
@@ -26,18 +29,28 @@ const writingEntries = (await getWritingEntries()).slice(0, 4);
 
 <BaseLayout>
   <!-- Hero -->
-  <section class="flex flex-col gap-3 pt-12 sm:pt-12">
-    <p class="font-heading text-2xl leading-snug sm:text-[32px] sm:leading-[1.35] fade-in-hidden" data-stagger>
-      Hey, I'm Alex — a design engineer with 12 years of making software feel like something.
-    </p>
-    <p class="font-mono text-base leading-7 text-text-secondary fade-in-hidden" data-stagger>
-      Right now I lead UX for developer tools at <a href="https://marriott.com" id="marriott-link" class="font-semibold prose dark:prose-invert hover:underline" target="_blank" rel="noopener noreferrer">Marriott International</a>, designing the internal
-      platforms that engineering teams use to ship infrastructure.
-    </p>
-    <p class="font-mono text-base leading-7 text-text-secondary fade-in-hidden" data-stagger>
-      Before that, I spent years inside agencies, dev shops, and startups — wearing every hat, shipping everything from
-      brand systems to full product builds. Somewhere in the middle I started a design collective called <a href="https://collectivelymade.com" id="cm-link" target="_blank" rel="noopener noreferrer" class="font-semibold prose dark:prose-invert hover:underline">Collectively Made</a>.
-    </p>
+  <section class="hero pt-12">
+    <div class="hero__copy flex flex-col gap-3">
+      <p class="font-heading text-2xl leading-snug sm:text-[32px] sm:leading-[1.35] fade-in-hidden" data-stagger>
+        Hey, I'm Alex — a design engineer with 12 years of making software feel like something.
+      </p>
+      <p class="font-mono text-base leading-7 text-text-secondary fade-in-hidden" data-stagger>
+        Right now I lead UX for developer tools at <a href="https://marriott.com" id="marriott-link" class="font-semibold prose dark:prose-invert hover:underline" target="_blank" rel="noopener noreferrer">Marriott International</a>, designing the internal
+        platforms that engineering teams use to ship infrastructure.
+      </p>
+      <p class="font-mono text-base leading-7 text-text-secondary fade-in-hidden" data-stagger>
+        Before that, I spent years inside agencies, dev shops, and startups — wearing every hat, shipping everything from
+        brand systems to full product builds. Somewhere in the middle I started a design collective called <a href="https://collectivelymade.com" id="cm-link" target="_blank" rel="noopener noreferrer" class="font-semibold prose dark:prose-invert hover:underline">Collectively Made</a>.
+      </p>
+
+      <p class="hero__contact font-mono fade-in-hidden" data-stagger>
+        <a href={`mailto:${site.email}`}>{site.email}</a>
+      </p>
+    </div>
+
+    <div class="hero__portrait fade-in-hidden" data-stagger>
+      <PhotoFrame photo={heroPortrait} eager />
+    </div>
   </section>
 
   <!-- Tooltips -->
@@ -119,6 +132,49 @@ const writingEntries = (await getWritingEntries()).slice(0, 4);
 </BaseLayout>
 
 <style>
+  /* Copy first on mobile, portrait beside it once there's room. The portrait
+     is supporting evidence, not the headline — it never leads. */
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  /* Same reasoning as the About portrait: uncapped, a square frame at mobile
+     width pushes the copy below the fold. */
+  .hero__portrait {
+    max-width: 11rem;
+  }
+
+  @media (min-width: 768px) {
+    .hero {
+      grid-template-columns: minmax(0, 1fr) 13rem;
+      gap: 2.5rem;
+    }
+
+    .hero__portrait {
+      max-width: none;
+    }
+  }
+
+  .hero__contact {
+    font-size: 0.8125rem;
+    margin-top: 0.5rem;
+  }
+
+  .hero__contact a {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
+    padding-bottom: 1px;
+    transition: color 0.3s ease;
+  }
+
+  .hero__contact a:hover {
+    color: var(--color-text-primary);
+  }
+
   .home-grid {
     display: grid;
     grid-template-columns: 1fr;

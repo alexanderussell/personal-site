@@ -1,0 +1,108 @@
+---
+import type { Photo } from '../data/photos';
+
+interface Props {
+  photo: Photo;
+  /** Tailwind-ish sizing hint passed through as a class. */
+  class?: string;
+  /** Eager-load the hero image; everything else should stay lazy. */
+  eager?: boolean;
+}
+
+const { photo, class: className, eager = false } = Astro.props;
+
+const aspectClass = `photo-frame--${photo.aspect ?? 'landscape'}`;
+const isFilled = photo.src.trim().length > 0;
+---
+
+<figure class:list={['photo-frame', aspectClass, className]}>
+  {isFilled ? (
+    <img
+      src={photo.src}
+      alt={photo.alt}
+      loading={eager ? 'eager' : 'lazy'}
+      decoding="async"
+      class="photo-frame__img"
+    />
+  ) : (
+    /* Placeholder. Marked aria-hidden because an empty slot is scaffolding,
+       not content — a screen reader announcing "photo pending" on every page
+       would be noise. Set `src` in src/data/photos.ts to replace it. */
+    <div class="photo-frame__placeholder" aria-hidden="true">
+      <svg viewBox="0 0 24 24" class="photo-frame__icon" fill="currentColor">
+        <path d="M2 4h20v16H2V4Zm2 2v12h16V6H4Zm2 10 3.5-4.5 2.5 3 3.5-4.5L18 16H6Zm2-7a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Z" />
+      </svg>
+      <span class="photo-frame__hint">{photo.hint}</span>
+    </div>
+  )}
+
+  {photo.caption && isFilled && (
+    <figcaption class="photo-frame__caption font-mono">{photo.caption}</figcaption>
+  )}
+</figure>
+
+<style>
+  .photo-frame {
+    margin: 0;
+    min-width: 0;
+  }
+
+  .photo-frame__img,
+  .photo-frame__placeholder {
+    width: 100%;
+    border-radius: 0.5rem;
+    display: block;
+  }
+
+  .photo-frame__img {
+    height: 100%;
+    object-fit: cover;
+    border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+  }
+
+  .photo-frame__placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    padding: 1rem;
+    text-align: center;
+    height: 100%;
+    border: 1px dashed var(--color-border);
+    background: color-mix(in srgb, var(--color-bg-secondary) 60%, transparent);
+    color: var(--color-text-secondary);
+  }
+
+  .photo-frame__icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    opacity: 0.35;
+  }
+
+  .photo-frame__hint {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.6875rem;
+    line-height: 1.5;
+    max-width: 18rem;
+    opacity: 0.75;
+  }
+
+  .photo-frame--portrait {
+    aspect-ratio: 4 / 5;
+  }
+
+  .photo-frame--landscape {
+    aspect-ratio: 4 / 3;
+  }
+
+  .photo-frame--square {
+    aspect-ratio: 1 / 1;
+  }
+
+  .photo-frame__caption {
+    margin-top: 0.5rem;
+    font-size: 0.6875rem;
+    color: var(--color-text-secondary);
+  }
+</style>
