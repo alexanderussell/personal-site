@@ -19,12 +19,11 @@ const guideCount = entries.filter((e) => e.kind === 'guide').length;
   description="Essays and guides on design engineering, developer experience, and what AI is doing to craft."
 >
   <section class="py-16">
-    <p class="font-mono text-sm font-semibold tracking-tight uppercase text-text-secondary">Writing</p>
     <h1 class="font-heading mt-3 text-xl leading-snug sm:text-2xl sm:leading-[1.35]">
       Essays written with conviction and edited with doubt.
     </h1>
 
-    <p class="text-text-secondary mt-4 max-w-2xl font-mono text-sm leading-7">
+    <p class="section-lede">
       {noteCount} {noteCount === 1 ? 'essay' : 'essays'} and {guideCount}
       {guideCount === 1 ? 'guide' : 'guides'}. Essays argue a position; guides are the
       repeatable version of something I worked out the hard way.
@@ -42,7 +41,7 @@ const guideCount = entries.filter((e) => e.kind === 'guide').length;
 
     <div class="mt-16 border-t border-border/50 pt-10">
       <h2 class="font-heading text-lg">Get new pieces by email</h2>
-      <p class="text-text-secondary mt-1 font-mono text-sm leading-7">
+      <p class="section-lede" style="margin-top:0.25rem">
         New essays and experiments, straight to your inbox. No cadence promises.
       </p>
       <div class="mt-4">

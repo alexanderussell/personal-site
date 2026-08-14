@@ -1,6 +1,7 @@
 ---
 import ThemeToggle from './ThemeToggle.astro';
 import GenerativeLogo from './GenerativeLogo.astro';
+import { Menu } from 'lucide-astro';
 
 // /notes and /guides remain valid URLs and keep their index pages —
 // /writing is the merged front door, not a replacement.
@@ -45,9 +46,7 @@ const currentPath = Astro.url.pathname;
         aria-label="Open menu"
         class="text-secondary hover:text-primary cursor-pointer sm:hidden transition-colors"
       >
-        <svg class="size-5" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M20 18H4v-2h16v2Zm0-5H4v-2h16v2Zm0-5H4V6h16v2Z"/>
-        </svg>
+        <Menu class="size-5" aria-hidden="true" />
       </button>
     </div>
   </div>

@@ -7,6 +7,7 @@ import CaseStudyCard from '../components/CaseStudyCard.astro';
 import LabCard from '../components/LabCard.astro';
 import WritingRow from '../components/WritingRow.astro';
 import PhotoFrame from '../components/PhotoFrame.astro';
+import { User, BookMarked } from 'lucide-astro';
 import { getWritingEntries } from '../lib/writing';
 import { hasPreview } from '../lib/lab';
 import { heroPortrait } from '../data/photos';
@@ -31,16 +32,29 @@ const writingEntries = (await getWritingEntries()).slice(0, 4);
   <!-- Hero -->
   <section class="hero pt-12">
     <div class="hero__copy flex flex-col gap-3">
-      <p class="font-heading text-2xl leading-snug sm:text-[32px] sm:leading-[1.35] fade-in-hidden" data-stagger>
-        Hey, I'm Alex — a design engineer with 12 years of making software feel like something.
-      </p>
-      <p class="font-mono text-base leading-7 text-text-secondary fade-in-hidden" data-stagger>
-        Right now I lead UX for developer tools at <a href="https://marriott.com" id="marriott-link" class="font-semibold prose dark:prose-invert hover:underline" target="_blank" rel="noopener noreferrer">Marriott International</a>, designing the internal
+      {/*
+        The statement revises itself in place: "designer who builds" is struck
+        through and replaced by "builder who designs". <del>/<ins> are HTML's
+        own edit markup, so the revision is real semantics rather than styled
+        spans — assistive tech announces it as a deletion and an insertion, and
+        with JS off the line reads as an edited manuscript, which is the point.
+      */}
+      <h1 class="hero__statement fade-in-hidden" data-stagger>
+        Alex is a
+        <span class="hero__revise" data-revise>
+          <del class="hero__was">designer who builds</del>
+          <ins class="hero__now">builder who designs</ins>
+        </span>
+      </h1>
+
+      <p class="hero__lede fade-in-hidden" data-stagger>
+        Twelve years of making software feel like something. Right now I lead UX for developer
+        tools at <a href="https://marriott.com" id="marriott-link" class="link-inline" target="_blank" rel="noopener noreferrer">Marriott International</a>, designing the internal
         platforms that engineering teams use to ship infrastructure.
       </p>
-      <p class="font-mono text-base leading-7 text-text-secondary fade-in-hidden" data-stagger>
+      <p class="hero__lede fade-in-hidden" data-stagger>
         Before that, I spent years inside agencies, dev shops, and startups — wearing every hat, shipping everything from
-        brand systems to full product builds. Somewhere in the middle I started a design collective called <a href="https://collectivelymade.com" id="cm-link" target="_blank" rel="noopener noreferrer" class="font-semibold prose dark:prose-invert hover:underline">Collectively Made</a>.
+        brand systems to full product builds. Somewhere in the middle I started a design collective called <a href="https://collectivelymade.com" id="cm-link" target="_blank" rel="noopener noreferrer" class="link-inline">Collectively Made</a>.
       </p>
 
       <p class="hero__contact font-mono fade-in-hidden" data-stagger>
@@ -63,14 +77,14 @@ const writingEntries = (await getWritingEntries()).slice(0, 4);
       href="/about"
       class="inline-flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.12em] text-text-secondary border border-border px-3.5 py-1.5 rounded-md hover:text-text-primary hover:border-accent transition-all duration-300"
     >
-      <svg viewBox="0 0 24 24" class="size-3.5 opacity-40" fill="currentColor"><path d="M10 2h4v2h-4zm-2 2h2v2H8zm6 0h2v2h-2zm-6 2h8v4H8zm-4 8h2v-2h2v-2h8v2h2v2h2v6h-2v-4h-2v4H8v-4H6v4H4zm6-2h4v2h-4z"/></svg>
+      <User class="size-3.5 opacity-40" aria-hidden="true" />
       About Me
     </a>
     <a
       href="/book"
       class="inline-flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.12em] text-text-secondary border border-border px-3.5 py-1.5 rounded-md hover:text-text-primary hover:border-accent transition-all duration-300"
     >
-      <svg viewBox="0 0 24 24" class="size-3.5 opacity-40" fill="currentColor"><path d="M2 3h9v2H2zM0 19h11v2H0zM13 3h9v2h-9zm0 16h11v2H13zM11 5h2v18h-2zM0 5h2v14H0zm22 0h2v14h-2zm-7 2h5v2h-5zm0 4h5v2h-5zm0 4h2v2h-2z"/></svg>
+      <BookMarked class="size-3.5 opacity-40" aria-hidden="true" />
       My Book
     </a>
   </div>
@@ -158,7 +172,100 @@ const writingEntries = (await getWritingEntries()).slice(0, 4);
     }
   }
 
+  /* ── The revising statement ──
+     Base state is the finished edit: struck original, visible revision. JS only
+     *sequences* that reveal, so no-JS and reduced-motion visitors get the same
+     meaning without the choreography. */
+  .hero__statement {
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 5.5vw, 3.25rem);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .hero__revise {
+    display: inline;
+  }
+
+  .hero__was,
+  .hero__now {
+    text-decoration: none;
+  }
+
+  .hero__was {
+    position: relative;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+  }
+
+  /* The strike is drawn, not a text-decoration, so it can be animated as a
+     line sweeping across the phrase. */
+  .hero__was::after {
+    content: '';
+    position: absolute;
+    left: -0.05em;
+    right: -0.05em;
+    top: 0.56em;
+    height: 0.06em;
+    background: currentColor;
+    transform-origin: left center;
+  }
+
+  .hero__now {
+    color: var(--color-text-primary);
+    white-space: nowrap;
+  }
+
+  /* With JS, start from the un-revised line and play the edit once. */
+  html.js .hero__was::after {
+    transform: scaleX(0);
+  }
+
+  html.js .hero__now {
+    opacity: 0;
+  }
+
+  html.js .hero__statement.is-revised .hero__was::after {
+    transform: scaleX(1);
+    transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  html.js .hero__statement.is-revised .hero__now {
+    opacity: 1;
+    transition: opacity 420ms cubic-bezier(0.22, 1, 0.36, 1) 380ms;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html.js .hero__was::after {
+      transform: scaleX(1);
+    }
+
+    html.js .hero__now {
+      opacity: 1;
+    }
+
+    html.js .hero__statement.is-revised .hero__was::after,
+    html.js .hero__statement.is-revised .hero__now {
+      transition: none;
+    }
+  }
+
+  /* Running prose is Inter, not JetBrains Mono. Monospace at 15-16px slows
+     reading measurably and reads as costume rather than as measurement — the
+     mono is reserved for dates, types, and labels. */
+  .hero__lede {
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-text-secondary);
+    max-width: 40rem;
+    text-wrap: pretty;
+  }
+
   .hero__contact {
+    font-family: var(--font-mono);
     font-size: 0.8125rem;
     margin-top: 0.5rem;
   }
@@ -204,6 +311,14 @@ const writingEntries = (await getWritingEntries()).slice(0, 4);
     setTimeout(() => item.classList.add('is-visible'), delay);
     delay += 120;
   });
+
+  // ── The statement revises itself, once, after it has settled ──
+  // The CSS default is already the finished edit; this only sequences it, so
+  // no-JS and reduced-motion visitors still read the revised line.
+  const statement = document.querySelector('.hero__statement');
+  if (statement) {
+    setTimeout(() => statement.classList.add('is-revised'), 900);
+  }
 
   // Sections stagger in after the intro paragraphs
   delay += 100;

@@ -1,4 +1,5 @@
 ---
+import { Image as ImageIcon } from 'lucide-astro';
 import type { Photo } from '../data/photos';
 
 interface Props {
@@ -29,9 +30,7 @@ const isFilled = photo.src.trim().length > 0;
        not content — a screen reader announcing "photo pending" on every page
        would be noise. Set `src` in src/data/photos.ts to replace it. */
     <div class="photo-frame__placeholder" aria-hidden="true">
-      <svg viewBox="0 0 24 24" class="photo-frame__icon" fill="currentColor">
-        <path d="M2 4h20v16H2V4Zm2 2v12h16V6H4Zm2 10 3.5-4.5 2.5 3 3.5-4.5L18 16H6Zm2-7a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Z" />
-      </svg>
+      <ImageIcon class="photo-frame__icon" />
       <span class="photo-frame__hint">{photo.hint}</span>
     </div>
   )}

@@ -57,6 +57,40 @@
 }
 
 @layer components {
+  /* ── Prose ──
+     Running prose is Inter, never JetBrains Mono. Monospace is reserved for
+     dates, types, labels, and code — things being measured or stated, not read.
+     Mono at 13–15px was the site's single biggest legibility cost. */
+
+  /* Inline links inside prose.
+     Replaces `prose dark:prose-invert`, which was being applied to bare <a>
+     elements purely to style them — that pulled in Tailwind Typography's
+     --tw-prose-links (oklch(21% .034 264.665), a cold blue at hue 264) into a
+     palette whose neutrals all sit at hue 34-58. Emphasis here comes from
+     weight and an underline, not from a hue the system does not own. */
+  .link-inline {
+    color: var(--color-text-primary);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: color-mix(in srgb, var(--color-text-secondary) 45%, transparent);
+    transition: text-decoration-color 150ms ease;
+  }
+
+  .link-inline:hover {
+    text-decoration-color: currentColor;
+  }
+
+  .section-lede {
+    max-width: 40rem;
+    margin-top: 1rem;
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--color-text-secondary);
+    text-wrap: pretty;
+  }
+
   /* ── Generative logo ── */
 
   .generative-logo {

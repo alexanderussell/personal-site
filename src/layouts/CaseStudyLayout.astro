@@ -1,6 +1,9 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 
+import FigmaEmbed from '../components/FigmaEmbed.astro';
+import VideoEmbed from '../components/VideoEmbed.astro';
+
 interface Props {
   title: string;
   description: string;
@@ -9,9 +12,12 @@ interface Props {
   timeline?: string;
   tags?: string[];
   outcome?: string;
+  figma?: string;
+  video?: string;
 }
 
-const { title, description, company, role, timeline, tags = [], outcome } = Astro.props;
+const { title, description, company, role, timeline, tags = [], outcome, figma, video } =
+  Astro.props;
 ---
 
 <BaseLayout title={`${title} — Alex Russell`} description={description}>
@@ -33,9 +39,18 @@ const { title, description, company, role, timeline, tags = [], outcome } = Astr
       )}
     </header>
 
+    {/* Media leads the body when it exists — a deck or walkthrough shows the
+        work faster than the first paragraph describes it. */}
+    {video && <VideoEmbed url={video} title={`${title} — walkthrough`} />}
+    {figma && !video && <FigmaEmbed url={figma} title={`${title} — deck`} />}
+
     <div class="case-study__body prose dark:prose-invert mt-12 max-w-none">
       <slot />
     </div>
+
+    {/* When both exist, the deck follows the prose: the video is the pitch,
+        the deck is the reference. */}
+    {figma && video && <FigmaEmbed url={figma} title={`${title} — deck`} />}
 
     {/* Outcome is optional by design — NDA often prevents sharing numbers, and an
         empty results section reads worse than none at all. */}

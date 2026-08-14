@@ -1,0 +1,123 @@
+---
+/**
+ * Video embed for case-study walkthroughs. YouTube and Vimeo.
+ *
+ * YouTube goes through youtube-nocookie.com: the site carries light analytics
+ * by choice, and a third-party tracking cookie dropped by an embed would be a
+ * heavier privacy cost than anything else on the page.
+ *
+ * Fails the build on an unrecognized URL rather than rendering a dead frame.
+ */
+interface Props {
+  url: string;
+  title?: string;
+}
+
+const { url, title = 'Video walkthrough' } = Astro.props;
+
+let parsed: URL;
+try {
+  parsed = new URL(url);
+} catch {
+  throw new Error(`[VideoEmbed] "${url}" is not a valid URL.`);
+}
+
+const host = parsed.hostname.replace(/^www\./, '');
+
+/** Returns the privacy-preserving embed URL, or null when the host is unsupported. */
+function toEmbedSrc(): string | null {
+  if (host === 'youtu.be') {
+    const id = parsed.pathname.slice(1);
+    return id ? `https://www.youtube-nocookie.com/embed/${id}` : null;
+  }
+
+  if (host === 'youtube.com' || host === 'youtube-nocookie.com') {
+    const id = parsed.searchParams.get('v') ?? parsed.pathname.replace(/^\/embed\//, '');
+    return id && !id.startsWith('/') ? `https://www.youtube-nocookie.com/embed/${id}` : null;
+  }
+
+  if (host === 'vimeo.com') {
+    const id = parsed.pathname.split('/').filter(Boolean)[0];
+    return /^\d+$/.test(id ?? '') ? `https://player.vimeo.com/video/${id}?dnt=1` : null;
+  }
+
+  return null;
+}
+
+const embedSrc = toEmbedSrc();
+
+if (!embedSrc) {
+  throw new Error(
+    `[VideoEmbed] could not derive an embed URL from "${url}". ` +
+      `Supported: youtube.com/watch?v=, youtu.be/, youtube.com/embed/, vimeo.com/<id>.`
+  );
+}
+
+const providerLabel = host.includes('vimeo') ? 'Vimeo' : 'YouTube';
+---
+
+<figure class="media-embed">
+  <div class="media-embed__frame">
+    <iframe
+      src={embedSrc}
+      title={title}
+      loading="lazy"
+      allowfullscreen
+      allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      referrerpolicy="strict-origin-when-cross-origin"
+    ></iframe>
+  </div>
+
+  <figcaption class="media-embed__caption font-mono">
+    <a href={url} target="_blank" rel="noopener noreferrer">
+      Watch on {providerLabel} <span aria-hidden="true">↗</span>
+    </a>
+  </figcaption>
+</figure>
+
+<style>
+  .media-embed {
+    margin: 2rem 0;
+  }
+
+  .media-embed__frame {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--color-bg-secondary);
+  }
+
+  .media-embed__frame iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+
+  .media-embed__caption {
+    margin-top: 0.625rem;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .media-embed__caption a {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: color 150ms ease;
+  }
+
+  .media-embed__caption a:hover {
+    color: var(--color-text-primary);
+  }
+
+  .media-embed__caption a:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+</style>

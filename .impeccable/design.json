@@ -182,9 +182,18 @@
       }
     ],
     "breakpoints": [
-      { "name": "sm", "value": "640px" },
-      { "name": "md", "value": "768px" },
-      { "name": "container", "value": "56rem" }
+      {
+        "name": "sm",
+        "value": "640px"
+      },
+      {
+        "name": "md",
+        "value": "768px"
+      },
+      {
+        "name": "container",
+        "value": "56rem"
+      }
     ]
   },
   "components": [
@@ -193,7 +202,7 @@
       "kind": "button",
       "refersTo": "button-ghost",
       "description": "The only button variant. The system has no filled button, because a filled button would need a brand color it deliberately does not have.",
-      "html": "<a class=\"ds-btn-ghost\" href=\"#\"><svg viewBox=\"0 0 24 24\" width=\"14\" height=\"14\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M10 2h4v2h-4zm-2 2h2v2H8zm6 0h2v2h-2zm-6 2h8v4H8zm-4 8h2v-2h2v-2h8v2h2v2h2v6h-2v-4h-2v4H8v-4H6v4H4zm6-2h4v2h-4z\"/></svg>About Me</a>",
+      "html": "<a class=\"ds-btn-ghost\" href=\"#\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2\"/><circle cx=\"12\" cy=\"7\" r=\"4\"/></svg>About Me</a>",
       "css": ".ds-btn-ghost { display: inline-flex; align-items: center; gap: 0.75rem; font-family: var(--font-mono, ui-monospace, monospace); font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--color-text-secondary, #6b6b68); text-decoration: none; border: 1px solid var(--color-border, #ddd8d2); border-radius: 6px; padding: 0.375rem 0.875rem; transition: color 300ms ease, border-color 300ms ease; } .ds-btn-ghost svg { opacity: 0.4; } .ds-btn-ghost:hover { color: var(--color-text-primary, #1a1a18); border-color: var(--color-accent, #14100d); } .ds-btn-ghost:focus-visible { outline: 2px solid var(--color-accent, #14100d); outline-offset: 2px; }"
     },
     {
@@ -232,8 +241,15 @@
       "name": "Empty Slot",
       "kind": "custom",
       "description": "The system's consistent signal for a real-but-unfilled slot: 1px dashed border, tonal fill, a pixel glyph, and a monospace hint naming what belongs there. Used by photo frames and draft sections.",
-      "html": "<figure class=\"ds-slot\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M2 4h20v16H2V4Zm2 2v12h16V6H4Zm2 10 3.5-4.5 2.5 3 3.5-4.5L18 16H6Zm2-7a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Z\"/></svg><figcaption class=\"ds-slot-hint\">Hero portrait — head and shoulders</figcaption></figure>",
+      "html": "<figure class=\"ds-slot\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect width=\"18\" height=\"18\" x=\"3\" y=\"3\" rx=\"2\" ry=\"2\"/><circle cx=\"9\" cy=\"9\" r=\"2\"/><path d=\"m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21\"/></svg><figcaption class=\"ds-slot-hint\">Hero portrait — head and shoulders</figcaption></figure>",
       "css": ".ds-slot { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.625rem; margin: 0; padding: 1rem; aspect-ratio: 1 / 1; text-align: center; border: 1px dashed var(--color-border, #ddd8d2); border-radius: 10px; background: color-mix(in srgb, var(--color-bg-secondary, #eae5df) 60%, transparent); color: var(--color-text-secondary, #6b6b68); } .ds-slot svg { opacity: 0.35; } .ds-slot-hint { font-family: var(--font-mono, ui-monospace, monospace); font-size: 11px; line-height: 1.5; max-width: 18rem; opacity: 0.75; }"
+    },
+    {
+      "name": "Revising Statement",
+      "kind": "custom",
+      "description": "The homepage headline edits itself: the original phrase is struck through and a revision appears. Uses <del>/<ins>, so the revision is real semantics and the static state reads as an edited manuscript.",
+      "html": "<h1 class=\"ds-revise\">Alex is a <span><del class=\"ds-revise-was\">designer who builds</del> <ins class=\"ds-revise-now\">builder who designs</ins></span></h1>",
+      "css": ".ds-revise { font-family: var(--font-heading, serif); font-size: clamp(2rem, 5.5vw, 3.25rem); line-height: 1.15; letter-spacing: -0.01em; margin: 0; text-wrap: balance; } .ds-revise-was, .ds-revise-now { text-decoration: none; white-space: nowrap; } .ds-revise-was { position: relative; color: var(--color-text-secondary, #6b6b68); } .ds-revise-was::after { content: \"\"; position: absolute; left: -0.05em; right: -0.05em; top: 0.56em; height: 0.06em; background: currentColor; transform-origin: left center; } .ds-revise-now { color: var(--color-text-primary, #1a1a18); }"
     }
   ],
   "narrative": {
@@ -241,6 +257,7 @@
     "overview": "The site is the workshop, not the showroom. Tools stay visible, work sits on the bench in whatever state it is actually in, and nothing is staged for a photograph. This is why the experiments run live in the page instead of being screenshotted, why unfinished thinking carries a growth badge instead of being hidden until polished, and why metadata — dates, provenance, type — is exposed rather than tucked away. A showroom hides the process because the process is unflattering. A workshop shows it because the process is the evidence.\n\nThe system is quiet by construction. Warm near-black and warm near-white carry almost every surface; the type does the work; color is rationed so tightly that its appearance is meaningful. Dark is the default and the primary composition, not an inverted afterthought. Density is generous rather than tight — this is a place for reading and poking at things, not scanning a dashboard.\n\nThree typefaces divide the labor cleanly and never trade jobs. A pixel display face carries voice, a neutral sans carries prose, and a monospace carries every piece of machine truth: dates, types, labels, counts. The monospace is the workshop's measuring tape — it appears wherever the system is stating a fact rather than making an argument.",
     "keyCharacteristics": [
       "Warm neutral foundation (hue ~56) in both themes; never a cold or pure grey",
+      "Running prose is Inter at 15–17px; monospace is reserved for facts",
       "Dark mode as the default composition, light as a true peer",
       "Three fonts with strictly separated jobs — display, prose, machine truth",
       "Color rationed to content-type identification; no decorative accents",
@@ -298,6 +315,16 @@
         "name": "The Square-ish Rule",
         "body": "Corners soften; they never round away. A 10px radius on a large card is the ceiling. Fully rounded containers belong to a different system.",
         "section": "shapes"
+      },
+      {
+        "name": "The No-Eyebrow Rule",
+        "body": "No kicker label above a heading. A section index that says \"WORK\" over a headline is repeating what the nav, the URL, and the title already said. The heading carries its own weight.",
+        "section": "typography"
+      },
+      {
+        "name": "The One Icon Family Rule",
+        "body": "Every icon comes from Lucide at 2px stroke. No mixed families, no one-off hand-drawn glyphs, no emoji standing in for an icon.",
+        "section": "shapes"
       }
     ],
     "dos": [
@@ -319,7 +346,11 @@
       "Don't break content out of the 56rem column.",
       "Don't add a raw hex value or a one-off font size. Tokens live in src/styles/global.css.",
       "Don't fully round a container. 10px is the ceiling; pills are for badges and tooltips.",
-      "Don't compress the timeline rail on mobile — hide it. Narrow screens belong to content."
+      "Don't compress the timeline rail on mobile — hide it. Narrow screens belong to content.",
+      "Don't set running prose in JetBrains Mono. Body copy is Inter; mono is for facts.",
+      "Don't put an eyebrow label above a heading.",
+      "Don't apply Tailwind Typography's prose classes to a bare inline link. It injects --tw-prose-links (a cold blue at hue 264) into a palette with no brand hue. Use .link-inline.",
+      "Don't mix icon families. Lucide at 2px stroke, or an official brand mark."
     ]
   }
 }

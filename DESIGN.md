@@ -120,6 +120,7 @@ wherever the system is stating a fact rather than making an argument.
 
 **Key Characteristics:**
 - Warm neutral foundation (hue ~56) in both themes; never a cold or pure grey
+- Running prose is Inter at 15–17px; monospace is reserved for facts
 - Dark mode as the default composition, light as a true peer
 - Three fonts with strictly separated jobs — display, prose, machine truth
 - Color rationed to content-type identification; no decorative accents
@@ -213,7 +214,13 @@ characterful; a date never gets set in Inter because it fits better.
 
 **The Monospace-Means-Fact Rule.** If it is machine truth — a date, a type, a duration, a
 count, a status, a file path — it is monospace, uppercase where it is a label, and letterspaced.
-If it is an argument, an opinion, or a description, it is not.
+If it is an argument, an opinion, or a description, it is not. Running prose set in JetBrains
+Mono at 13–15px was this site's single largest legibility cost; body copy is Inter at 15–17px
+with a 40rem measure, and the mono stayed where it measures rather than where it reads.
+
+**The No-Eyebrow Rule.** No kicker label above a heading. A section index that says "WORK" over
+a headline is repeating what the nav, the URL, and the title already said. The heading carries
+its own weight.
 
 **The One Display Line Rule.** At most one Display-scale element per page. Its authority comes
 from being alone.
@@ -287,8 +294,14 @@ Borders are 1px and hairline-colored, frequently mixed down to 60–80% strength
 pending states use a 1px **dashed** border — the system's consistent signal for "this slot is
 real but empty," used by photo frames and the About narrative placeholder.
 
-Iconography is pixel-art: hand-plotted SVG paths on a 24×24 grid, drawn as filled rectangles
-rather than strokes. It is the one place where the display font's era shows up in the interface.
+Iconography is [Lucide](https://lucide.dev) — a single library on a 24×24 grid with a uniform
+2px stroke. It replaced hand-plotted pixel-art paths, which turned to mush at the 14–16px sizes
+they actually rendered at and read as noise beside a label. The display face carries the era;
+the icons carry clarity, and the division is deliberate. Brand marks (GitHub, X) stay as their
+official glyphs — Lucide does not ship brand icons, and a redrawn logo is worse than none.
+
+**The One Icon Family Rule.** Every icon comes from Lucide at 2px stroke. No mixed families, no
+one-off hand-drawn glyphs, no emoji standing in for an icon.
 
 **The Square-ish Rule.** Corners soften; they never round away. A 10px radius on a large card
 is the ceiling. Fully rounded containers belong to a different system.
@@ -380,5 +393,11 @@ entry without a renderable component degrades to a card with no stage rather tha
 - **Don't** exceed one Display-scale element per page.
 - **Don't** break content out of the 56rem column.
 - **Don't** add a raw hex value or a one-off font size. Tokens live in `src/styles/global.css`.
+- **Don't** set running prose in JetBrains Mono. Body copy is Inter; mono is for facts.
+- **Don't** put an eyebrow label above a heading.
+- **Don't** apply Tailwind Typography's `prose` classes to a bare inline link. It injects
+  `--tw-prose-links` (a cold blue at hue 264) into a palette with no brand hue. Use
+  `.link-inline`.
+- **Don't** mix icon families. Lucide at 2px stroke, or an official brand mark.
 - **Don't** fully round a container. `10px` is the ceiling; pills are for badges and tooltips.
 - **Don't** compress the timeline rail on mobile — hide it. Narrow screens belong to content.

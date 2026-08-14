@@ -90,7 +90,6 @@ const nowUpdated = now.updated.toLocaleDateString('en-US', {
     <header class="about-header">
       <div class="about-masthead">
         <div class="about-masthead__copy">
-          <p class="about-eyebrow fade-in-hidden" data-stagger>About</p>
           <h1 class="font-heading about-name fade-in-hidden" data-stagger>Alex Russell</h1>
           <p class="about-role font-mono fade-in-hidden" data-stagger>Design Engineer</p>
 
@@ -362,8 +361,8 @@ const nowUpdated = now.updated.toLocaleDateString('en-US', {
   }
 
   .about-rule-credit {
-    font-family: var(--font-mono);
-    font-size: 14px;
+    font-family: var(--font-body);
+    font-size: 16px;
     line-height: 1.7;
     color: var(--color-text-secondary);
     margin: 0;
@@ -392,11 +391,12 @@ const nowUpdated = now.updated.toLocaleDateString('en-US', {
   }
 
   .about-intro p {
-    font-family: var(--font-mono);
-    font-size: 15px;
-    line-height: 1.8;
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.7;
     color: var(--color-text-secondary);
     margin: 0;
+    text-wrap: pretty;
   }
 
   .about-intro a {
@@ -426,11 +426,12 @@ const nowUpdated = now.updated.toLocaleDateString('en-US', {
   }
 
   .about-sublabel {
-    font-family: var(--font-mono);
-    font-size: 13px;
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.65;
     color: var(--color-text-secondary);
     margin: 0 0 2.75rem;
-    opacity: 0.75;
+    max-width: 40rem;
   }
 
   /* ── Beliefs ── */
@@ -615,8 +616,8 @@ const nowUpdated = now.updated.toLocaleDateString('en-US', {
   }
 
   .start-here-item__why {
-    font-family: var(--font-mono);
-    font-size: 13px;
+    font-family: var(--font-body);
+    font-size: 15px;
     line-height: 1.6;
     color: var(--color-text-secondary);
   }
@@ -699,11 +700,11 @@ const nowUpdated = now.updated.toLocaleDateString('en-US', {
   }
 
   .about-subscribe__body {
-    font-family: var(--font-mono);
-    font-size: 14px;
+    font-family: var(--font-body);
+    font-size: 16px;
     color: var(--color-text-secondary);
     margin: 0 0 1.25rem;
-    line-height: 1.6;
+    line-height: 1.65;
   }
 
   /* Scroll reveal styles (.fade-in-scroll) live in global.css next to

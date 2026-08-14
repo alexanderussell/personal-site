@@ -35,6 +35,14 @@ graduates to `docs/plans/` on purpose, not by accident.
 - **No RSS feed.** Called out in the June ideation doc as a craft gap for this audience.
   Bundled there with the newsletter archive idea (#4).
 
+- **Experiments animate layout properties.** The design detector flags
+  `transition: max-height` in `RecordCollection.jsx` (two sites), `transition: margin-bottom`
+  (one), and `transition: width` in `Bricklayer.astro`. These thrash layout rather than
+  compositing. Real, but fixing them means reworking working experiment internals — not a
+  polish-pass job.
+- **`pixelarticons` is still a dependency** but nothing imports it now that icons are Lucide.
+  Safe to remove on the next dependency sweep.
+
 ---
 
 ## Deferred from the current plan by design

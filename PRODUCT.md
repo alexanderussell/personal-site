@@ -87,8 +87,10 @@ combination:
 - **Typography is settled**: PP Mondwest (display), Inter (body), JetBrains Mono (UI and
   metadata). This was evaluated against a proposed swap and deliberately kept.
 - **Dark mode is the default**, with a light toggle, applied before paint to avoid a flash.
-- **Existing personality artifacts** that carry identity: the generative logo, pixel-art
-  iconography, the broken-window 404, the 3D CSS book page, the vinyl mood interface.
+- **Existing personality artifacts** that carry identity: the generative logo, the
+  broken-window 404, the 3D CSS book page, the vinyl mood interface. Interface icons are
+  Lucide; the hand-drawn pixel glyphs were retired in August 2026 for legibility at small
+  sizes.
 - Content must stay visible without JavaScript, and motion must respect
   `prefers-reduced-motion`. Both are honored in the current implementation.
 

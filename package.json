@@ -27,6 +27,7 @@
     "astro": "^5.17.1",
     "convex": "^1.34.1",
     "dialkit": "^1.1.0",
+    "lucide-astro": "^0.556.0",
     "motion": "^12.35.2",
     "npm-run-all2": "^8.0.4",
     "pixelarticons": "^2.0.2",
