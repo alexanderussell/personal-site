@@ -1,5 +1,5 @@
 ---
-import ExperimentRenderer from './ExperimentRenderer.astro';
+import LabMotif from './LabMotif.astro';
 import GrowthStage from './GrowthStage.astro';
 
 interface Props {
@@ -19,7 +19,7 @@ const { id, href, title, description, date, status, hasPreview = true } = Astro.
 <article class="lab-card">
   {hasPreview && (
     <div class="lab-card__stage">
-      <ExperimentRenderer id={id} />
+      <LabMotif id={id} />
     </div>
   )}
 

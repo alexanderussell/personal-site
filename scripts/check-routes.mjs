@@ -133,6 +133,13 @@ if (!existsSync(OUT_DIR)) {
   }
 }
 
+// ── Check 5: sample content did not ship ────────────────────────────────
+// `sample-*` entries are fabricated placeholders used to review a layout before
+// real content exists. Loud, but not fatal — the whole point is to build and
+// look at them. Delete them before a real deploy.
+
+const samples = published.filter((e) => e.slug.startsWith('sample-'));
+
 // ── Report ──────────────────────────────────────────────────────────────
 
 notes.push(
@@ -148,6 +155,14 @@ if (errors.length > 0) {
       `Redirects and the vinyl subdomain are NOT covered here — verify those on deploy.\n`
   );
   process.exit(1);
+}
+
+if (samples.length > 0) {
+  console.warn(
+    `\n⚠  ${samples.length} SAMPLE entr${samples.length === 1 ? 'y is' : 'ies are'} published — fabricated placeholder content:\n` +
+      samples.map((s) => `     ${s.url}`).join('\n') +
+      `\n   Delete or replace before deploying. These are for layout review only.\n`
+  );
 }
 
 console.log(`✓ Route check passed. ${notes.join(' ')}`);

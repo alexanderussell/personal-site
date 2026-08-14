@@ -1,0 +1,157 @@
+---
+/**
+ * Card motif for a Lab entry.
+ *
+ * Deliberately NOT the real experiment shrunk down. A card wants one legible
+ * object in quiet motion; the running experiment wants the whole viewport and
+ * its own chrome. Squeezing the latter into a 2-up grid produced what the vinyl
+ * card had — a working UI at thumbnail scale, with its own call-to-action
+ * competing against the card's.
+ *
+ * Motifs are inline SVG plus CSS. No GIFs: a GIF bakes in a background (so it
+ * breaks in one of the two themes), ignores prefers-reduced-motion, and weighs
+ * more than the vector it replaces. The site's own principle is that a live
+ * artifact beats a picture of one, and that holds at card scale too.
+ *
+ * Each motif shares the stage and animates exactly one thing.
+ */
+interface Props {
+  id: string;
+}
+
+const { id } = Astro.props;
+---
+
+{
+  id === 'ask-dads-records' && (
+    <div class="motif motif--record" aria-hidden="true">
+      <svg viewBox="0 0 120 120" class="motif__art motif__art--spin">
+        <circle cx="60" cy="60" r="52" class="record__disc" />
+        <circle cx="60" cy="60" r="44" class="record__groove" />
+        <circle cx="60" cy="60" r="36" class="record__groove" />
+        <circle cx="60" cy="60" r="28" class="record__groove" />
+        <circle cx="60" cy="60" r="19" class="record__label" />
+        {/* Off-centre fleck — without it the spin is invisible on a symmetric disc. */}
+        <circle cx="60" cy="47" r="2" class="record__fleck" />
+        <circle cx="60" cy="60" r="2.5" class="record__spindle" />
+      </svg>
+    </div>
+  )
+}
+
+{
+  id === 'generative-logo' && (
+    <div class="motif motif--logo" aria-hidden="true">
+      <svg viewBox="0 0 120 120" class="motif__art">
+        <g class="logo__stack">
+          <rect x="30" y="30" width="46" height="46" rx="4" class="logo__tile logo__tile--a" />
+          <rect x="44" y="38" width="46" height="46" rx="4" class="logo__tile logo__tile--b" />
+          <rect x="37" y="50" width="46" height="46" rx="4" class="logo__tile logo__tile--c" />
+        </g>
+      </svg>
+    </div>
+  )
+}
+
+<style>
+  .motif {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+
+  .motif__art {
+    width: 62%;
+    max-width: 8.5rem;
+    height: auto;
+    display: block;
+    overflow: visible;
+  }
+
+  /* ── Record ── */
+
+  .record__disc {
+    fill: oklch(24% 0.004 56);
+  }
+
+  .record__groove {
+    fill: none;
+    stroke: oklch(32% 0.004 56);
+    stroke-width: 0.75;
+  }
+
+  .record__label {
+    fill: oklch(52% 0.075 62);
+  }
+
+  .record__fleck {
+    fill: oklch(72% 0.06 62);
+  }
+
+  .record__spindle {
+    fill: oklch(24% 0.004 56);
+  }
+
+  .motif__art--spin {
+    animation: motif-spin 9s linear infinite;
+    transform-origin: 50% 50%;
+  }
+
+  @keyframes motif-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* ── Generative logo ──
+     The real piece reseeds per visit; the motif drifts instead, so the card
+     reads as the same family without pretending to be the live artifact. */
+  .logo__tile {
+    mix-blend-mode: multiply;
+    transform-origin: 60px 60px;
+  }
+
+  :global(.dark) .logo__tile {
+    mix-blend-mode: screen;
+  }
+
+  .logo__tile--a {
+    fill: oklch(62% 0.13 28);
+    animation: motif-drift-a 14s ease-in-out infinite;
+  }
+
+  .logo__tile--b {
+    fill: oklch(72% 0.12 92);
+    animation: motif-drift-b 17s ease-in-out infinite;
+  }
+
+  .logo__tile--c {
+    fill: oklch(58% 0.1 168);
+    animation: motif-drift-c 20s ease-in-out infinite;
+  }
+
+  @keyframes motif-drift-a {
+    0%, 100% { transform: rotate(-6deg) translate(0, 0); }
+    50%      { transform: rotate(4deg) translate(3px, -3px); }
+  }
+
+  @keyframes motif-drift-b {
+    0%, 100% { transform: rotate(5deg) translate(0, 0); }
+    50%      { transform: rotate(-4deg) translate(-4px, 2px); }
+  }
+
+  @keyframes motif-drift-c {
+    0%, 100% { transform: rotate(-2deg) translate(0, 0); }
+    50%      { transform: rotate(7deg) translate(2px, 3px); }
+  }
+
+  /* Motion is ambient, never load-bearing — freezing it loses nothing. */
+  @media (prefers-reduced-motion: reduce) {
+    .motif__art--spin,
+    .logo__tile {
+      animation: none;
+    }
+  }
+</style>

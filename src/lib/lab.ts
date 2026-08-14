@@ -11,9 +11,7 @@
  * That duplication is noted in docs/parking-lot.md.
  */
 export const RENDERABLE_LAB_IDS = new Set([
-  'bricklayer',
   'generative-logo',
-  'hold-to-provision',
   'ask-dads-records',
 ]);
 

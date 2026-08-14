@@ -34,11 +34,13 @@ const beliefs: {
     body: "An engineer clicking 'Provision' doesn't want magic — they want to believe what happens next. That's a harder thing to design than friendly.",
     receipt: { type: 'note', title: 'What Does UX Mean When Your Users Are Engineers?', href: '/notes/ux-for-engineers' },
   },
-  {
-    statement: "Friction is a feature — when it's chosen.",
-    body: 'Some actions should cost a deliberate pause. We cut accidental infrastructure provisions in half by making a button harder to press.',
-    receipt: { type: 'experiment', title: 'Hold to Provision', href: '/lab/hold-to-provision' },
-  },
+  /*
+   * Removed 2026-08-13: "Friction is a feature — when it's chosen."
+   * Its receipt was the Hold to Provision demo, now retired from Lab. Every
+   * other belief here points at a distinct artifact, and pointing two adjacent
+   * beliefs at the same essay would break that. Restore this if the experiment
+   * comes back, or if it earns a receipt of its own.
+   */
   {
     statement: 'Context should compound.',
     body: "Notes that don't accumulate are notes you'll write again. Every system I build tries to start the next piece of work at step 40, not step 1.",
@@ -60,10 +62,10 @@ const startHere: { title: string; why: string; href: string; type: ReceiptType }
     type: 'note',
   },
   {
-    title: 'Hold to Provision',
-    why: 'The craft. A button that takes intention seriously.',
-    href: '/lab/hold-to-provision',
-    type: 'experiment',
+    title: 'The Claude Code + Obsidian Vault Pattern',
+    why: 'The practice. How context stops evaporating between sessions.',
+    href: '/guides/claude-code-obsidian-vault-pattern-for-design-teams',
+    type: 'guide',
   },
   {
     title: "Ask My Dad's Record Collection",

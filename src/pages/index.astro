@@ -7,7 +7,6 @@ import CaseStudyCard from '../components/CaseStudyCard.astro';
 import LabCard from '../components/LabCard.astro';
 import WritingRow from '../components/WritingRow.astro';
 import PhotoFrame from '../components/PhotoFrame.astro';
-import { User, BookMarked } from 'lucide-astro';
 import { getWritingEntries } from '../lib/writing';
 import { hasPreview } from '../lib/lab';
 import { heroPortrait } from '../data/photos';
@@ -48,13 +47,8 @@ const writingEntries = (await getWritingEntries()).slice(0, 4);
       </h1>
 
       <p class="hero__lede fade-in-hidden" data-stagger>
-        Twelve years of making software feel like something. Right now I lead UX for developer
-        tools at <a href="https://marriott.com" id="marriott-link" class="link-inline" target="_blank" rel="noopener noreferrer">Marriott International</a>, designing the internal
-        platforms that engineering teams use to ship infrastructure.
-      </p>
-      <p class="hero__lede fade-in-hidden" data-stagger>
-        Before that, I spent years inside agencies, dev shops, and startups — wearing every hat, shipping everything from
-        brand systems to full product builds. Somewhere in the middle I started a design collective called <a href="https://collectivelymade.com" id="cm-link" target="_blank" rel="noopener noreferrer" class="link-inline">Collectively Made</a>.
+        I lead UX for developer tools at <a href="https://marriott.com" id="marriott-link" class="link-inline" target="_blank" rel="noopener noreferrer">Marriott International</a> — the internal
+        platforms engineering teams use to ship infrastructure.
       </p>
 
       <p class="hero__contact font-mono fade-in-hidden" data-stagger>
@@ -69,25 +63,6 @@ const writingEntries = (await getWritingEntries()).slice(0, 4);
 
   <!-- Tooltips -->
   <div class="hover-tooltip" id="marriott-tooltip"></div>
-  <div class="hover-tooltip" id="cm-tooltip"></div>
-
-  <!-- CTA row — extensible flex container for homepage buttons -->
-  <div class="flex gap-3 mt-16 fade-in-hidden" data-stagger>
-    <a
-      href="/about"
-      class="inline-flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.12em] text-text-secondary border border-border px-3.5 py-1.5 rounded-md hover:text-text-primary hover:border-accent transition-all duration-300"
-    >
-      <User class="size-3.5 opacity-40" aria-hidden="true" />
-      About Me
-    </a>
-    <a
-      href="/book"
-      class="inline-flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.12em] text-text-secondary border border-border px-3.5 py-1.5 rounded-md hover:text-text-primary hover:border-accent transition-all duration-300"
-    >
-      <BookMarked class="size-3.5 opacity-40" aria-hidden="true" />
-      My Book
-    </a>
-  </div>
 
   <div class="mt-8">
     <!-- Work — rendered only once there is a published case study, so an empty
@@ -355,9 +330,4 @@ const writingEntries = (await getWritingEntries()).slice(0, 4);
     '✈️ points guy paradise',
   ]);
 
-  setupTooltip('cm-link', 'cm-tooltip', [
-    '🤝 we made things, collectively',
-    '🧥 a bunch of designers in a trench coat',
-    '💭 the "we should start a studio" phase',
-  ]);
 </script>

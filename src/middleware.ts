@@ -1,5 +1,12 @@
 import { defineMiddleware } from 'astro:middleware';
 
+/**
+ * Lab entries retired from publication. Their content files still exist with
+ * `draft: true`, so restoring one means flipping that flag and deleting its
+ * entry here.
+ */
+const RETIRED_LAB_PATHS = new Set(['/lab/hold-to-provision', '/lab/bricklayer']);
+
 export const onRequest = defineMiddleware(({ request, rewrite, redirect }, next) => {
   const url = new URL(request.url);
   const host = request.headers.get('host') || request.headers.get('x-forwarded-host') || url.hostname;
@@ -29,6 +36,13 @@ export const onRequest = defineMiddleware(({ request, rewrite, redirect }, next)
   if (url.pathname.startsWith('/experiments')) {
     const newPath = url.pathname.replace(/^\/experiments/, '/lab');
     return redirect(newPath, 301);
+  }
+
+  // Experiments retired from Lab in August 2026. Their write-ups still exist as
+  // drafts, but the URLs were published, so they land on the Lab index rather
+  // than 404. 302 rather than 301 — these could come back.
+  if (RETIRED_LAB_PATHS.has(url.pathname.replace(/\/$/, ''))) {
+    return redirect('/lab', 302);
   }
 
   return next();
