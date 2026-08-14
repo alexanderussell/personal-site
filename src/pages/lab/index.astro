@@ -14,13 +14,8 @@ const experiments = (await getCollection('lab', ({ data }) => !data.draft))
   description="Interactive prototypes and technical spikes — small things built to answer a question."
 >
   <section class="py-16">
-    <h1 class="font-heading mt-3 text-xl leading-snug sm:text-2xl sm:leading-[1.35]">
-      Prototypes that started as "what if" and ended as "oh, interesting."
-    </h1>
-    <p class="section-lede">
-      Everything here runs in the page. No screenshots, no video — if it's on this list, you can
-      poke at it.
-    </p>
+    <h1 class="section-title">Lab</h1>
+    <p class="section-lede">Prototypes, tools, and interactions I've built — all of them running live in the page.</p>
 
     <div class="lab-grid mt-12">
       {experiments.map((experiment) => (

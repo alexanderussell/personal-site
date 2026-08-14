@@ -32,13 +32,16 @@
 }
 
 @layer base {
+  /* Darkened 2026-08-13 toward near-black. The page recedes further so live
+     artifacts and imagery carry more of the composition. Hues stay in the
+     34-58 warm band — this is a deeper ink, not a colder one. */
   .dark {
-    --color-bg-primary: oklch(21.6% .006 56.043);
-    --color-bg-secondary: oklch(26.8% .007 34.298);
-    --color-text-primary: oklch(92.3% .003 48.717);
-    --color-text-secondary: color-mix(in srgb, oklch(92.3% .003 48.717) 70%, transparent);
+    --color-bg-primary: oklch(14.5% .005 52);
+    --color-bg-secondary: oklch(21.5% .007 44);
+    --color-text-primary: oklch(93% .003 48.717);
+    --color-text-secondary: color-mix(in srgb, oklch(93% .003 48.717) 68%, transparent);
     --color-accent: oklch(97% .003 56);
-    --color-border: oklch(44.4% .014 55);
+    --color-border: oklch(38% .009 52);
   }
 
   html {
@@ -79,6 +82,17 @@
 
   .link-inline:hover {
     text-decoration-color: currentColor;
+  }
+
+  /* Category pages lead with the section name, then a single describing line.
+     The name is the heading — there is no separate eyebrow above it. */
+  .section-title {
+    font-family: var(--font-heading);
+    font-size: clamp(2.75rem, 8vw, 4.5rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin: 0;
+    color: var(--color-text-primary);
   }
 
   .section-lede {

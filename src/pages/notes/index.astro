@@ -10,9 +10,8 @@ const notes = (await getCollection('notes', ({ data }) => !data.draft))
 
 <BaseLayout title="Notes — Alex Russell" description="Short-form writing — essays, philosophies, learnings, reflections.">
   <section class="py-16">
-    <h1 class="mt-3 font-heading text-xl leading-snug sm:text-2xl sm:leading-[1.35]">Essays written with conviction and edited with doubt.    </h1>
-
-    <div class="mt-12">
+    <h1 class="section-title">Notes</h1>
+    <p class="section-lede">Essays written with conviction and edited with doubt.</p><div class="mt-12">
       {notes.map((note, index) => (
         <TimelineItem
           href={`/notes/${note.id}`}

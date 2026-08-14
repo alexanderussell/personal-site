@@ -108,13 +108,19 @@ const { id } = Astro.props;
   /* ── Generative logo ──
      The real piece reseeds per visit; the motif drifts instead, so the card
      reads as the same family without pretending to be the live artifact. */
+  /* Three saturated planes multiplied stack to near-black, which reads as a
+     muddy blob rather than as overlapping colour. Holding them under full
+     opacity keeps the overlaps legible in light mode; screen blending in dark
+     mode brightens instead of darkening, so it needs no such relief. */
   .logo__tile {
     mix-blend-mode: multiply;
+    opacity: 0.78;
     transform-origin: 60px 60px;
   }
 
   :global(.dark) .logo__tile {
     mix-blend-mode: screen;
+    opacity: 1;
   }
 
   .logo__tile--a {

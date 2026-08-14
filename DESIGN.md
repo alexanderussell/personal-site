@@ -8,12 +8,12 @@ colors:
   text-secondary: "color-mix(in srgb, oklch(21.6% .006 56.043) 60%, transparent)"
   accent: "oklch(15% .006 56)"
   border: "oklch(88% .012 58)"
-  bg-primary-dark: "oklch(21.6% .006 56.043)"
-  bg-secondary-dark: "oklch(26.8% .007 34.298)"
-  text-primary-dark: "oklch(92.3% .003 48.717)"
-  text-secondary-dark: "color-mix(in srgb, oklch(92.3% .003 48.717) 70%, transparent)"
+  bg-primary-dark: "oklch(14.5% .005 52)"
+  bg-secondary-dark: "oklch(21.5% .007 44)"
+  text-primary-dark: "oklch(93% .003 48.717)"
+  text-secondary-dark: "color-mix(in srgb, oklch(93% .003 48.717) 68%, transparent)"
   accent-dark: "oklch(97% .003 56)"
-  border-dark: "oklch(44.4% .014 55)"
+  border-dark: "oklch(38% .009 52)"
   type-note: "#60a5fa"
   type-guide: "#e67e22"
   type-experiment: "#eab308"
@@ -134,8 +134,9 @@ A warm, near-monochrome foundation with three tightly-rationed content accents.
 
 ### Primary
 
-- **Warm Ink** (`oklch(21.6% .006 56.043)`): The near-black that carries all body text in
-  light mode and becomes the page itself in dark mode. Warm rather than neutral — it reads as
+- **Warm Ink** (`oklch(21.6% .006 56.043)` as text; the dark page sits deeper at
+  `oklch(14.5% .005 52)`): The near-black that carries all body text in light mode, and a
+  deeper relative of it that becomes the page itself in dark mode. Warm rather than neutral — it reads as
   ink on paper, not as a screen default.
 - **Warm Paper** (`oklch(97% .003 56)`): The near-white page in light mode, and the text color
   in dark mode. The same warmth as the ink, inverted.
@@ -156,13 +157,13 @@ Three content-type accents, used only to identify what kind of thing the reader 
 
 ### Neutral
 
-- **Bench Surface** (`oklch(93% .005 48)` light / `oklch(26.8% .007 34.298)` dark): The single
+- **Bench Surface** (`oklch(93% .005 48)` light / `oklch(21.5% .007 44)` dark): The single
   step away from the page background. Backs experiment stages, code blocks, and photo frames.
   There is no third surface level.
 - **Faded Ink** (`text-secondary`): Body ink at 60% opacity in light, 70% in dark — deliberately
   a transparency of the text color rather than a separate grey, so it stays in key against any
   background it lands on.
-- **Hairline** (`oklch(88% .012 58)` light / `oklch(44.4% .014 55)` dark): Borders and dividers,
+- **Hairline** (`oklch(88% .012 58)` light / `oklch(38% .009 52)` dark): Borders and dividers,
   frequently mixed down further (`color-mix` at 60–80%) where a full-strength line would shout.
 
 ### Named Rules
@@ -323,7 +324,11 @@ system does not have.
 
 ### Cards
 
-- **Corner Style:** Large (`10px`) for content frames, medium for chrome.
+Cards with media are built in two planes: the media runs full-bleed to the card edge, and only
+the body below it carries padding. `overflow: hidden` on the card is what lets the media meet
+the rounded corner instead of leaving a square shoulder behind the radius.
+
+- **Corner Style:** Large (`12px` on media cards, `10px` on text frames).
 - **Background:** Transparent by default. Only inner stages (experiment previews, photo frames)
   take the `bg-secondary` tonal step.
 - **Shadow Strategy:** None. See Elevation — cards are chrome.

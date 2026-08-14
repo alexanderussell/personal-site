@@ -19,14 +19,11 @@ const guideCount = entries.filter((e) => e.kind === 'guide').length;
   description="Essays and guides on design engineering, developer experience, and what AI is doing to craft."
 >
   <section class="py-16">
-    <h1 class="font-heading mt-3 text-xl leading-snug sm:text-2xl sm:leading-[1.35]">
-      Essays written with conviction and edited with doubt.
-    </h1>
-
+    <h1 class="section-title">Writing</h1>
     <p class="section-lede">
-      {noteCount} {noteCount === 1 ? 'essay' : 'essays'} and {guideCount}
-      {guideCount === 1 ? 'guide' : 'guides'}. Essays argue a position; guides are the
-      repeatable version of something I worked out the hard way.
+      Essays written with conviction and edited with doubt — {noteCount}
+      {noteCount === 1 ? 'essay' : 'essays'} and {guideCount}
+      {guideCount === 1 ? 'guide' : 'guides'} so far.
     </p>
 
     {entries.length > 0 ? (

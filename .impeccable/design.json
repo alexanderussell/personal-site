@@ -24,7 +24,7 @@
         "displayName": "Warm Paper",
         "canonical": "oklch(97% .003 56)",
         "tonalRamp": [
-          "oklch(20% .003 56)",
+          "oklch(14.5% .005 52)",
           "oklch(32% .003 56)",
           "oklch(45% .003 56)",
           "oklch(58% .003 56)",
@@ -40,7 +40,7 @@
         "canonical": "oklch(93% .005 48)",
         "tonalRamp": [
           "oklch(19% .007 40)",
-          "oklch(26.8% .007 34)",
+          "oklch(21.5% .007 44)",
           "oklch(38% .006 40)",
           "oklch(51% .006 44)",
           "oklch(64% .005 46)",
@@ -56,7 +56,7 @@
         "tonalRamp": [
           "oklch(24% .012 58)",
           "oklch(34% .013 58)",
-          "oklch(44.4% .014 55)",
+          "oklch(38% .009 52)",
           "oklch(56% .014 57)",
           "oklch(67% .013 58)",
           "oklch(78% .012 58)",
@@ -112,23 +112,23 @@
     },
     "typographyMeta": {
       "display": {
-        "displayName": "Display — PP Mondwest",
+        "displayName": "Display \u2014 PP Mondwest",
         "purpose": "Page-defining statements only. One per page at most; its authority comes from being alone."
       },
       "headline": {
-        "displayName": "Headline — PP Mondwest",
+        "displayName": "Headline \u2014 PP Mondwest",
         "purpose": "Section-leading statements and the hero sentence. Where the site speaks in its own voice."
       },
       "title": {
-        "displayName": "Title — Inter",
+        "displayName": "Title \u2014 Inter",
         "purpose": "Card and list-item titles, role names. The workhorse for anything scannable."
       },
       "body": {
-        "displayName": "Body — Inter",
+        "displayName": "Body \u2014 Inter",
         "purpose": "Prose and descriptions, constrained to ~42rem so lines never outrun the eye."
       },
       "label": {
-        "displayName": "Label — JetBrains Mono",
+        "displayName": "Label \u2014 JetBrains Mono",
         "purpose": "Machine truth: dates, content types, growth stages, project metadata. Uppercase and letterspaced."
       }
     },
@@ -136,7 +136,7 @@
       {
         "name": "artifact-rest",
         "value": "0 1px 2px rgba(0, 0, 0, 0.06)",
-        "purpose": "Interactive artifacts at rest in light mode. Barely there — enough to lift off the page."
+        "purpose": "Interactive artifacts at rest in light mode. Barely there \u2014 enough to lift off the page."
       },
       {
         "name": "artifact-hover",
@@ -218,14 +218,14 @@
       "kind": "card",
       "refersTo": "card",
       "description": "Case study and lab cards. Flat at rest; the border picks up the relevant accent on hover. The whole card is clickable via a stretched link, while the accessible name stays on the title.",
-      "html": "<article class=\"ds-card\"><div class=\"ds-card-meta\">LEAD UX ENGINEER · ~4 MONTHS</div><h3 class=\"ds-card-title\"><a href=\"#\">Making Infrastructure Legible</a></h3><p class=\"ds-card-desc\">A short description that explains what changed and for whom.</p></article>",
+      "html": "<article class=\"ds-card\"><div class=\"ds-card-meta\">LEAD UX ENGINEER \u00b7 ~4 MONTHS</div><h3 class=\"ds-card-title\"><a href=\"#\">Making Infrastructure Legible</a></h3><p class=\"ds-card-desc\">A short description that explains what changed and for whom.</p></article>",
       "css": ".ds-card { position: relative; display: block; padding: 1.125rem 1.25rem; border: 1px solid var(--color-border, #ddd8d2); border-radius: 10px; transition: border-color 300ms ease; } .ds-card:hover { border-color: var(--color-accent, #14100d); } .ds-card-meta { font-family: var(--font-mono, ui-monospace, monospace); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text-secondary, #6b6b68); } .ds-card-title { margin: 0.375rem 0 0; font-size: 1.0625rem; font-weight: 600; color: var(--color-text-primary, #1a1a18); } .ds-card-title a { color: inherit; text-decoration: none; } .ds-card-title a::after { content: ''; position: absolute; inset: 0; } .ds-card:hover .ds-card-title a { text-decoration: underline; text-underline-offset: 3px; } .ds-card-desc { margin: 0.25rem 0 0; font-size: 0.875rem; line-height: 1.6; color: var(--color-text-secondary, #6b6b68); }"
     },
     {
       "name": "Navigation Link",
       "kind": "nav",
       "refersTo": "nav-link",
-      "description": "Monospace, no underline, no background. Active state is carried by weight and color only — never a pill or an underline bar.",
+      "description": "Monospace, no underline, no background. Active state is carried by weight and color only \u2014 never a pill or an underline bar.",
       "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-link\" href=\"#\">About</a><a class=\"ds-nav-link is-active\" href=\"#\">Work</a><a class=\"ds-nav-link\" href=\"#\">Lab</a><a class=\"ds-nav-link\" href=\"#\">Writing</a></nav>",
       "css": ".ds-nav { display: flex; align-items: center; gap: 1.5rem; } .ds-nav-link { font-family: var(--font-mono, ui-monospace, monospace); font-size: 13px; color: var(--color-text-secondary, #6b6b68); text-decoration: none; transition: color 150ms ease; } .ds-nav-link:hover { color: var(--color-text-primary, #1a1a18); } .ds-nav-link.is-active { color: var(--color-text-primary, #1a1a18); font-weight: 500; } .ds-nav-link:focus-visible { outline: 2px solid var(--color-accent, #14100d); outline-offset: 3px; border-radius: 2px; }"
     },
@@ -241,7 +241,7 @@
       "name": "Empty Slot",
       "kind": "custom",
       "description": "The system's consistent signal for a real-but-unfilled slot: 1px dashed border, tonal fill, a pixel glyph, and a monospace hint naming what belongs there. Used by photo frames and draft sections.",
-      "html": "<figure class=\"ds-slot\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect width=\"18\" height=\"18\" x=\"3\" y=\"3\" rx=\"2\" ry=\"2\"/><circle cx=\"9\" cy=\"9\" r=\"2\"/><path d=\"m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21\"/></svg><figcaption class=\"ds-slot-hint\">Hero portrait — head and shoulders</figcaption></figure>",
+      "html": "<figure class=\"ds-slot\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><rect width=\"18\" height=\"18\" x=\"3\" y=\"3\" rx=\"2\" ry=\"2\"/><circle cx=\"9\" cy=\"9\" r=\"2\"/><path d=\"m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21\"/></svg><figcaption class=\"ds-slot-hint\">Hero portrait \u2014 head and shoulders</figcaption></figure>",
       "css": ".ds-slot { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.625rem; margin: 0; padding: 1rem; aspect-ratio: 1 / 1; text-align: center; border: 1px dashed var(--color-border, #ddd8d2); border-radius: 10px; background: color-mix(in srgb, var(--color-bg-secondary, #eae5df) 60%, transparent); color: var(--color-text-secondary, #6b6b68); } .ds-slot svg { opacity: 0.35; } .ds-slot-hint { font-family: var(--font-mono, ui-monospace, monospace); font-size: 11px; line-height: 1.5; max-width: 18rem; opacity: 0.75; }"
     },
     {
@@ -254,12 +254,12 @@
   ],
   "narrative": {
     "northStar": "The Workshop",
-    "overview": "The site is the workshop, not the showroom. Tools stay visible, work sits on the bench in whatever state it is actually in, and nothing is staged for a photograph. This is why the experiments run live in the page instead of being screenshotted, why unfinished thinking carries a growth badge instead of being hidden until polished, and why metadata — dates, provenance, type — is exposed rather than tucked away. A showroom hides the process because the process is unflattering. A workshop shows it because the process is the evidence.\n\nThe system is quiet by construction. Warm near-black and warm near-white carry almost every surface; the type does the work; color is rationed so tightly that its appearance is meaningful. Dark is the default and the primary composition, not an inverted afterthought. Density is generous rather than tight — this is a place for reading and poking at things, not scanning a dashboard.\n\nThree typefaces divide the labor cleanly and never trade jobs. A pixel display face carries voice, a neutral sans carries prose, and a monospace carries every piece of machine truth: dates, types, labels, counts. The monospace is the workshop's measuring tape — it appears wherever the system is stating a fact rather than making an argument.",
+    "overview": "The site is the workshop, not the showroom. Tools stay visible, work sits on the bench in whatever state it is actually in, and nothing is staged for a photograph. This is why the experiments run live in the page instead of being screenshotted, why unfinished thinking carries a growth badge instead of being hidden until polished, and why metadata \u2014 dates, provenance, type \u2014 is exposed rather than tucked away. A showroom hides the process because the process is unflattering. A workshop shows it because the process is the evidence.\n\nThe system is quiet by construction. Warm near-black and warm near-white carry almost every surface; the type does the work; color is rationed so tightly that its appearance is meaningful. Dark is the default and the primary composition, not an inverted afterthought. Density is generous rather than tight \u2014 this is a place for reading and poking at things, not scanning a dashboard.\n\nThree typefaces divide the labor cleanly and never trade jobs. A pixel display face carries voice, a neutral sans carries prose, and a monospace carries every piece of machine truth: dates, types, labels, counts. The monospace is the workshop's measuring tape \u2014 it appears wherever the system is stating a fact rather than making an argument.",
     "keyCharacteristics": [
       "Warm neutral foundation (hue ~56) in both themes; never a cold or pure grey",
-      "Running prose is Inter at 15–17px; monospace is reserved for facts",
+      "Running prose is Inter at 15\u201317px; monospace is reserved for facts",
       "Dark mode as the default composition, light as a true peer",
-      "Three fonts with strictly separated jobs — display, prose, machine truth",
+      "Three fonts with strictly separated jobs \u2014 display, prose, machine truth",
       "Color rationed to content-type identification; no decorative accents",
       "Flat chrome, lifted artifacts",
       "Metadata is exposed, not hidden",
@@ -273,7 +273,7 @@
       },
       {
         "name": "The Warm Neutral Rule",
-        "body": "Every neutral sits at hue 34–58. There are no cold greys and no pure #000 or #fff anywhere in the system. If a new neutral is needed, it inherits the warmth or it does not belong.",
+        "body": "Every neutral sits at hue 34\u201358. There are no cold greys and no pure #000 or #fff anywhere in the system. If a new neutral is needed, it inherits the warmth or it does not belong.",
         "section": "colors"
       },
       {
@@ -288,7 +288,7 @@
       },
       {
         "name": "The Monospace-Means-Fact Rule",
-        "body": "If it is machine truth — a date, a type, a duration, a count, a status, a file path — it is monospace, uppercase where it is a label, and letterspaced. If it is an argument, an opinion, or a description, it is not.",
+        "body": "If it is machine truth \u2014 a date, a type, a duration, a count, a status, a file path \u2014 it is monospace, uppercase where it is a label, and letterspaced. If it is an argument, an opinion, or a description, it is not.",
         "section": "typography"
       },
       {
@@ -303,7 +303,7 @@
       },
       {
         "name": "The Chrome-Is-Flat Rule",
-        "body": "If it is interface — nav, card, button, container, row — it has no shadow at rest. Depth in the interface layer comes from the background tonal step and hairline borders, never from elevation.",
+        "body": "If it is interface \u2014 nav, card, button, container, row \u2014 it has no shadow at rest. Depth in the interface layer comes from the background tonal step and hairline borders, never from elevation.",
         "section": "elevation"
       },
       {
@@ -325,17 +325,23 @@
         "name": "The One Icon Family Rule",
         "body": "Every icon comes from Lucide at 2px stroke. No mixed families, no one-off hand-drawn glyphs, no emoji standing in for an icon.",
         "section": "shapes"
+      },
+      {
+        "name": "The Two-Plane Card Rule",
+        "body": "A card carrying media has exactly two planes: media full-bleed to the edge, body padded beneath it. The card clips its own overflow so media meets the corner radius. Never pad the media.",
+        "section": "components"
       }
     ],
     "dos": [
-      "Do keep every neutral warm (hue 34–58) and every secondary text value a transparency of its primary, not a separate grey.",
+      "Do keep every neutral warm (hue 34\u201358) and every secondary text value a transparency of its primary, not a separate grey.",
       "Do set machine truth in JetBrains Mono, uppercase and letterspaced when it functions as a label.",
       "Do ship the live artifact when one is possible. A running prototype outranks an image of a running prototype, every time.",
       "Do let the background tonal step and 1px hairlines carry separation in the interface layer.",
       "Do invert depth to an emitted glow in dark mode.",
       "Do gate every entrance animation on html.js so content stays visible without JavaScript, and honor prefers-reduced-motion.",
       "Do use a dashed 1px border for any real-but-empty slot.",
-      "Do format every date in UTC. Frontmatter dates coerce to UTC midnight and shift a day without it — this has already been fixed once."
+      "Do format every date in UTC. Frontmatter dates coerce to UTC midnight and shift a day without it \u2014 this has already been fixed once.",
+      "Do run card media full-bleed to the card edge and reserve padding for the body beneath it."
     ],
     "donts": [
       "Don't use the content accents for anything but content-type identification. No colored buttons, no colored backgrounds, no colored emphasis.",
@@ -346,7 +352,7 @@
       "Don't break content out of the 56rem column.",
       "Don't add a raw hex value or a one-off font size. Tokens live in src/styles/global.css.",
       "Don't fully round a container. 10px is the ceiling; pills are for badges and tooltips.",
-      "Don't compress the timeline rail on mobile — hide it. Narrow screens belong to content.",
+      "Don't compress the timeline rail on mobile \u2014 hide it. Narrow screens belong to content.",
       "Don't set running prose in JetBrains Mono. Body copy is Inter; mono is for facts.",
       "Don't put an eyebrow label above a heading.",
       "Don't apply Tailwind Typography's prose classes to a bare inline link. It injects --tw-prose-links (a cold blue at hue 264) into a palette with no brand hue. Use .link-inline.",
