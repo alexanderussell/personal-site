@@ -10,6 +10,8 @@ type CaseStudy = {
   role?: string;
   timeline?: string;
   tags?: string[];
+  cover?: string;
+  coverAlt?: string;
 };
 
 interface Props {
@@ -75,6 +77,8 @@ function dateRange(role: Role): string | undefined {
                   role={study.role}
                   timeline={study.timeline}
                   tags={study.tags}
+                  cover={study.cover}
+                  coverAlt={study.coverAlt}
                 />
               ))}
             </div>

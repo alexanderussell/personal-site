@@ -78,6 +78,8 @@ const writingEntries = (await getWritingEntries()).slice(0, 4);
                 description={entry.data.description}
                 role={entry.data.company}
                 timeline={entry.data.timeline}
+                cover={entry.data.cover}
+                coverAlt={entry.data.coverAlt}
                 compact
               />
             ))}

@@ -17,6 +17,8 @@ const caseStudies = entries.map((entry) => ({
   role: entry.data.role,
   timeline: entry.data.timeline,
   tags: entry.data.tags,
+  cover: entry.data.cover,
+  coverAlt: entry.data.coverAlt,
 }));
 
 // A case study whose `company` matches no role would render nowhere. Surface it

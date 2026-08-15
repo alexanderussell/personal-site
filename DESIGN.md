@@ -328,6 +328,13 @@ Cards with media are built in two planes: the media runs full-bleed to the card 
 the body below it carries padding. `overflow: hidden` on the card is what lets the media meet
 the rounded corner instead of leaving a square shoulder behind the radius.
 
+Both card families — Lab and Work — render from one shared `.card-surface` in
+`src/styles/global.css`, so they cannot drift apart. A card variant contributes only what is
+genuinely its own: Lab overrides the hover border to the experiment accent, Work tightens
+padding and shallows the media in its compact form. A case study without a `cover` shows a
+labelled placeholder rather than collapsing the plane, so the card keeps its proportions
+before its art exists.
+
 - **Corner Style:** Large (`12px` on media cards, `10px` on text frames).
 - **Background:** Transparent by default. Only inner stages (experiment previews, photo frames)
   take the `bg-secondary` tonal step.

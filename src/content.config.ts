@@ -56,6 +56,13 @@ const work = defineCollection({
     outcome: z.string().optional(),
     /** Surfaces on the homepage Work preview. */
     featured: z.boolean().default(false),
+    /**
+     * Card cover image, e.g. `/images/work/provisioning.jpg`. Omitted renders a
+     * labelled placeholder, so a case study is publishable before its art is.
+     */
+    cover: z.string().optional(),
+    /** Describe the image. Required whenever `cover` is set. */
+    coverAlt: z.string().optional(),
     /** Figma Slides embed URL. Populated only if U9 ships. */
     figma: z.string().url().optional(),
     /** Video walkthrough URL. Populated only if U9 ships. */

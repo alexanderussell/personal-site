@@ -16,14 +16,14 @@ interface Props {
 const { id, href, title, description, date, status, hasPreview = true } = Astro.props;
 ---
 
-<article class="lab-card">
+<article class="card-surface lab-card">
   {hasPreview && (
-    <div class="lab-card__stage">
+    <div class="card-surface__media">
       <LabMotif id={id} />
     </div>
   )}
 
-  <div class="lab-card__body">
+  <div class="card-surface__body">
     <div class="flex items-baseline gap-3">
       <time
         class="text-text-secondary font-mono text-[13px]"
@@ -35,64 +35,17 @@ const { id, href, title, description, date, status, hasPreview = true } = Astro.
     </div>
 
     <h2 class="mt-2 text-lg font-semibold">
-      <a href={href} class="lab-card__link">{title}</a>
+      <a href={href} class="card-surface__link">{title}</a>
     </h2>
     <p class="text-text-secondary mt-1 text-sm leading-relaxed">{description}</p>
   </div>
 </article>
 
 <style>
-  /* Media is full-bleed to the card edge; only the body carries padding.
-     overflow:hidden is what lets the stage meet the rounded corner cleanly
-     instead of leaving a square shoulder behind the radius. */
-  .lab-card {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    border: 1px solid var(--color-border);
-    border-radius: 0.75rem;
-    background: var(--color-bg-primary);
-    transition: border-color 0.3s ease;
-  }
-
+  /* Everything structural lives in .card-surface. The only Lab-specific note is
+     the hover accent, which uses the experiment content-type colour. */
   .lab-card:hover,
   .lab-card:focus-within {
     border-color: var(--color-type-experiment);
-  }
-
-  .lab-card__stage {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    aspect-ratio: 16 / 10;
-    /* Slightly recessed from the body so the media reads as a window rather
-       than as more surface. */
-    background: color-mix(in srgb, var(--color-bg-secondary) 55%, transparent);
-    border-bottom: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
-  }
-
-  .lab-card__body {
-    flex: 1;
-    padding: 1.125rem 1.25rem 1.25rem;
-    background: var(--color-bg-secondary);
-  }
-
-  /* Stretched link — the whole card is the target, but the accessible name
-     stays on the title text rather than being swallowed by the media. */
-  .lab-card__link::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-  }
-
-  .lab-card__link {
-    color: var(--color-text-primary);
-    text-decoration: none;
-  }
-
-  .lab-card:hover .lab-card__link {
-    text-decoration: underline;
-    text-underline-offset: 3px;
   }
 </style>

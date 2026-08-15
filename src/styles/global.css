@@ -84,6 +84,63 @@
     text-decoration-color: currentColor;
   }
 
+  /* ── Two-plane card ──
+     One surface, shared by Lab and Work so the two can't drift apart. Media
+     runs full-bleed to the card edge; only the body carries padding. The card
+     clips its own overflow, which is what lets media meet the corner radius
+     instead of leaving a square shoulder behind it. */
+
+  .card-surface {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    border-radius: 0.75rem;
+    background: var(--color-bg-primary);
+    text-decoration: none;
+    transition: border-color 0.3s ease;
+  }
+
+  .card-surface:hover,
+  .card-surface:focus-within {
+    border-color: var(--color-accent);
+  }
+
+  .card-surface__media {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 16 / 10;
+    /* Recessed from the body so media reads as a window, not more surface. */
+    background: color-mix(in srgb, var(--color-bg-secondary) 55%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+  }
+
+  .card-surface__body {
+    flex: 1;
+    padding: 1.125rem 1.25rem 1.25rem;
+    background: var(--color-bg-secondary);
+  }
+
+  /* Stretched link — the whole card is the target, while the accessible name
+     stays on the title rather than being swallowed by the media. */
+  .card-surface__link {
+    color: var(--color-text-primary);
+    text-decoration: none;
+  }
+
+  .card-surface__link::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .card-surface:hover .card-surface__link {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
   /* Category pages lead with the section name, then a single describing line.
      The name is the heading — there is no separate eyebrow above it. */
   .section-title {

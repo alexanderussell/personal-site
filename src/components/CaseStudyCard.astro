@@ -1,4 +1,6 @@
 ---
+import { Image as ImageIcon } from 'lucide-astro';
+
 interface Props {
   href: string;
   title: string;
@@ -6,62 +8,123 @@ interface Props {
   role?: string;
   timeline?: string;
   tags?: string[];
+  /** Path under `public/`. Absent renders a labelled placeholder. */
+  cover?: string;
+  coverAlt?: string;
   /** Compact variant for the homepage preview, where vertical space is tighter. */
   compact?: boolean;
 }
 
-const { href, title, description, role, timeline, tags = [], compact = false } = Astro.props;
+const {
+  href,
+  title,
+  description,
+  role,
+  timeline,
+  tags = [],
+  cover,
+  coverAlt,
+  compact = false,
+} = Astro.props;
 
-const meta = [role, timeline].filter(Boolean);
+/*
+ * Compact cards sit three across (~279px at desktop), where company plus
+ * duration wraps to two lines and the meta starts competing with the title.
+ * The company is the load-bearing fact on a scan; the duration is on the
+ * detail page for anyone who wants it.
+ */
+const meta = (compact ? [role] : [role, timeline]).filter(Boolean);
+const hasCover = typeof cover === 'string' && cover.trim().length > 0;
 ---
 
-<a href={href} class:list={['case-card', compact && 'case-card--compact']}>
-  {meta.length > 0 && (
-    <div class="case-card__meta font-mono text-[11px] uppercase tracking-[0.08em] text-text-secondary">
-      {meta.join(' · ')}
-    </div>
-  )}
+<article class:list={['card-surface', 'case-card', compact && 'case-card--compact']}>
+  <div class="card-surface__media">
+    {hasCover ? (
+      <img src={cover} alt={coverAlt ?? ''} loading="lazy" decoding="async" class="case-card__img" />
+    ) : (
+      /* aria-hidden: an empty slot is scaffolding, not content. Announcing
+         "cover pending" on every card would be noise. */
+      <div class="case-card__placeholder" aria-hidden="true">
+        <ImageIcon class="case-card__placeholder-icon" />
+        <span class="case-card__placeholder-hint font-mono">Cover image</span>
+      </div>
+    )}
+  </div>
 
-  <h3 class="case-card__title mt-1.5 font-semibold">{title}</h3>
-  <p class="text-text-secondary mt-1 text-sm leading-relaxed">{description}</p>
+  <div class="card-surface__body">
+    {meta.length > 0 && (
+      <div class="case-card__meta font-mono text-[11px] uppercase tracking-[0.08em] text-text-secondary">
+        {meta.join(' · ')}
+      </div>
+    )}
 
-  {!compact && tags.length > 0 && (
-    <ul class="case-card__tags mt-3">
-      {tags.map((tag) => (
-        <li class="case-card__tag font-mono text-[11px] text-text-secondary">{tag}</li>
-      ))}
-    </ul>
-  )}
-</a>
+    <h3 class="case-card__title mt-1.5 font-semibold">
+      <a href={href} class="card-surface__link">{title}</a>
+    </h3>
+    <p class="text-text-secondary mt-1 text-sm leading-relaxed">{description}</p>
+
+    {!compact && tags.length > 0 && (
+      <ul class="case-card__tags mt-3">
+        {tags.map((tag) => (
+          <li class="case-card__tag font-mono text-[11px] text-text-secondary">{tag}</li>
+        ))}
+      </ul>
+    )}
+  </div>
+</article>
 
 <style>
-  .case-card {
-    display: block;
-    padding: 1.125rem 1.25rem;
-    border: 1px solid var(--color-border);
-    border-radius: 0.5rem;
-    text-decoration: none;
-    transition:
-      border-color 0.3s ease,
-      transform 0.3s ease;
-  }
-
-  .case-card:hover {
-    border-color: var(--color-accent);
-  }
-
   .case-card__title {
     color: var(--color-text-primary);
     font-size: 1.0625rem;
   }
 
-  .case-card:hover .case-card__title {
+  .case-card__title a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .case-card:hover .case-card__title a {
     text-decoration: underline;
     text-underline-offset: 3px;
   }
 
-  .case-card--compact {
-    padding: 1rem 1.125rem;
+  .case-card__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .case-card__placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--color-text-secondary);
+  }
+
+  .case-card__placeholder-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    opacity: 0.35;
+  }
+
+  .case-card__placeholder-hint {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.6;
+  }
+
+  /* Homepage sits three across, so the cover gets shallower to keep the card
+     from towering over the Lab pair beside it. */
+  .case-card--compact .card-surface__media {
+    aspect-ratio: 16 / 9;
+  }
+
+  .case-card--compact .card-surface__body {
+    padding: 1rem 1.125rem 1.125rem;
   }
 
   .case-card__tags {
