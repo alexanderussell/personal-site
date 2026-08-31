@@ -1,0 +1,473 @@
+---
+/**
+ * Persistent left navigation.
+ *
+ * Replaces the old top bar. Three states, driven by viewport rather than by a
+ * stored user preference — a collapse toggle would need persistence and a
+ * pre-paint script to avoid a flash, and the width where labels stop fitting
+ * is a layout fact, not a taste question:
+ *
+ *   < 768px    mobile bar + disclosure panel (no room for a rail)
+ *   768–1279   icon rail, labels hidden, names carried by aria-label
+ *   >= 1280px  full sidebar with labels
+ *
+ * It also absorbs what used to live in the footer — socials, location/time,
+ * theme toggle, copyright — so those appear exactly once at any width. Footer
+ * still renders below 768px, where the sidebar is collapsed behind a button.
+ */
+import ThemeToggle from './ThemeToggle.astro';
+import GenerativeLogo from './GenerativeLogo.astro';
+import { House, User, FileText, FlaskConical, PenLine, Menu, X } from 'lucide-astro';
+import { site, hasLocation } from '../data/site';
+
+const navLinks = [
+  { href: '/', label: 'Home', icon: House },
+  { href: '/about', label: 'About', icon: User },
+  { href: '/work', label: 'Work', icon: FileText },
+  { href: '/lab', label: 'Lab', icon: FlaskConical },
+  { href: '/writing', label: 'Writing', icon: PenLine },
+];
+
+const currentPath = Astro.url.pathname;
+
+/**
+ * "/" would prefix-match every route, so Home is exact-only. Everything else
+ * matches its subtree so /notes/x doesn't un-highlight Writing... except it
+ * can't: /notes and /guides keep their own URLs. Writing owns all three.
+ */
+const WRITING_PREFIXES = ['/writing', '/notes', '/guides'];
+
+function isActive(href: string): boolean {
+  if (href === '/') return currentPath === '/';
+  if (href === '/writing') return WRITING_PREFIXES.some((p) => currentPath.startsWith(p));
+  return currentPath.startsWith(href);
+}
+
+const year = new Date().getFullYear();
+---
+
+<!-- Mobile bar: only exists below 768px, where a rail has nowhere to go. -->
+<div class="mobile-bar">
+  <a href="/" class="mobile-bar__brand">
+    <span class="mobile-bar__logo"><GenerativeLogo /></span>
+    <span class="font-heading mobile-bar__name">Alex Russell</span>
+  </a>
+  <div class="mobile-bar__actions">
+    <ThemeToggle />
+    <button
+      id="sidebar-toggle"
+      type="button"
+      aria-label="Open menu"
+      aria-expanded="false"
+      aria-controls="mobile-panel"
+      class="mobile-bar__button"
+    >
+      <Menu class="size-5" data-menu-open aria-hidden="true" />
+      <X class="size-5 hidden" data-menu-close aria-hidden="true" />
+    </button>
+  </div>
+</div>
+
+<div id="mobile-panel" class="mobile-panel" hidden>
+  {navLinks.map(({ href, label, icon: Icon }) => (
+    <a href={href} class:list={['mobile-panel__link', isActive(href) && 'is-active']}>
+      <Icon class="size-4" aria-hidden="true" />
+      {label}
+    </a>
+  ))}
+</div>
+
+<aside class="sidebar" aria-label="Main">
+  <a href="/" class="sidebar__brand">
+    <span class="sidebar__logo"><GenerativeLogo /></span>
+    <span class="sidebar__identity">
+      <span class="font-heading sidebar__name">Alex Russell</span>
+      <span class="font-mono sidebar__role">Design Engineer</span>
+    </span>
+  </a>
+
+  <nav class="sidebar__nav">
+    {navLinks.map(({ href, label, icon: Icon }) => {
+      const active = isActive(href);
+      return (
+        <a
+          href={href}
+          class:list={['sidebar__link', active && 'is-active']}
+          aria-current={active ? 'page' : undefined}
+          aria-label={label}
+        >
+          <span class="sidebar__icon" aria-hidden="true"><Icon class="size-[18px]" /></span>
+          <span class="sidebar__label">{label}</span>
+        </a>
+      );
+    })}
+  </nav>
+
+  <div class="sidebar__foot">
+    <div class="sidebar__socials">
+      <a
+        href="https://github.com/alexanderussell"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="GitHub"
+      >
+        <svg class="size-[18px]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+        </svg>
+      </a>
+      <a
+        href="https://x.com/alexanderussell"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="X (Twitter)"
+      >
+        <svg class="size-[18px]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+        </svg>
+      </a>
+    </div>
+
+    <div class="sidebar__meta">
+      {hasLocation && (
+        <p class="sidebar__locale font-mono">
+          {site.location}
+          <span aria-hidden="true"> · </span>
+          <time data-local-time data-timezone={site.timeZone}></time>
+        </p>
+      )}
+      <div class="sidebar__theme"><ThemeToggle /></div>
+    </div>
+
+    <p class="sidebar__copyright font-mono">&copy; {year}</p>
+  </div>
+</aside>
+
+<style>
+  /* ── Mobile bar (below 768px) ── */
+
+  .mobile-bar {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    background: var(--color-bg-primary);
+    border-bottom: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+  }
+
+  .mobile-bar__brand {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    text-decoration: none;
+    color: var(--color-text-primary);
+  }
+
+  .mobile-bar__logo {
+    display: block;
+    width: 2rem;
+    height: 2rem;
+    flex-shrink: 0;
+  }
+
+  .mobile-bar__name {
+    font-size: 1.125rem;
+    letter-spacing: -0.01em;
+  }
+
+  .mobile-bar__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .mobile-bar__button {
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: color 150ms ease;
+  }
+
+  .mobile-bar__button:hover {
+    color: var(--color-text-primary);
+  }
+
+  .mobile-panel {
+    position: sticky;
+    top: 3.5rem;
+    z-index: 39;
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem 0.75rem 0.75rem;
+    background: var(--color-bg-primary);
+    border-bottom: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+  }
+
+  /* `hidden` is the no-JS default; the toggle removes it. Without this the
+     attribute loses to the flex display above and the panel starts open. */
+  .mobile-panel[hidden] {
+    display: none;
+  }
+
+  .mobile-panel__link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.625rem 0.75rem;
+    border-radius: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    text-decoration: none;
+    color: var(--color-text-secondary);
+  }
+
+  .mobile-panel__link.is-active {
+    background: var(--color-bg-secondary);
+    color: var(--color-text-primary);
+  }
+
+  /* ── Sidebar (768px and up) ── */
+
+  .sidebar {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .mobile-bar,
+    .mobile-panel {
+      display: none;
+    }
+
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      width: var(--sidebar-w);
+      padding: 1rem 0.75rem;
+      background: var(--color-bg-primary);
+      border-right: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+
+    .sidebar__brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.25rem;
+      margin-bottom: 1.5rem;
+      text-decoration: none;
+      color: var(--color-text-primary);
+    }
+
+    .sidebar__logo {
+      display: block;
+      width: 2.25rem;
+      height: 2.25rem;
+      flex-shrink: 0;
+      border-radius: 0.55rem;
+      overflow: hidden;
+      /* The reference gives the mark a lit edge. One border, no glow stack. */
+      box-shadow: 0 0 0 1px var(--color-border);
+    }
+
+    .sidebar__identity {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .sidebar__name {
+      font-size: 1.0625rem;
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+    }
+
+    .sidebar__role {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--color-text-secondary);
+      white-space: nowrap;
+    }
+
+    .sidebar__nav {
+      display: flex;
+      flex-direction: column;
+      gap: 0.125rem;
+    }
+
+    .sidebar__link {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 0.625rem;
+      border-radius: 0.5rem;
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      text-decoration: none;
+      color: var(--color-text-secondary);
+      transition: background-color 150ms ease, color 150ms ease;
+    }
+
+    .sidebar__icon {
+      display: flex;
+      flex-shrink: 0;
+      line-height: 0;
+    }
+
+    .sidebar__label {
+      white-space: nowrap;
+    }
+
+    .sidebar__link:hover {
+      color: var(--color-text-primary);
+      background: color-mix(in srgb, var(--color-bg-secondary) 55%, transparent);
+    }
+
+    .sidebar__link.is-active {
+      color: var(--color-text-primary);
+      background: var(--color-bg-secondary);
+    }
+
+    /* Pushes the footing to the bottom of the column at any content height. */
+    .sidebar__foot {
+      margin-top: auto;
+      padding-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.875rem;
+    }
+
+    .sidebar__socials {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding-left: 0.625rem;
+    }
+
+    .sidebar__socials a {
+      color: var(--color-text-secondary);
+      transition: color 150ms ease;
+    }
+
+    .sidebar__socials a:hover {
+      color: var(--color-text-primary);
+    }
+
+    .sidebar__meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding-left: 0.625rem;
+    }
+
+    .sidebar__locale {
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      margin: 0;
+    }
+
+    .sidebar__copyright {
+      font-size: 11px;
+      color: var(--color-text-secondary);
+      opacity: 0.7;
+      margin: 0;
+      padding-left: 0.625rem;
+    }
+  }
+
+  /* ── Collapsed rail (768–1279px) ──
+     Labels are removed from the flow rather than hidden with opacity so the
+     rail can't be horizontally scrolled to reveal them. Each link keeps its
+     aria-label, so the accessible name survives the collapse. */
+  @media (min-width: 768px) and (max-width: 1279.98px) {
+    .sidebar {
+      align-items: center;
+      padding: 1rem 0.5rem;
+    }
+
+    .sidebar__identity,
+    .sidebar__label,
+    .sidebar__locale,
+    .sidebar__copyright {
+      display: none;
+    }
+
+    .sidebar__brand {
+      gap: 0;
+      margin-bottom: 1.25rem;
+    }
+
+    .sidebar__nav {
+      align-self: stretch;
+    }
+
+    .sidebar__link {
+      justify-content: center;
+      padding: 0.625rem 0;
+    }
+
+    .sidebar__foot,
+    .sidebar__socials,
+    .sidebar__meta {
+      align-items: center;
+      justify-content: center;
+      padding-left: 0;
+    }
+
+    .sidebar__socials {
+      flex-direction: column;
+      gap: 0.875rem;
+    }
+  }
+</style>
+
+<script>
+  // ── Mobile disclosure ──
+  const toggle = document.getElementById('sidebar-toggle');
+  const panel = document.getElementById('mobile-panel');
+  const openIcon = toggle?.querySelector('[data-menu-open]');
+  const closeIcon = toggle?.querySelector('[data-menu-close]');
+
+  toggle?.addEventListener('click', () => {
+    const isOpen = !panel?.hidden;
+    if (panel) panel.hidden = isOpen;
+    toggle.setAttribute('aria-expanded', String(!isOpen));
+    toggle.setAttribute('aria-label', isOpen ? 'Open menu' : 'Close menu');
+    openIcon?.classList.toggle('hidden', !isOpen);
+    closeIcon?.classList.toggle('hidden', isOpen);
+  });
+
+  // ── Local time, refreshed each minute ──
+  // Client-side because a build-time value would be frozen at deploy. Selects
+  // *all* matches, not the first: the mobile footer carries a second copy, and
+  // querySelector would leave whichever one lost the race permanently blank.
+  const clocks = document.querySelectorAll<HTMLTimeElement>('[data-local-time]');
+
+  if (clocks.length > 0) {
+    const render = () => {
+      clocks.forEach((el) => {
+        try {
+          el.textContent = new Intl.DateTimeFormat('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            timeZone: el.dataset.timezone,
+          }).format(new Date());
+        } catch {
+          // Invalid IANA name — drop the detail rather than showing a wrong time.
+          el.closest('.sidebar__locale, .footer-locale')?.remove();
+        }
+      });
+    };
+
+    render();
+    setInterval(render, 60_000);
+  }
+</script>

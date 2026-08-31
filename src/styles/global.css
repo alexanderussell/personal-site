@@ -44,8 +44,37 @@
     --color-border: oklch(38% .009 52);
   }
 
+  /* ── Sidebar geometry ──
+     One source of truth for the sidebar's width and the inset it imposes on
+     everything to its right. Anything that measures against the viewport
+     (full-bleed post titles, for one) must subtract --layout-inset or it will
+     overflow underneath the sidebar and give the page a horizontal scrollbar. */
+  :root {
+    --sidebar-w: 0px;
+    --layout-inset: 0px;
+  }
+
+  @media (min-width: 768px) {
+    :root {
+      --sidebar-w: 4.25rem;
+      --layout-inset: var(--sidebar-w);
+    }
+  }
+
+  @media (min-width: 1280px) {
+    :root {
+      --sidebar-w: 15rem;
+    }
+  }
+
   html {
     scroll-behavior: smooth;
+  }
+
+  /* Everything that isn't the sidebar. Padding rather than margin so the
+     background still runs edge to edge behind it. */
+  .site-shell {
+    padding-left: var(--layout-inset);
   }
 
   body {

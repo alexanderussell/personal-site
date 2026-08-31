@@ -75,7 +75,7 @@ const formattedNumber =
         )}
       </div>
 
-      <h1 class="font-heading relative left-1/2 mb-4 w-[min(62rem,calc(100vw-3rem))] -translate-x-1/2 text-center text-5xl leading-[0.95] tracking-tight sm:text-6xl md:text-7xl">
+      <h1 class="font-heading post-title relative left-1/2 mb-4 -translate-x-1/2 text-center text-5xl leading-[0.95] tracking-tight sm:text-6xl md:text-7xl">
         {title}
       </h1>
 
@@ -115,6 +115,14 @@ const formattedNumber =
 </BaseLayout>
 
 <style>
+  /* Post titles break out of the 2xl prose column to the width of the page.
+     The viewport is wider than the content area once the sidebar exists, so
+     the inset has to come out of the measurement — otherwise the title runs
+     under the sidebar and the page gains a horizontal scrollbar. */
+  .post-title {
+    width: min(62rem, calc(100vw - var(--layout-inset) - 3rem));
+  }
+
   .newsletter-footer {
     margin-top: 4rem;
     padding: 0 1rem;

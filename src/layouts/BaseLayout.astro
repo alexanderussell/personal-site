@@ -1,5 +1,5 @@
 ---
-import Nav from '../components/Nav.astro';
+import Sidebar from '../components/Sidebar.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 import Analytics from '@vercel/analytics/astro';
@@ -12,8 +12,8 @@ interface Props {
 }
 
 const {
-  title = 'Alex Russell — UX Engineer',
-  description = 'Portfolio and writing site for Alex Russell, design engineer. Work, lab experiments, and writing.',
+  title = 'Alex Russell — Design Engineer',
+  description = 'Alex Russell, design engineer. Case studies, live experiments, and essays.',
   ogImage = '/images/og-default.png',
 } = Astro.props;
 
@@ -73,10 +73,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <SpeedInsights />
   </head>
   <body class="bg-bg-primary text-text-primary min-h-screen font-body antialiased transition-colors duration-200">
-    <Nav />
-    <main class="mx-auto mt-8 max-w-4xl px-4">
-      <slot />
-    </main>
-    <Footer />
+    <Sidebar />
+    <div class="site-shell">
+      <main class="mx-auto mt-8 max-w-4xl px-4">
+        <slot />
+      </main>
+      <Footer />
+    </div>
   </body>
 </html>

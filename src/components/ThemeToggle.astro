@@ -1,16 +1,25 @@
 ---
+/**
+ * Theme cycle: system → light → dark → system.
+ *
+ * Addressed by data attribute rather than by id. The component renders twice
+ * (sidebar and mobile bar), and with ids the second instance was unreachable
+ * via getElementById — every icon stayed `hidden` and the button collapsed to
+ * 0×0. Astro bundles this script once no matter how many instances exist, so
+ * one querySelectorAll pass drives all of them.
+ */
 import { Sun, Moon, Monitor } from 'lucide-astro';
 ---
 
 <button
-  id="theme-toggle"
+  data-theme-toggle
   type="button"
   aria-label="Toggle theme"
   class="text-text-secondary hover:text-text-primary cursor-pointer transition-colors"
 >
-  <Sun id="light-icon" class="hidden size-5" aria-hidden="true" />
-  <Moon id="dark-icon" class="hidden size-5" aria-hidden="true" />
-  <Monitor id="system-icon" class="hidden size-5" aria-hidden="true" />
+  <Sun data-theme-icon="light" class="hidden size-5" aria-hidden="true" />
+  <Moon data-theme-icon="dark" class="hidden size-5" aria-hidden="true" />
+  <Monitor data-theme-icon="system" class="hidden size-5" aria-hidden="true" />
 </button>
 
 <script>
@@ -32,25 +41,28 @@ import { Sun, Moon, Monitor } from 'lucide-astro';
     }
   }
 
+  // Every instance shows the same state, so all of them update together.
   function updateIcons() {
     const theme = getTheme();
-    document.getElementById('light-icon')?.classList.toggle('hidden', theme !== 'light');
-    document.getElementById('dark-icon')?.classList.toggle('hidden', theme !== 'dark');
-    document.getElementById('system-icon')?.classList.toggle('hidden', theme !== 'system');
+    document.querySelectorAll<HTMLElement>('[data-theme-icon]').forEach((icon) => {
+      icon.classList.toggle('hidden', icon.dataset.themeIcon !== theme);
+    });
   }
 
-  document.getElementById('theme-toggle')?.addEventListener('click', () => {
-    const current = getTheme();
-    const next = current === 'system' ? 'light' : current === 'light' ? 'dark' : 'system';
+  document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const current = getTheme();
+      const next = current === 'system' ? 'light' : current === 'light' ? 'dark' : 'system';
 
-    if (next === 'system') {
-      localStorage.removeItem('theme');
-    } else {
-      localStorage.setItem('theme', next);
-    }
+      if (next === 'system') {
+        localStorage.removeItem('theme');
+      } else {
+        localStorage.setItem('theme', next);
+      }
 
-    applyTheme(next);
-    updateIcons();
+      applyTheme(next);
+      updateIcons();
+    });
   });
 
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
