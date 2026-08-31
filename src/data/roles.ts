@@ -41,7 +41,7 @@ export const roles: Role[] = [
     url: 'https://marriott.com',
     end: null,
     narrative:
-      'Leading UX for developer tools — the internal platforms engineering teams use to ship infrastructure. Design systems as infrastructure, and interfaces where the users are engineers and trust matters more than delight.',
+      'Leading UX for developer tools: the internal platforms engineering teams use to ship infrastructure. Design systems built to be depended on, for users who would rather drop down to the raw API.',
   },
   {
     company: 'Collectively Made',
@@ -53,7 +53,7 @@ export const roles: Role[] = [
     company: 'Agencies, dev shops, and startups',
     summary: true,
     narrative:
-      'Years of wearing every hat — brand systems through full product builds. The reps that taste is downstream of.',
+      'Years of wearing every hat, from brand systems through full product builds. The reps that taste is downstream of.',
   },
 ];
 

@@ -21,9 +21,9 @@ const guideCount = entries.filter((e) => e.kind === 'guide').length;
   <section class="py-16">
     <h1 class="section-title">Writing</h1>
     <p class="section-lede">
-      Essays written with conviction and edited with doubt — {noteCount}
-      {noteCount === 1 ? 'essay' : 'essays'} and {guideCount}
-      {guideCount === 1 ? 'guide' : 'guides'} so far.
+      {noteCount} {noteCount === 1 ? 'essay' : 'essays'} and {guideCount}
+      {guideCount === 1 ? 'guide' : 'guides'} so far. Most carry a badge saying how
+      settled the thinking is.
     </p>
 
     {entries.length > 0 ? (

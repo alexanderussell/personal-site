@@ -8,7 +8,7 @@ const guides = (await getCollection('guides', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 ---
 
-<BaseLayout title="Guides — Alex Russell" description="Playbooks, practical frameworks, and tactical deep dives.">
+<BaseLayout title="Guides — Alex Russell" description="Workflows and systems, written down after they worked more than once.">
   <section class="py-16">
     <h1 class="section-title">Guides</h1>
     <p class="section-lede">Repeatable systems and frameworks, written down after they worked more than once.</p><div class="mt-12">

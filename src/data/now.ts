@@ -10,7 +10,7 @@ export const now: {
   items: [
     {
       label: 'Writing',
-      text: 'Designing with AI — the book',
+      text: 'Designing with AI, the book',
       href: '/book',
     },
     {

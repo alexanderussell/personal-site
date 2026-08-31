@@ -15,23 +15,23 @@ const beliefs: {
   receipt: { type: ReceiptType; title: string; href: string };
 }[] = [
   {
-    statement: 'Taste is residue, not talent.',
-    body: "It's what's left over after the reps — the 11pm grid audits, the hundred bad prototypes. The moat everyone says will save designers was built by work we just automated away. That should worry us more than it does.",
+    statement: 'Taste is residue.',
+    body: "It's what's left over after the reps: the 11pm grid audits, the hundred bad prototypes. The moat everyone says will save designers got built by the exact work we just automated away. That should worry us more than it does.",
     receipt: { type: 'note', title: 'The Ladder, Pulled Up', href: '/notes/the-ladder-pulled-up' },
   },
   {
-    statement: 'Real beats rendered.',
-    body: 'A working prototype on a URL ends arguments that a mockup can only start. Build the thing real enough to fight over.',
+    statement: 'Build it real enough to fight over.',
+    body: 'A working prototype on a URL ends arguments that a mockup can only start.',
     receipt: { type: 'note', title: 'We Swapped the Motor', href: '/notes/we-swapped-the-motor' },
   },
   {
     statement: 'The best design system is the one you forget about.',
-    body: "Roads don't get feature roadmaps. Infrastructure is measured by what it enables, not what it contains.",
+    body: "Roads don't get feature roadmaps. The measure of infrastructure is what people build on top of it.",
     receipt: { type: 'note', title: 'Design Systems Are Not a Product', href: '/notes/design-systems-are-not-a-product' },
   },
   {
     statement: 'For experts, trust beats delight.',
-    body: "An engineer clicking 'Provision' doesn't want magic — they want to believe what happens next. That's a harder thing to design than friendly.",
+    body: "An engineer clicking 'Provision' doesn't want magic. They want to believe what happens next, which is a harder thing to design than friendly.",
     receipt: { type: 'note', title: 'What Does UX Mean When Your Users Are Engineers?', href: '/notes/ux-for-engineers' },
   },
   /*
@@ -51,25 +51,25 @@ const beliefs: {
 const startHere: { title: string; why: string; href: string; type: ReceiptType }[] = [
   {
     title: 'The Ladder, Pulled Up',
-    why: 'The thesis. Where taste comes from, and what AI just did to it.',
+    why: 'The thesis: where taste comes from, and what AI just did to it.',
     href: '/notes/the-ladder-pulled-up',
     type: 'note',
   },
   {
     title: 'We Swapped the Motor',
-    why: 'The turn. The friction died, and the hard questions showed up early.',
+    why: 'What happened when the friction died and the hard questions showed up on day three.',
     href: '/notes/we-swapped-the-motor',
     type: 'note',
   },
   {
     title: 'The Claude Code + Obsidian Vault Pattern',
-    why: 'The practice. How context stops evaporating between sessions.',
+    why: 'The practice: how context stops evaporating between sessions.',
     href: '/guides/claude-code-obsidian-vault-pattern-for-design-teams',
     type: 'guide',
   },
   {
     title: "Ask My Dad's Record Collection",
-    why: "The heart. A vinyl collection that won't stop playing.",
+    why: "A vinyl collection that won't stop playing.",
     href: '/lab/ask-dads-records',
     type: 'experiment',
   },
@@ -119,50 +119,36 @@ const nowUpdated = now.updated.toLocaleDateString('en-US', {
     <section class="about-intro fade-in-scroll">
       <p>
         I'm a design engineer with 12 years of making software feel like something. I lead UX for
-        developer tools at Marriott International, designing the internal platforms engineering teams use to
-        ship infrastructure. Before that: agencies, dev shops, startups, and a design collective called
+        developer tools at Marriott International. Before that: agencies, dev shops, startups, and a design collective called
         <a href="https://collectivelymade.com" target="_blank" rel="noopener noreferrer">Collectively Made</a>.
       </p>
       <p>
         Most of my work lives where design and engineering stop being separate jobs. The users are
-        engineers, the interfaces are infrastructure, and the thing being designed is usually trust —
+        engineers and the interfaces are infrastructure. What I'm actually designing is trust:
         whether someone believes what happens after they click.
       </p>
       <p>
-        This site is the workshop, not the showroom. <a href="/work">Work</a> is what shipped,
+        This site is the workshop. <a href="/work">Work</a> is what shipped,
         <a href="/lab">Lab</a> is what I built to find out, and <a href="/writing">Writing</a> is me
         arguing with myself in public. They link to each other on purpose.
       </p>
     </section>
 
-    {/*
-      ── Your narrative goes here ──────────────────────────────────────────
-      The inspiration's About earns its length with an origin story: where he
-      grew up, the formative interests, the winding route into the work. That
-      is the part of this page only you can write, so it is scaffolded rather
-      than invented.
-
-      Three prompts, roughly the arc that structure follows:
-        1. Where you started — place, family, what you were into before design
-        2. The turn — how you ended up doing this, including the detours
-        3. What you're chasing now — the throughline connecting it all
-
-      Delete this comment and the section below once the prose is written, or
-      delete the section entirely if the beliefs list already says enough.
-      ──────────────────────────────────────────────────────────────────────
-    */}
-    <section class="about-section about-draft fade-in-scroll" id="story">
+    <!-- The origin story lives as a note rather than inline: it's 1,500 words,
+         and the About page's job is to point at it, not to become it. -->
+    <section class="about-section fade-in-scroll" id="story">
       <h2 class="about-label">The longer version</h2>
-      <p class="about-draft__note font-mono">
-        Placeholder — an origin story belongs here. See the comment in
-        <code>src/pages/about.astro</code> for the three prompts this section is shaped around.
+      <p class="about-story">
+        I got here without a plan. <a href="/notes/pathless-path-into-technology">My pathless path
+        into technology</a> is the whole route: a campus computer lab, a class called new genres,
+        and a run of environments that each asked more than I expected.
       </p>
     </section>
 
     <!-- Beliefs -->
     <section class="about-section" id="beliefs">
       <h2 class="about-label fade-in-scroll">What I believe</h2>
-      <p class="about-sublabel fade-in-scroll">Anyone can claim a perspective. Each of these comes with a receipt.</p>
+      <p class="about-sublabel fade-in-scroll">Each one comes with a receipt.</p>
 
       <div class="belief-list">
         {beliefs.map((belief, i) => (
@@ -188,7 +174,7 @@ const nowUpdated = now.updated.toLocaleDateString('en-US', {
     <!-- Start here -->
     <section class="about-section" id="start-here">
       <h2 class="about-label fade-in-scroll">Start here</h2>
-      <p class="about-sublabel fade-in-scroll">First visit? Four pieces, in this order.</p>
+      <p class="about-sublabel fade-in-scroll">Four pieces, in this order.</p>
 
       <ol class="start-here-list">
         {startHere.map((item, i) => (
@@ -230,7 +216,7 @@ const nowUpdated = now.updated.toLocaleDateString('en-US', {
     <section class="about-subscribe fade-in-scroll">
       <div class="about-subscribe__divider"></div>
       <p class="about-label">Stick around</p>
-      <p class="about-subscribe__body">New essays and experiments, straight to your inbox.</p>
+      <p class="about-subscribe__body">New writing and experiments, by email.</p>
       <SubscribeForm list="newsletter" client:visible />
     </section>
   </article>
@@ -328,21 +314,26 @@ const nowUpdated = now.updated.toLocaleDateString('en-US', {
     }
   }
 
-  /* ── Draft section ── */
+  /* ── The longer version ── */
 
-  .about-draft__note {
-    font-size: 13px;
+  .about-story {
+    font-family: var(--font-body);
+    font-size: 17px;
     line-height: 1.7;
     color: var(--color-text-secondary);
-    border: 1px dashed var(--color-border);
-    border-radius: 0.5rem;
-    padding: 1rem 1.125rem;
+    max-width: 42rem;
     margin: 0;
+    text-wrap: pretty;
   }
 
-  .about-draft__note code {
-    font-size: 12px;
+  .about-story a {
     color: var(--color-text-primary);
+    font-weight: 600;
+  }
+
+  .about-story a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 
   .about-eyebrow {

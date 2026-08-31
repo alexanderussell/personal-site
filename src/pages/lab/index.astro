@@ -11,11 +11,11 @@ const experiments = (await getCollection('lab', ({ data }) => !data.draft))
 
 <BaseLayout
   title="Lab — Alex Russell"
-  description="Interactive prototypes and technical spikes — small things built to answer a question."
+  description="Interactive prototypes and technical spikes. Small things built to answer a question."
 >
   <section class="py-16">
     <h1 class="section-title">Lab</h1>
-    <p class="section-lede">Prototypes, tools, and interactions I've built — all of them running live in the page.</p>
+    <p class="section-lede">Prototypes and small tools I've built, all of them running live in the page.</p>
 
     <div class="lab-grid mt-12">
       {experiments.map((experiment) => (
