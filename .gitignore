@@ -22,3 +22,6 @@ skills-lock.json
 
 # Playwright MCP debug artifacts
 .playwright-mcp/
+
+# Design canvas — generated bundle (regenerate with design/artboards.mjs + /design)
+design/alexanderussell-site.html

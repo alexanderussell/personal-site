@@ -1,0 +1,243 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+  <style>
+    @font-face {
+      font-family: 'PP Mondwest';
+      src: url(data:font/woff2;base64,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) format('woff2');
+      font-weight: 400; font-style: normal; font-display: block;
+    }
+
+    .page {
+      --bg-primary: oklch(14.5% .005 52);
+      --bg-secondary: oklch(21.5% .007 44);
+      --text-primary: oklch(93% .003 48.717);
+      --text-secondary: color-mix(in srgb, oklch(93% .003 48.717) 68%, transparent);
+      --accent: oklch(97% .003 56);
+      --border: oklch(38% .009 52);
+    }
+    .page.light {
+      --bg-primary: oklch(97% .003 56);
+      --bg-secondary: oklch(93% .005 48);
+      --text-primary: oklch(21.6% .006 56.043);
+      --text-secondary: color-mix(in srgb, oklch(21.6% .006 56.043) 60%, transparent);
+      --accent: oklch(15% .006 56);
+      --border: oklch(88% .012 58);
+    }
+
+    .page {
+      --type-note: #60a5fa;
+      --type-guide: #e67e22;
+      --type-experiment: #eab308;
+      --grow-seedling: #a3e635;
+      --grow-growing: #4ade80;
+      --grow-evergreen: #22c55e;
+      --font-heading: 'PP Mondwest', ui-serif, Georgia, serif;
+      --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+    }
+
+    body { margin: 0; }
+    .page {
+      font-family: var(--font-body);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+    .page *, .page *::before, .page *::after { box-sizing: border-box; }
+    a { color: var(--text-primary); }
+    a:hover { color: var(--text-primary); }
+
+    /* Sidebar — 15rem expanded, 4.25rem rail (global.css :root) */
+    .sb { width: 240px; flex-shrink: 0; border-right: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+          padding: 16px 12px; display: flex; flex-direction: column; }
+    .sb-brand { display: flex; align-items: center; gap: 12px; padding: 4px; margin-bottom: 24px; }
+    .sb-logo { width: 36px; height: 36px; border-radius: 8.8px; flex-shrink: 0;
+               box-shadow: 0 0 0 1px var(--border); overflow: hidden;
+               background: conic-gradient(from 210deg, #e8c37a, #b6d7a8, #c9a0dc, #f0a2a2, #e8c37a); }
+    .sb-name { font-family: var(--font-heading); font-size: 17px; line-height: 1.2; letter-spacing: -0.01em; }
+    .sb-role { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em;
+               text-transform: uppercase; color: var(--text-secondary); }
+    .sb-nav { display: flex; flex-direction: column; gap: 2px; }
+    .sb-link { display: flex; align-items: center; gap: 12px; padding: 8px 10px; border-radius: 8px;
+               font-family: var(--font-mono); font-size: 13px; color: var(--text-secondary); text-decoration: none; }
+    .sb-link.on { background: var(--bg-secondary); color: var(--text-primary); }
+    .sb-foot { margin-top: auto; padding-top: 24px; display: flex; flex-direction: column; gap: 14px; }
+    .sb-socials { display: flex; align-items: center; gap: 16px; padding-left: 10px; color: var(--text-secondary); }
+    .sb-copy { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); opacity: 0.7; padding-left: 10px; margin: 0; }
+
+    .shell { display: flex; min-height: 100%; }
+    .main { flex: 1; min-width: 0; padding: 0 16px; }
+    .measure { max-width: 896px; margin: 0 auto; }
+
+    /* Section heads (global.css .section-title / .section-lede) */
+    .s-title { font-family: var(--font-heading); font-size: 72px; line-height: 1;
+               letter-spacing: -0.02em; margin: 0; }
+    .s-lede { max-width: 640px; margin: 16px 0 0; font-size: 17px; line-height: 1.7;
+              color: var(--text-secondary); text-wrap: pretty; }
+
+    /* Two-plane card (global.css .card-surface) */
+    .card { position: relative; display: flex; flex-direction: column; overflow: hidden;
+            border: 1px solid var(--border); border-radius: 12px; background: var(--bg-primary); }
+    .card-media { display: flex; align-items: center; justify-content: center; aspect-ratio: 16/10;
+                  background: color-mix(in srgb, var(--bg-secondary) 55%, transparent);
+                  border-bottom: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+                  color: var(--text-secondary); gap: 6px; flex-direction: column; }
+    .card-hint { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .card-body { flex: 1; padding: 18px 20px 20px; background: var(--bg-secondary); }
+    .card-meta { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em;
+                 text-transform: uppercase; color: var(--text-secondary); }
+    .card-title { font-size: 16px; font-weight: 600; margin: 6px 0 0; line-height: 1.35; }
+    .card-desc { font-size: 14px; line-height: 1.6; color: var(--text-secondary); margin: 4px 0 0; }
+
+    /* Growth badge (GrowthStage.astro) */
+    .grow { display: inline-flex; align-items: center; gap: 6.4px; font-family: var(--font-mono);
+            font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+            color: var(--text-secondary); border: 1px solid var(--border); border-radius: 999px;
+            padding: 4px 10.4px; }
+    .grow svg { color: var(--gc); }
+    .grow.seedling { --gc: var(--grow-seedling); border-style: dashed; }
+    .grow.growing { --gc: var(--grow-growing); border-style: dashed;
+                    border-color: color-mix(in srgb, var(--border) 50%, var(--grow-growing)); }
+    .grow.evergreen { --gc: var(--grow-evergreen); border-style: solid;
+                      border-color: color-mix(in srgb, var(--border) 35%, var(--grow-evergreen)); }
+
+    /* Writing row (WritingRow.astro) */
+    .wrow { display: block; padding: 20px 0; text-decoration: none;
+            border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent); }
+    .wrow-meta { display: flex; align-items: center; gap: 8px; }
+    .wrow-kind { font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+                 letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); }
+    .wrow-date { font-family: var(--font-mono); font-size: 13px; color: var(--text-secondary); }
+    .wrow-title { font-size: 18px; font-weight: 600; margin: 6px 0 0; }
+    .wrow-desc { font-size: 14px; line-height: 1.6; color: var(--text-secondary); margin: 4px 0 0; }
+
+    /* Section preview header (SectionPreview.astro) */
+    .sec { padding-block: 40px; }
+    .sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
+                padding-bottom: 12px; border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent); }
+    .sec-label { font-family: var(--font-mono); font-size: 13px; text-transform: uppercase;
+                 letter-spacing: 0.12em; color: var(--text-secondary); margin: 0; }
+    .sec-link { font-family: var(--font-mono); font-size: 13px; color: var(--text-secondary); text-decoration: none; }
+
+    .mono-label { font-family: var(--font-mono); font-size: 13px; font-weight: 600;
+                  letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-secondary); margin: 0 0 8px; }
+  </style>
+</helmet>
+<div class="page {{themeClass}}" style="min-height: 100%">
+  
+  <div class="shell">
+    <aside class="sb">
+      <div class="sb-brand">
+        <div class="sb-logo"></div>
+        <div style="display: flex; flex-direction: column; min-width: 0">
+          <span class="sb-name">Alex Russell</span>
+          <span class="sb-role">Design Engineer</span>
+        </div>
+      </div>
+      <nav class="sb-nav">
+        <a href="#" class="sb-link"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" /><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /></svg><span>Home</span></a>
+        <a href="#" class="sb-link"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg><span>About</span></a>
+        <a href="#" class="sb-link on"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" /><path d="M14 2v5a1 1 0 0 0 1 1h5" /><path d="M10 9H8" /><path d="M16 13H8" /><path d="M16 17H8" /></svg><span>Work</span></a>
+        <a href="#" class="sb-link"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2v6a2 2 0 0 0 .245.96l5.51 10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.96l5.51-10.08A2 2 0 0 0 10 8V2" /><path d="M6.453 15h11.094" /><path d="M8.5 2h7" /></svg><span>Lab</span></a>
+        <a href="#" class="sb-link"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 21h8" /><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" /></svg><span>Writing</span></a>
+      </nav>
+      <div class="sb-foot">
+        <div class="sb-socials"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231z"/></svg></div>
+        <div style="padding-left: 10px; color: var(--text-secondary)"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2" /><line x1="8" x2="16" y1="21" y2="21" /><line x1="12" x2="12" y1="17" y2="21" /></svg></div>
+        <p class="sb-copy">&copy; 2026</p>
+      </div>
+    </aside>
+    <main class="main">
+      <div class="measure">
+
+        <section style="padding: 64px 0">
+          <h1 class="s-title">Work</h1>
+          <p class="s-lede">Mostly developer tools and internal platforms. The software other people's work depends on.</p>
+
+          <div style="margin-top: 56px; display: flex; flex-direction: column; gap: 56px">
+            <section style="display: grid; grid-template-columns: 24px 1fr; gap: 20px">
+              <div style="display: flex; flex-direction: column; align-items: center; padding-top: 6px">
+                <span style="width: 9px; height: 9px; border-radius: 999px; background: var(--text-secondary)"></span>
+                <span style="width: 1.5px; flex: 1; margin-top: 8px; background: repeating-linear-gradient(to bottom, color-mix(in srgb, var(--text-secondary) 68%, transparent) 0 7px, transparent 7px 12px)"></span>
+              </div>
+              <div>
+                <p style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-secondary); margin: 0 0 4px">Now</p>
+                <h2 style="font-family: var(--font-heading); font-size: 30px; margin: 0; line-height: 1.15">Marriott International</h2>
+                <p style="color: var(--text-secondary); line-height: 1.75; margin: 8px 0 0; max-width: 640px; font-size: 15px">Leading UX for developer tools: the internal platforms engineering teams use to ship infrastructure. Design systems built to be depended on, for users who would rather drop down to the raw API.</p>
+                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 24px">
+                  <article class="card">
+  <div class="card-media"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" /></svg><span class="card-hint">Cover image</span></div>
+  <div class="card-body">
+    <p class="card-meta" style="margin: 0">Lead UX Engineer &middot; ~5 months</p>
+    <h3 class="card-title">Making Infrastructure Provisioning Legible</h3>
+    <p class="card-desc">Engineers were spinning up costly infrastructure by accident. Rebuilding the provisioning flow around consequence rather than speed cut unintended provisions roughly in half.</p>
+  </div>
+</article>
+                  <article class="card">
+  <div class="card-media"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" /></svg><span class="card-hint">Cover image</span></div>
+  <div class="card-body">
+    <p class="card-meta" style="margin: 0">Lead UX Engineer &middot; ~8 months</p>
+    <h3 class="card-title">A Design System Engineers Stopped Noticing</h3>
+    <p class="card-desc">Adoption was stalling because the system asked teams to change how they worked. Rebuilding it as versioned, typed, installable infrastructure moved it from a proposal to a default.</p>
+  </div>
+</article>
+                </div>
+              </div>
+            </section>
+
+            <section style="display: grid; grid-template-columns: 24px 1fr; gap: 20px">
+              <div style="display: flex; flex-direction: column; align-items: center; padding-top: 6px">
+                <span style="width: 9px; height: 9px; border-radius: 999px; border: 1.5px solid var(--text-secondary)"></span>
+                <span style="width: 1.5px; flex: 1; margin-top: 8px; background: repeating-linear-gradient(to bottom, color-mix(in srgb, var(--text-secondary) 68%, transparent) 0 2px, transparent 2px 5px)"></span>
+              </div>
+              <div>
+                <h2 style="font-family: var(--font-heading); font-size: 30px; margin: 0; line-height: 1.15">Collectively Made</h2>
+                <p style="color: var(--text-secondary); line-height: 1.75; margin: 8px 0 0; max-width: 640px; font-size: 15px">A design collective I started. Client work across brand systems and product builds, with a rotating cast of collaborators.</p>
+                <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 24px">
+                  <article class="card">
+  <div class="card-media"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" /></svg><span class="card-hint">Cover image</span></div>
+  <div class="card-body">
+    <p class="card-meta" style="margin: 0">Design Lead &middot; ~3 months</p>
+    <h3 class="card-title">A Brand System Built to Be Handed Off</h3>
+    <p class="card-desc">A studio identity built so a small team could keep applying it after the engagement ended. Tokens and templates instead of a static guideline PDF.</p>
+  </div>
+</article>
+                  <div></div>
+                </div>
+              </div>
+            </section>
+
+            <section style="display: grid; grid-template-columns: 24px 1fr; gap: 20px">
+              <div style="display: flex; flex-direction: column; align-items: center; padding-top: 6px">
+                <span style="width: 9px; height: 9px; border-radius: 999px; border: 1.5px solid var(--text-secondary); opacity: 0.5"></span>
+              </div>
+              <div>
+                <h2 style="font-family: var(--font-heading); font-size: 30px; margin: 0; line-height: 1.15">Agencies, dev shops, and startups</h2>
+                <p style="color: var(--text-secondary); line-height: 1.75; margin: 8px 0 0; max-width: 640px; font-size: 15px">Years of wearing every hat, from brand systems through full product builds. The reps that taste is downstream of.</p>
+              </div>
+            </section>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+</div>
+</x-dc>
+<script data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark","section":"Theme"}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { themeClass: this.props.theme === 'light' ? 'light' : '' };
+  }
+}
+</script>
+</body>
+</html>

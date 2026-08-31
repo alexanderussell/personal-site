@@ -1,0 +1,240 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap">
+  <style>
+    @font-face {
+      font-family: 'PP Mondwest';
+      src: url(data:font/woff2;base64,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) format('woff2');
+      font-weight: 400; font-style: normal; font-display: block;
+    }
+
+    .page {
+      --bg-primary: oklch(14.5% .005 52);
+      --bg-secondary: oklch(21.5% .007 44);
+      --text-primary: oklch(93% .003 48.717);
+      --text-secondary: color-mix(in srgb, oklch(93% .003 48.717) 68%, transparent);
+      --accent: oklch(97% .003 56);
+      --border: oklch(38% .009 52);
+    }
+    .page.light {
+      --bg-primary: oklch(97% .003 56);
+      --bg-secondary: oklch(93% .005 48);
+      --text-primary: oklch(21.6% .006 56.043);
+      --text-secondary: color-mix(in srgb, oklch(21.6% .006 56.043) 60%, transparent);
+      --accent: oklch(15% .006 56);
+      --border: oklch(88% .012 58);
+    }
+
+    .page {
+      --type-note: #60a5fa;
+      --type-guide: #e67e22;
+      --type-experiment: #eab308;
+      --grow-seedling: #a3e635;
+      --grow-growing: #4ade80;
+      --grow-evergreen: #22c55e;
+      --font-heading: 'PP Mondwest', ui-serif, Georgia, serif;
+      --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+    }
+
+    body { margin: 0; }
+    .page {
+      font-family: var(--font-body);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+    .page *, .page *::before, .page *::after { box-sizing: border-box; }
+    a { color: var(--text-primary); }
+    a:hover { color: var(--text-primary); }
+
+    /* Sidebar — 15rem expanded, 4.25rem rail (global.css :root) */
+    .sb { width: 240px; flex-shrink: 0; border-right: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+          padding: 16px 12px; display: flex; flex-direction: column; }
+    .sb-brand { display: flex; align-items: center; gap: 12px; padding: 4px; margin-bottom: 24px; }
+    .sb-logo { width: 36px; height: 36px; border-radius: 8.8px; flex-shrink: 0;
+               box-shadow: 0 0 0 1px var(--border); overflow: hidden;
+               background: conic-gradient(from 210deg, #e8c37a, #b6d7a8, #c9a0dc, #f0a2a2, #e8c37a); }
+    .sb-name { font-family: var(--font-heading); font-size: 17px; line-height: 1.2; letter-spacing: -0.01em; }
+    .sb-role { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em;
+               text-transform: uppercase; color: var(--text-secondary); }
+    .sb-nav { display: flex; flex-direction: column; gap: 2px; }
+    .sb-link { display: flex; align-items: center; gap: 12px; padding: 8px 10px; border-radius: 8px;
+               font-family: var(--font-mono); font-size: 13px; color: var(--text-secondary); text-decoration: none; }
+    .sb-link.on { background: var(--bg-secondary); color: var(--text-primary); }
+    .sb-foot { margin-top: auto; padding-top: 24px; display: flex; flex-direction: column; gap: 14px; }
+    .sb-socials { display: flex; align-items: center; gap: 16px; padding-left: 10px; color: var(--text-secondary); }
+    .sb-copy { font-family: var(--font-mono); font-size: 11px; color: var(--text-secondary); opacity: 0.7; padding-left: 10px; margin: 0; }
+
+    .shell { display: flex; min-height: 100%; }
+    .main { flex: 1; min-width: 0; padding: 0 16px; }
+    .measure { max-width: 896px; margin: 0 auto; }
+
+    /* Section heads (global.css .section-title / .section-lede) */
+    .s-title { font-family: var(--font-heading); font-size: 72px; line-height: 1;
+               letter-spacing: -0.02em; margin: 0; }
+    .s-lede { max-width: 640px; margin: 16px 0 0; font-size: 17px; line-height: 1.7;
+              color: var(--text-secondary); text-wrap: pretty; }
+
+    /* Two-plane card (global.css .card-surface) */
+    .card { position: relative; display: flex; flex-direction: column; overflow: hidden;
+            border: 1px solid var(--border); border-radius: 12px; background: var(--bg-primary); }
+    .card-media { display: flex; align-items: center; justify-content: center; aspect-ratio: 16/10;
+                  background: color-mix(in srgb, var(--bg-secondary) 55%, transparent);
+                  border-bottom: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+                  color: var(--text-secondary); gap: 6px; flex-direction: column; }
+    .card-hint { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .card-body { flex: 1; padding: 18px 20px 20px; background: var(--bg-secondary); }
+    .card-meta { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.08em;
+                 text-transform: uppercase; color: var(--text-secondary); }
+    .card-title { font-size: 16px; font-weight: 600; margin: 6px 0 0; line-height: 1.35; }
+    .card-desc { font-size: 14px; line-height: 1.6; color: var(--text-secondary); margin: 4px 0 0; }
+
+    /* Growth badge (GrowthStage.astro) */
+    .grow { display: inline-flex; align-items: center; gap: 6.4px; font-family: var(--font-mono);
+            font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+            color: var(--text-secondary); border: 1px solid var(--border); border-radius: 999px;
+            padding: 4px 10.4px; }
+    .grow svg { color: var(--gc); }
+    .grow.seedling { --gc: var(--grow-seedling); border-style: dashed; }
+    .grow.growing { --gc: var(--grow-growing); border-style: dashed;
+                    border-color: color-mix(in srgb, var(--border) 50%, var(--grow-growing)); }
+    .grow.evergreen { --gc: var(--grow-evergreen); border-style: solid;
+                      border-color: color-mix(in srgb, var(--border) 35%, var(--grow-evergreen)); }
+
+    /* Writing row (WritingRow.astro) */
+    .wrow { display: block; padding: 20px 0; text-decoration: none;
+            border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent); }
+    .wrow-meta { display: flex; align-items: center; gap: 8px; }
+    .wrow-kind { font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+                 letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-secondary); }
+    .wrow-date { font-family: var(--font-mono); font-size: 13px; color: var(--text-secondary); }
+    .wrow-title { font-size: 18px; font-weight: 600; margin: 6px 0 0; }
+    .wrow-desc { font-size: 14px; line-height: 1.6; color: var(--text-secondary); margin: 4px 0 0; }
+
+    /* Section preview header (SectionPreview.astro) */
+    .sec { padding-block: 40px; }
+    .sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
+                padding-bottom: 12px; border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent); }
+    .sec-label { font-family: var(--font-mono); font-size: 13px; text-transform: uppercase;
+                 letter-spacing: 0.12em; color: var(--text-secondary); margin: 0; }
+    .sec-link { font-family: var(--font-mono); font-size: 13px; color: var(--text-secondary); text-decoration: none; }
+
+    .mono-label { font-family: var(--font-mono); font-size: 13px; font-weight: 600;
+                  letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-secondary); margin: 0 0 8px; }
+  </style>
+</helmet>
+<div class="page" style="padding: 40px">
+  <h1 style="font-family: var(--font-heading); font-size: 44px; margin: 0 0 6px; letter-spacing: -0.01em">Components</h1>
+  <p style="font-size: 15px; color: var(--text-secondary); margin: 0 0 40px; max-width: 640px">The pieces every page is assembled from. Change one here, change it everywhere.</p>
+
+  <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px">
+
+    <section>
+      <p class="mono-label">Two-plane card &mdash; .card-surface</p>
+      <p style="font-size: 14px; color: var(--text-secondary); margin: 0 0 18px; line-height: 1.6">Media runs full-bleed to the card edge; only the body carries padding. Shared by Work and Lab so the two can't drift.</p>
+      <article class="card">
+  <div class="card-media"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2" /><circle cx="9" cy="9" r="2" /><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" /></svg><span class="card-hint">Cover image</span></div>
+  <div class="card-body">
+    <p class="card-meta" style="margin: 0">Marriott International</p>
+    <h3 class="card-title">Making Infrastructure Provisioning Legible</h3>
+    <p class="card-desc">Engineers were spinning up costly infrastructure by accident. Rebuilding the provisioning flow around consequence rather than speed cut unintended provisions roughly in half.</p>
+  </div>
+</article>
+    </section>
+
+    <section>
+      <p class="mono-label">Section preview header</p>
+      <p style="font-size: 14px; color: var(--text-secondary); margin: 0 0 18px; line-height: 1.6">Homepage only. Mono label left, quiet link right, hairline rule under both.</p>
+      <div class="sec-head"><h2 class="sec-label">Work</h2><a href="#" class="sec-link">View all &rarr;</a></div>
+
+      <p class="mono-label" style="margin-top: 36px">Subscribe form</p>
+      <form style="display: flex; gap: 8px; flex-wrap: wrap; max-width: 380px; margin-top: 14px">
+        <span style="flex: 1; min-width: 0; font-family: var(--font-mono); font-size: 12px; background: var(--bg-secondary); color: var(--text-secondary); border: 1px solid var(--border); border-radius: 6px; padding: 6px 10px">your@email.com</span>
+        <span style="font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-secondary); border: 1px solid var(--border); border-radius: 6px; padding: 6px 14px; min-width: 88px; text-align: center">Notify me</span>
+      </form>
+      <p style="font-family: var(--font-mono); font-size: 12px; color: var(--text-secondary); margin: 14px 0 0">You're on the list. I'll be in touch.</p>
+
+      <p class="mono-label" style="margin-top: 36px">Growth badges</p>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px">
+        <span class="grow seedling"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9.536V7a4 4 0 0 1 4-4h1.5a.5.5 0 0 1 .5.5V5a4 4 0 0 1-4 4 4 4 0 0 0-4 4c0 2 1 3 1 5a5 5 0 0 1-1 3" /><path d="M4 9a5 5 0 0 1 8 4 5 5 0 0 1-8-4" /><path d="M5 21h14" /></svg>seedling</span>
+        <span class="grow growing"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" /><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" /></svg>growing</span>
+        <span class="grow evergreen"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 14 3 3.3a1 1 0 0 1-.7 1.7H4.7a1 1 0 0 1-.7-1.7L7 14h-.3a1 1 0 0 1-.7-1.7L9 9h-.2A1 1 0 0 1 8 7.3L12 3l4 4.3a1 1 0 0 1-.8 1.7H15l3 3.3a1 1 0 0 1-.7 1.7H17Z" /><path d="M12 22v-3" /></svg>evergreen</span>
+      </div>
+    </section>
+
+    <section style="grid-column: 1 / -1">
+      <p class="mono-label">Writing row</p>
+      <p style="font-size: 14px; color: var(--text-secondary); margin: 0 0 8px; line-height: 1.6">Type icon carries the accent; the row itself stays neutral until hover.</p>
+      <div style="max-width: 720px">
+        <a href="#" class="wrow">
+    <div class="wrow-meta"><span style="color: var(--type-note)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 21h8" /><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" /></svg></span><span class="wrow-kind">Note</span><span class="wrow-date">Aug 14, 2026</span><span class="grow evergreen"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m17 14 3 3.3a1 1 0 0 1-.7 1.7H4.7a1 1 0 0 1-.7-1.7L7 14h-.3a1 1 0 0 1-.7-1.7L9 9h-.2A1 1 0 0 1 8 7.3L12 3l4 4.3a1 1 0 0 1-.8 1.7H15l3 3.3a1 1 0 0 1-.7 1.7H17Z" /><path d="M12 22v-3" /></svg>evergreen</span></div>
+    <h3 class="wrow-title">My pathless path into technology</h3>
+    <p class="wrow-desc">No plan, no clean pivot point. A campus computer lab, a class called new genres, and a run of environments that each asked more than I expected.</p>
+  </a>
+        <a href="#" class="wrow">
+    <div class="wrow-meta"><span style="color: var(--type-note)"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 21h8" /><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" /></svg></span><span class="wrow-kind">Note</span><span class="wrow-date">Apr 27, 2026</span><span class="grow growing"><svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" /><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" /></svg>growing</span></div>
+    <h3 class="wrow-title">The Ladder, Pulled Up</h3>
+    <p class="wrow-desc">Taste is the moat. Fine. But taste was always downstream of reps, and AI has eaten the reps.</p>
+  </a>
+      </div>
+    </section>
+
+    <section>
+      <p class="mono-label">Belief + receipt</p>
+      <div style="margin-top: 18px">
+        <div style="display: grid; grid-template-columns: 48px 1fr; gap: 6px 20px">
+    <span style="font-family: var(--font-mono); font-size: 13px; color: var(--text-secondary); opacity: 0.6; padding-top: 10px">01</span>
+    <div>
+      <h3 style="font-family: var(--font-heading); font-size: 32px; line-height: 1.15; margin: 0 0 10px">Taste is residue.</h3>
+      <p style="font-size: 15px; line-height: 1.75; color: var(--text-secondary); margin: 0 0 14px; max-width: 608px">It's what's left over after the reps: the 11pm grid audits, the hundred bad prototypes.</p>
+      <a href="#" style="display: inline-flex; align-items: center; gap: 8px; font-family: var(--font-mono); font-size: 12px; text-decoration: none">
+        <span style="font-weight: 600; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-secondary); border: 1px dashed var(--border); border-radius: 999px; padding: 3px 9px">Receipt</span>
+        <span style="color: var(--type-note); line-height: 0"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 21h8" /><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" /></svg></span>
+        <span style="border-bottom: 1px solid var(--border); padding-bottom: 1px">The Ladder, Pulled Up</span>
+        <span style="color: var(--text-secondary)">&rarr;</span>
+      </a>
+    </div>
+  </div>
+      </div>
+    </section>
+
+    <section>
+      <p class="mono-label">Start-here row</p>
+      <div style="margin-top: 18px; border-top: 1px dashed var(--border)">
+        <a href="#" style="display: grid; grid-template-columns: 48px 1fr; gap: 20px; padding: 17.6px 0; text-decoration: none; border-bottom: 1px dashed var(--border)">
+    <span style="font-family: var(--font-mono); font-size: 13px; color: var(--text-secondary); opacity: 0.6; padding-top: 2px">01</span>
+    <span style="display: flex; flex-direction: column; gap: 3px">
+      <span style="display: inline-flex; align-items: center; gap: 9px; font-size: 17px; font-weight: 600">The Ladder, Pulled Up<span style="color: var(--text-secondary); line-height: 0"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 21h8" /><path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" /></svg></span></span>
+      <span style="font-size: 15px; line-height: 1.6; color: var(--text-secondary)">The thesis: where taste comes from, and what AI just did to it.</span>
+    </span>
+  </a>
+        <a href="#" style="display: grid; grid-template-columns: 48px 1fr; gap: 20px; padding: 17.6px 0; text-decoration: none; border-bottom: 1px dashed var(--border)">
+    <span style="font-family: var(--font-mono); font-size: 13px; color: var(--text-secondary); opacity: 0.6; padding-top: 2px">02</span>
+    <span style="display: flex; flex-direction: column; gap: 3px">
+      <span style="display: inline-flex; align-items: center; gap: 9px; font-size: 17px; font-weight: 600">Ask My Dad's Record Collection<span style="color: var(--text-secondary); line-height: 0"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2v6a2 2 0 0 0 .245.96l5.51 10.08A2 2 0 0 1 18 22H6a2 2 0 0 1-1.755-2.96l5.51-10.08A2 2 0 0 0 10 8V2" /><path d="M6.453 15h11.094" /><path d="M8.5 2h7" /></svg></span></span>
+      <span style="font-size: 15px; line-height: 1.6; color: var(--text-secondary)">A vinyl collection that won't stop playing.</span>
+    </span>
+  </a>
+      </div>
+    </section>
+
+  </div>
+</div>
+</x-dc>
+<script data-dc-script data-props='{}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>
