@@ -17,12 +17,12 @@
  */
 import ThemeToggle from './ThemeToggle.astro';
 import GenerativeLogo from './GenerativeLogo.astro';
-import { House, User, FileText, FlaskConical, PenLine, Menu, X } from 'lucide-astro';
+import { House, FileText, FlaskConical, PenLine, Menu, X } from 'lucide-astro';
 import { site, hasLocation } from '../data/site';
 
 const navLinks = [
   { href: '/', label: 'Home', icon: House },
-  { href: '/about', label: 'About', icon: User },
+  // About is unpublished pending revision — see src/pages/_about.astro.
   { href: '/work', label: 'Work', icon: FileText },
   { href: '/lab', label: 'Lab', icon: FlaskConical },
   { href: '/writing', label: 'Writing', icon: PenLine },

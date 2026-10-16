@@ -21,8 +21,6 @@ without it · **Nice** = fine to follow up after launch.
 | | Item | Why it blocks |
 |---|---|---|
 | **Blocker** | Delete or draft the three `sample-*` case studies in `src/content/work/` | They're fabricated. A production deploy (`VERCEL_ENV=production`) now **fails the build** while they're published. Preview deploys still build, so layout review keeps working. |
-| **Blocker** | Resolve the merge with `main` | `main` has PR #7 (About page removed pending revision). Merging it into this branch conflicts in 4 files. See §5. |
-| **Blocker** | Decide what About ships as | You pulled About from `main` on 2026-09-02 to revise it. This branch keeps a restructured About. Either the revision happens here before launch, or About stays out of the nav at launch. |
 
 With the samples gone, the site holds together at **zero** case studies: the homepage hides
 Work, and `/work` still shows the career timeline. At **one**, the homepage shows a single wide
@@ -158,17 +156,15 @@ internals, or are post-launch polish.
 
 ---
 
-## 5. Merging with `main`
+## 5. About page
 
-`main` is one PR ahead (#7, 2026-09-02: About removed pending revision). A trial merge
-conflicts in:
+**Decided 2026-10-15: unpublished at launch, kept for revision.** `main` was merged in (PR #7
+had removed About pending revision). The reworked page lives at `src/pages/_about.astro`,
+which Astro doesn't route, so `/about` 404s. It's out of the nav and the route check.
 
-| File | `main` | This branch | Resolution |
-|---|---|---|---|
-| `src/components/Nav.astro` | removed its About link | deleted (replaced by `Sidebar.astro`) | **Delete.** The sidebar supersedes it. |
-| `src/pages/index.astro` | removed the "About Me" CTA | rewritten homepage | **Take this branch.** The CTA row no longer exists here. |
-| `src/pages/about.astro` | deleted | restructured | **Your call** (§1). Keep this branch's version if About ships; otherwise delete it and drop About from `navLinks` in `Sidebar.astro`. |
-| `src/data/now.ts` | deleted | edited | Follows About. It's only used there. |
+| | Item | Notes |
+|---|---|---|
+| **Nice** | Revise About and republish it | Rename to `about.astro`, restore the link in `Sidebar.astro`, add `'/about'` back to `PERMANENT_ROUTES`. The header comment in the file says the same. |
 
 ---
 

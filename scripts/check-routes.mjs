@@ -33,7 +33,9 @@ const ROUTED_COLLECTIONS = {
  * (newsletter sends, external links), so a 404 here is a real regression.
  * Add an entry when a route becomes permanent — not before.
  */
-const PERMANENT_ROUTES = ['/', '/about', '/book', '/notes', '/guides', '/lab', '/writing', '/work'];
+// /about is absent while the page is unpublished (src/pages/_about.astro). Add it back
+// when it's restored.
+const PERMANENT_ROUTES = ['/', '/book', '/notes', '/guides', '/lab', '/writing', '/work'];
 
 const errors = [];
 const notes = [];

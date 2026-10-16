@@ -29,7 +29,7 @@ Most pages are prerendered. `src/pages/api/*` and anything reading request state
 
 ```
 /            Home — hero + Work / Lab / Writing previews
-/about       Beliefs-with-receipts, start-here path, now strip
+/about       UNPUBLISHED pending revision — source kept at src/pages/_about.astro
 /work        Career timeline + nested case studies
 /work/[slug] Case study detail
 /lab         Interactive experiments gallery
