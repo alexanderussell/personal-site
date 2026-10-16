@@ -108,6 +108,7 @@ Manual QA before shipping UI work: both themes, mobile and desktop widths, and J
 
 - `PRD.md` — product requirements (§1 amended 2026-08-13)
 - `docs/website-brief.md` — current design brief and open questions
+- `docs/launch-checklist.md` — what stands between this branch and launch, and what's needed from Alex
 - `docs/plans/` — implementation plans
 - `docs/ideation/`, `docs/brainstorms/` — upstream thinking, including rejected directions
 - `docs/solutions/` — institutional learnings; read before touching an area it covers
