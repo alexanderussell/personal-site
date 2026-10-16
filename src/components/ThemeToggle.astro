@@ -23,9 +23,29 @@ import { Sun, Moon, Monitor } from 'lucide-astro';
 </button>
 
 <script>
+  // In-memory copy so the toggle still works for the session when storage is
+  // blocked (private mode, site data disabled) — it just won't persist.
+  let memoryTheme: string | null = null;
+
   function getTheme() {
-    return localStorage.getItem('theme') || 'system';
+    try {
+      return localStorage.getItem('theme') || 'system';
+    } catch {
+      return memoryTheme || 'system';
+    }
   }
+
+  function storeTheme(theme: string) {
+    memoryTheme = theme === 'system' ? null : theme;
+    try {
+      if (theme === 'system') localStorage.removeItem('theme');
+      else localStorage.setItem('theme', theme);
+    } catch {
+      // Storage unavailable; memoryTheme carries it.
+    }
+  }
+
+  const NEXT: Record<string, string> = { system: 'light', light: 'dark', dark: 'system' };
 
   function applyTheme(theme: string) {
     if (theme === 'dark') {
@@ -41,25 +61,23 @@ import { Sun, Moon, Monitor } from 'lucide-astro';
     }
   }
 
-  // Every instance shows the same state, so all of them update together.
+  // Every instance shows the same state, so all of them update together. The
+  // label names the current theme and what a press does, since the icon alone
+  // doesn't tell a screen reader user either.
   function updateIcons() {
     const theme = getTheme();
     document.querySelectorAll<HTMLElement>('[data-theme-icon]').forEach((icon) => {
       icon.classList.toggle('hidden', icon.dataset.themeIcon !== theme);
     });
+    document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
+      button.setAttribute('aria-label', `Theme: ${theme}. Switch to ${NEXT[theme]}`);
+    });
   }
 
   document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
     button.addEventListener('click', () => {
-      const current = getTheme();
-      const next = current === 'system' ? 'light' : current === 'light' ? 'dark' : 'system';
-
-      if (next === 'system') {
-        localStorage.removeItem('theme');
-      } else {
-        localStorage.setItem('theme', next);
-      }
-
+      const next = NEXT[getTheme()] ?? 'system';
+      storeTheme(next);
       applyTheme(next);
       updateIcons();
     });
@@ -73,3 +91,11 @@ import { Sun, Moon, Monitor } from 'lucide-astro';
 
   updateIcons();
 </script>
+
+<style>
+  /* Without JS every icon stays hidden and a press does nothing, which leaves
+     an invisible, focusable dead button. Remove it; the OS theme still applies. */
+  html:not(.js) [data-theme-toggle] {
+    display: none;
+  }
+</style>

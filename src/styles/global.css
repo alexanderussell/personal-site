@@ -72,8 +72,13 @@
   }
 
   /* Everything that isn't the sidebar. Padding rather than margin so the
-     background still runs edge to edge behind it. */
+     background still runs edge to edge behind it.
+
+     flow-root stops <main>'s top margin collapsing through this element and
+     <body>. Without it the margin pushes body down and exposes <html>'s
+     background as a 32px band above the content. */
   .site-shell {
+    display: flow-root;
     padding-left: var(--layout-inset);
   }
 
