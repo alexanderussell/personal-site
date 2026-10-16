@@ -60,7 +60,7 @@ const year = new Date().getFullYear();
       aria-label="Open menu"
       aria-expanded="false"
       aria-controls="mobile-panel"
-      class="mobile-bar__button"
+      class="mobile-bar__button mobile-bar__menu"
     >
       <Menu class="size-5" data-menu-open aria-hidden="true" />
       <X class="size-5 hidden" data-menu-close aria-hidden="true" />
@@ -68,14 +68,21 @@ const year = new Date().getFullYear();
   </div>
 </div>
 
-<div id="mobile-panel" class="mobile-panel" hidden>
-  {navLinks.map(({ href, label, icon: Icon }) => (
-    <a href={href} class:list={['mobile-panel__link', isActive(href) && 'is-active']}>
-      <Icon class="size-4" aria-hidden="true" />
-      {label}
-    </a>
-  ))}
-</div>
+<nav id="mobile-panel" class="mobile-panel" aria-label="Main">
+  {navLinks.map(({ href, label, icon: Icon }) => {
+    const active = isActive(href);
+    return (
+      <a
+        href={href}
+        class:list={['mobile-panel__link', active && 'is-active']}
+        aria-current={active ? 'page' : undefined}
+      >
+        <Icon class="size-4" aria-hidden="true" />
+        {label}
+      </a>
+    );
+  })}
+</nav>
 
 <aside class="sidebar" aria-label="Main">
   <a href="/" class="sidebar__brand">
@@ -178,10 +185,21 @@ const year = new Date().getFullYear();
     letter-spacing: -0.01em;
   }
 
+  /* Each button gets a 44px hit area around its 20px icon. The negative
+     margins absorb that padding, so the icons stay aligned with the page
+     gutter and the bar stays 3.5rem tall — .mobile-panel's sticky offset
+     depends on that height. */
   .mobile-bar__actions {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    margin: -0.75rem -0.75rem -0.75rem 0;
+  }
+
+  .mobile-bar__actions :global(button) {
+    display: grid;
+    place-items: center;
+    min-width: 2.75rem;
+    min-height: 2.75rem;
   }
 
   .mobile-bar__button {
@@ -205,9 +223,19 @@ const year = new Date().getFullYear();
     border-bottom: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
   }
 
-  /* `hidden` is the no-JS default; the toggle removes it. Without this the
-     attribute loses to the flex display above and the panel starts open. */
-  .mobile-panel[hidden] {
+  /* Closed until opened — but only when JS is present to open it. Without JS
+     the menu button can't work, so the links render inline under the bar and
+     scroll away with the page instead of sticking. Gated on html.js, which
+     BaseLayout sets before paint, so JS visitors never see it flash open. */
+  html.js .mobile-panel:not(.is-open) {
+    display: none;
+  }
+
+  html:not(.js) .mobile-panel {
+    position: static;
+  }
+
+  html:not(.js) .mobile-bar__menu {
     display: none;
   }
 
@@ -436,13 +464,25 @@ const year = new Date().getFullYear();
   const openIcon = toggle?.querySelector('[data-menu-open]');
   const closeIcon = toggle?.querySelector('[data-menu-close]');
 
+  function setMenuOpen(open: boolean) {
+    if (!toggle || !panel) return;
+    panel.classList.toggle('is-open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    openIcon?.classList.toggle('hidden', open);
+    closeIcon?.classList.toggle('hidden', !open);
+  }
+
   toggle?.addEventListener('click', () => {
-    const isOpen = !panel?.hidden;
-    if (panel) panel.hidden = isOpen;
-    toggle.setAttribute('aria-expanded', String(!isOpen));
-    toggle.setAttribute('aria-label', isOpen ? 'Open menu' : 'Close menu');
-    openIcon?.classList.toggle('hidden', !isOpen);
-    closeIcon?.classList.toggle('hidden', isOpen);
+    setMenuOpen(!panel?.classList.contains('is-open'));
+  });
+
+  // Escape closes and hands focus back to the button that opened it.
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && panel?.classList.contains('is-open')) {
+      setMenuOpen(false);
+      toggle?.focus();
+    }
   });
 
   // ── Local time, refreshed each minute ──
