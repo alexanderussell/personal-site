@@ -8,7 +8,7 @@ interface Props {
   role?: string;
   timeline?: string;
   tags?: string[];
-  /** Path under `public/`. Absent renders a labelled placeholder. */
+  /** Path under `public/`. Absent: labelled placeholder in dev, text-only card in production. */
   cover?: string;
   coverAlt?: string;
   /** Compact variant for the homepage preview, where vertical space is tighter. */
@@ -35,9 +35,18 @@ const {
  */
 const meta = (compact ? [role] : [role, timeline]).filter(Boolean);
 const hasCover = typeof cover === 'string' && cover.trim().length > 0;
+
+/*
+ * Same rule as photo slots (src/data/photos.ts): the labelled placeholder is a
+ * dev-time reminder. A production build without a cover drops the media
+ * window and renders a text-only card, rather than shipping a grey box that
+ * says "Cover image".
+ */
+const showMedia = hasCover || import.meta.env.DEV;
 ---
 
 <article class:list={['card-surface', 'case-card', compact && 'case-card--compact']}>
+  {showMedia && (
   <div class="card-surface__media">
     {hasCover ? (
       <img src={cover} alt={coverAlt ?? ''} loading="lazy" decoding="async" class="case-card__img" />
@@ -50,6 +59,7 @@ const hasCover = typeof cover === 'string' && cover.trim().length > 0;
       </div>
     )}
   </div>
+  )}
 
   <div class="card-surface__body">
     {meta.length > 0 && (

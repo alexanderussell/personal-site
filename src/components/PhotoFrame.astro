@@ -1,6 +1,6 @@
 ---
 import { Image as ImageIcon } from 'lucide-astro';
-import type { Photo } from '../data/photos';
+import { showsPhoto, type Photo } from '../data/photos';
 
 interface Props {
   photo: Photo;
@@ -14,8 +14,17 @@ const { photo, class: className, eager = false } = Astro.props;
 
 const aspectClass = `photo-frame--${photo.aspect ?? 'landscape'}`;
 const isFilled = photo.src.trim().length > 0;
+
+// PRODUCT.md makes alt text a requirement, not a nicety. Fail the build rather
+// than ship a photo a screen reader can only call "image".
+if (isFilled && photo.alt.trim().length === 0) {
+  throw new Error(
+    `Photo "${photo.src}" has no alt text. Describe what it shows in src/data/photos.ts.`
+  );
+}
 ---
 
+{showsPhoto(photo) && (
 <figure class:list={['photo-frame', aspectClass, className]}>
   {isFilled ? (
     <img
@@ -39,6 +48,7 @@ const isFilled = photo.src.trim().length > 0;
     <figcaption class="photo-frame__caption font-mono">{photo.caption}</figcaption>
   )}
 </figure>
+)}
 
 <style>
   .photo-frame {

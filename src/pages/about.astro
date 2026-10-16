@@ -5,7 +5,10 @@ import { SubscribeForm } from '../components/SubscribeForm';
 import TypeIcon from '../components/TypeIcon.astro';
 import PhotoFrame from '../components/PhotoFrame.astro';
 import { now } from '../data/now';
-import { aboutPortrait, aboutGallery } from '../data/photos';
+import { aboutPortrait, aboutGallery, showsPhoto } from '../data/photos';
+
+// Only slots that will actually render — see showsPhoto().
+const galleryPhotos = aboutGallery.filter(showsPhoto);
 
 type ReceiptType = 'note' | 'guide' | 'experiment';
 
@@ -90,7 +93,7 @@ const nowUpdated = now.updated.toLocaleDateString('en-US', {
   <article class="pt-12 pb-8">
     <!-- Identity + the rule -->
     <header class="about-header">
-      <div class="about-masthead">
+      <div class:list={['about-masthead', showsPhoto(aboutPortrait) && 'about-masthead--with-portrait']}>
         <div class="about-masthead__copy">
           <h1 class="font-heading about-name fade-in-hidden" data-stagger>Alex Russell</h1>
           <p class="about-role font-mono fade-in-hidden" data-stagger>Design Engineer</p>
@@ -102,18 +105,26 @@ const nowUpdated = now.updated.toLocaleDateString('en-US', {
           </p>
         </div>
 
-        <div class="about-masthead__portrait fade-in-hidden" data-stagger>
-          <PhotoFrame photo={aboutPortrait} eager />
-        </div>
+        {showsPhoto(aboutPortrait) && (
+          <div class="about-masthead__portrait fade-in-hidden" data-stagger>
+            <PhotoFrame photo={aboutPortrait} eager />
+          </div>
+        )}
       </div>
     </header>
 
     <!-- Gallery strip -->
-    <section class="about-gallery fade-in-scroll" aria-label="Photographs">
-      {aboutGallery.map((photo) => (
-        <PhotoFrame photo={photo} />
-      ))}
-    </section>
+    {galleryPhotos.length > 0 && (
+      <section
+        class="about-gallery fade-in-scroll"
+        aria-label="Photographs"
+        style={`--gallery-count: ${galleryPhotos.length}`}
+      >
+        {galleryPhotos.map((photo) => (
+          <PhotoFrame photo={photo} />
+        ))}
+      </section>
+    )}
 
     <!-- Who -->
     <section class="about-intro fade-in-scroll">
@@ -261,8 +272,9 @@ const nowUpdated = now.updated.toLocaleDateString('en-US', {
     align-items: start;
   }
 
+  /* Second column only when a portrait fills it. */
   @media (min-width: 768px) {
-    .about-masthead {
+    .about-masthead--with-portrait {
       grid-template-columns: minmax(0, 1fr) 14rem;
       gap: 3rem;
     }
@@ -308,9 +320,11 @@ const nowUpdated = now.updated.toLocaleDateString('en-US', {
     margin-top: 3rem;
   }
 
+  /* Columns follow however many photos exist, so two photos fill the row
+     instead of leaving two empty cells. Four is the design; fewer still works. */
   @media (min-width: 768px) {
     .about-gallery {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(var(--gallery-count, 4), minmax(0, 1fr));
     }
   }
 

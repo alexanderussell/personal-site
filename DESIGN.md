@@ -293,7 +293,10 @@ element — nothing on the site is pill-shaped except deliberate badges.
 
 Borders are 1px and hairline-colored, frequently mixed down to 60–80% strength. Placeholder and
 pending states use a 1px **dashed** border — the system's consistent signal for "this slot is
-real but empty," used by photo frames and the About narrative placeholder.
+real but empty," used by photo frames and case-study covers. Placeholders are a development
+scaffold: they render in `astro dev` and are omitted from production builds (see
+`showsPhoto()` in `src/data/photos.ts`), where an empty slot collapses and its layout closes
+up around it.
 
 Iconography is [Lucide](https://lucide.dev) — a single library on a 24×24 grid with a uniform
 2px stroke. It replaced hand-plotted pixel-art paths, which turned to mush at the 14–16px sizes
@@ -332,8 +335,9 @@ Both card families — Lab and Work — render from one shared `.card-surface` i
 `src/styles/global.css`, so they cannot drift apart. A card variant contributes only what is
 genuinely its own: Lab overrides the hover border to the experiment accent, Work tightens
 padding and shallows the media in its compact form. A case study without a `cover` shows a
-labelled placeholder rather than collapsing the plane, so the card keeps its proportions
-before its art exists.
+labelled placeholder in development, so the card keeps its proportions while its art is
+pending. A production build drops the media plane and renders a text-only card instead: a grey
+box labelled "Cover image" reads as unfinished to exactly the visitor the Work section is for.
 
 - **Corner Style:** Large (`12px` on media cards, `10px` on text frames).
 - **Background:** Transparent by default. Only inner stages (experiment previews, photo frames)

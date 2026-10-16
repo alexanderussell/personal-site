@@ -5,7 +5,7 @@
  * Every slot renders a labelled placeholder until `src` is set. Drop the file
  * in `public/images/` and set `src` to its path — nothing else to change.
  *
- *   src: ''                        → placeholder with the hint text
+ *   src: ''                        → placeholder in dev, nothing in production
  *   src: '/images/portrait.jpg'    → the real photo
  *
  * `alt` is not optional. It is read aloud to anyone using a screen reader and
@@ -25,6 +25,16 @@ export type Photo = {
   caption?: string;
   aspect?: 'portrait' | 'landscape' | 'square';
 };
+
+/**
+ * Whether a slot renders at all. Filled slots always do. Empty ones show their
+ * labelled placeholder in dev, as a reminder of what goes where, and render
+ * nothing in a production build — so the site can ship before every photo
+ * exists, and a missing photo reads as a design choice rather than a gap.
+ */
+export function showsPhoto(photo: Photo): boolean {
+  return photo.src.trim().length > 0 || import.meta.env.DEV;
+}
 
 /** Homepage hero. The one photo most visitors will ever see. */
 export const heroPortrait: Photo = {

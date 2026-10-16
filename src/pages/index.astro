@@ -9,7 +9,7 @@ import WritingRow from '../components/WritingRow.astro';
 import PhotoFrame from '../components/PhotoFrame.astro';
 import { getWritingEntries } from '../lib/writing';
 import { hasPreview } from '../lib/lab';
-import { heroPortrait } from '../data/photos';
+import { heroPortrait, showsPhoto } from '../data/photos';
 import { site } from '../data/site';
 
 const workEntries = (await getCollection('work', ({ data }) => !data.draft))
@@ -20,6 +20,10 @@ const workEntries = (await getCollection('work', ({ data }) => !data.draft))
   })
   .slice(0, 3);
 
+// Columns follow the number of case studies, so one or two don't sit beside
+// empty tracks. A single study gets the wide horizontal card instead.
+const workColumns = workEntries.length;
+
 const labEntries = (await getCollection('lab', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
   .slice(0, 2);
@@ -29,11 +33,11 @@ const writingEntries = (await getWritingEntries()).slice(0, 4);
 
 <BaseLayout>
   <!-- Hero -->
-  <section class="hero pt-12">
+  <section class:list={['hero pt-12', showsPhoto(heroPortrait) && 'hero--with-portrait']}>
     <div class="hero__copy flex flex-col gap-3">
       {/*
-        The statement revises itself in place: "designer who builds" is struck
-        through and replaced by "builder who designs". <del>/<ins> are HTML's
+        The statement revises itself in place: "designer" is struck through and
+        replaced by "design engineer". <del>/<ins> are HTML's
         own edit markup, so the revision is real semantics rather than styled
         spans — assistive tech announces it as a deletion and an insertion, and
         with JS off the line reads as an edited manuscript, which is the point.
@@ -56,9 +60,11 @@ const writingEntries = (await getWritingEntries()).slice(0, 4);
       </p>
     </div>
 
-    <div class="hero__portrait fade-in-hidden" data-stagger>
-      <PhotoFrame photo={heroPortrait} eager />
-    </div>
+    {showsPhoto(heroPortrait) && (
+      <div class="hero__portrait fade-in-hidden" data-stagger>
+        <PhotoFrame photo={heroPortrait} eager />
+      </div>
+    )}
   </section>
 
   <!-- Tooltips -->
@@ -70,7 +76,10 @@ const writingEntries = (await getWritingEntries()).slice(0, 4);
     {workEntries.length > 0 && (
       <div class="fade-in-hidden" data-section-animate>
         <SectionPreview label="Work" href="/work">
-          <div class="home-grid home-grid--work">
+          <div
+            class:list={['home-grid home-grid--work', workColumns === 1 && 'home-grid--single']}
+            style={`--work-cols: ${workColumns}`}
+          >
             {workEntries.map((entry) => (
               <CaseStudyCard
                 href={`/work/${entry.id}`}
@@ -138,8 +147,10 @@ const writingEntries = (await getWritingEntries()).slice(0, 4);
     max-width: 11rem;
   }
 
+  /* Two columns only when there's a portrait to fill the second — otherwise
+     the statement would sit beside 13rem of nothing. */
   @media (min-width: 768px) {
-    .hero {
+    .hero--with-portrait {
       grid-template-columns: minmax(0, 1fr) 13rem;
       gap: 2.5rem;
     }
@@ -273,7 +284,27 @@ const writingEntries = (await getWritingEntries()).slice(0, 4);
 
   @media (min-width: 768px) {
     .home-grid--work {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(var(--work-cols, 3), minmax(0, 1fr));
+    }
+
+    /* One case study: media beside the text rather than a card stretched to
+       the full width, which would make a 16:10 cover taller than the hero. */
+    .home-grid--single :global(.case-card) {
+      flex-direction: row;
+    }
+
+    .home-grid--single :global(.card-surface__media) {
+      flex: 0 0 45%;
+      border-bottom: 0;
+      border-right: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+    }
+
+    /* Centre the text within a full-height body, so the body's background
+       still runs the height of the card. */
+    .home-grid--single :global(.card-surface__body) {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
   }
 </style>
