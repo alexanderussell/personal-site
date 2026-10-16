@@ -1,11 +1,19 @@
 ---
 // VinylPreview.astro
 // Spinning vinyl record preview for the experiments timeline.
-// Links out to vinyl.alexanderussell.com
+// Links out to vinyl.alexanderussell.com. The whole preview is one link: the
+// disc is the obvious thing to click, so it has to be the target, not just the
+// label under it.
 ---
 
-<div class="vinyl-preview" data-vinyl-preview>
-  <div class="vinyl-preview-stage">
+<a
+  href="https://vinyl.alexanderussell.com"
+  class="vinyl-preview"
+  target="_blank"
+  rel="noopener noreferrer"
+  data-vinyl-preview
+>
+  <div class="vinyl-preview-stage" aria-hidden="true">
     <div class="vinyl-disc">
       <div class="vinyl-groove vinyl-groove-1"></div>
       <div class="vinyl-groove vinyl-groove-2"></div>
@@ -19,13 +27,18 @@
       <div class="vinyl-sheen"></div>
     </div>
   </div>
-  <a href="https://vinyl.alexanderussell.com" class="vinyl-preview-cta" target="_blank" rel="noopener noreferrer">
-    View Experiment &rarr;
-  </a>
-</div>
+  <span class="vinyl-preview-cta">
+    Open experiment <span aria-hidden="true">&nearr;</span>
+    <span class="sr-only">(opens in a new tab)</span>
+  </span>
+</a>
 
 <style>
+  /* Sized to its contents so the empty column either side isn't a click target. */
   .vinyl-preview {
+    text-decoration: none;
+    width: fit-content;
+    margin-inline: auto;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -109,22 +122,24 @@
     pointer-events: none;
   }
 
+  /* The live experiment is the point of the page ("real beats rendered"), so
+     its way in reads as the primary action rather than a caption. */
   .vinyl-preview-cta {
-    font-family: 'Courier New', monospace;
-    font-size: 12px;
-    letter-spacing: 2px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--color-text-secondary, #9a8a7a);
-    text-decoration: none;
-    padding: 7px 18px;
-    border: 1px solid rgba(138,122,106,0.2);
-    border-radius: 3px;
-    transition: all 0.3s;
+    color: var(--color-text-primary);
+    padding: 0.625rem 1.25rem;
+    border: 1px solid var(--color-border);
+    border-radius: 0.375rem;
+    transition: border-color 0.3s, background-color 0.3s;
   }
 
-  .vinyl-preview-cta:hover {
-    color: var(--color-text-primary, #d4b870);
-    border-color: rgba(180,140,80,0.4);
+  .vinyl-preview:hover .vinyl-preview-cta,
+  .vinyl-preview:focus-visible .vinyl-preview-cta {
+    border-color: var(--color-accent);
+    background: var(--color-bg-secondary);
   }
 
   @keyframes vinyl-spin {
