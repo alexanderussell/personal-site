@@ -6,7 +6,7 @@ company: "Company Name"
 role: "Your title on this work"
 timeline: "~3 months"
 tags: ["Interaction Design", "Design Systems"]
-outcome: "The measured result. Delete this field entirely if NDA prevents sharing numbers — the page renders without the section rather than with an empty one."
+outcome: "One line, shown in the header as the Result. The measured change if you have it. Delete this field entirely if NDA prevents sharing numbers — the page renders without the block rather than with an empty one."
 featured: false
 draft: true
 ---
@@ -39,11 +39,10 @@ vague collective voice reads as hiding something.
 
 ## Outcome
 
-What changed as a result. Prefer measured over asserted. If nothing was measured, say what
-you observed and label it as such — an honest qualitative result beats an invented metric.
+How you know it worked. The header already states the one-line result from `outcome`, so
+don't repeat it here — explain it: what was measured and how, what you observed, what you'd
+do differently. Prefer measured over asserted. If nothing was measured, say what you observed
+and label it as such — an honest qualitative result beats an invented metric.
 
-## Project details
-
-- **Team:** who else was involved and in what role
-- **Timeline:** how long it actually took
-- **Tools:** what you worked in
+{/* Company, role, and timeline come from frontmatter and render in the header.
+    Mention the team and tools in the prose where they matter, not as a list. */}
