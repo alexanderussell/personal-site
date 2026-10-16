@@ -13,12 +13,12 @@ graduates to `docs/plans/` on purpose, not by accident.
 
 ## Noticed during the portfolio-first IA rebuild (2026-08-13)
 
-- **`Astro.request.headers` warnings on prerendered routes.** Every build logs these for
-  `src/pages/index.astro` and `src/pages/notes/[...slug].astro`. Harmless today, but they're
-  noise that makes real warnings easy to miss. Worth tracking down where request state is
-  being read on a prerendered page.
-- **Local Node is 25; Vercel functions run 22.** The adapter warns on every build. Pinning
-  local Node to 22 would remove a class of "works locally, differs in prod" surprises.
+- ~~**`Astro.request.headers` warnings on prerendered routes.**~~ **Resolved 2026-09-23.**
+  Source was `src/middleware.ts` reading `host` on every request, including prerender. It now
+  uses `url.hostname` when `isPrerendered`. Builds went from 42 warnings to 0 — and the noise
+  had been burying the route check's sample-content warning.
+- ~~**Local Node is 25; Vercel functions run 22.**~~ **Resolved 2026-09-23** with an `.nvmrc`
+  pinning 22. fnm picks it up (`fnm use`).
 - **Three near-identical index pages** (`notes`, `guides`, `lab`) share structure with only
   copy differences. After `/writing` lands, revisit whether `/notes` and `/guides` should
   become thin filtered views of one component.

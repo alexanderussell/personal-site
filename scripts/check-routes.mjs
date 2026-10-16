@@ -135,10 +135,20 @@ if (!existsSync(OUT_DIR)) {
 
 // ── Check 5: sample content did not ship ────────────────────────────────
 // `sample-*` entries are fabricated placeholders used to review a layout before
-// real content exists. Loud, but not fatal — the whole point is to build and
-// look at them. Delete them before a real deploy.
+// real content exists. Locally and on preview deploys that's the point, so it
+// only warns. A production deploy fails: PRODUCT.md's "never fabricate
+// evidence" can't rest on someone noticing one warning in a long build log.
 
 const samples = published.filter((e) => e.slug.startsWith('sample-'));
+const isProductionDeploy = process.env.VERCEL_ENV === 'production';
+
+if (samples.length > 0 && isProductionDeploy) {
+  errors.push(
+    `${samples.length} sample-* entr${samples.length === 1 ? 'y is' : 'ies are'} published on a production deploy: ` +
+      samples.map((s) => s.url).join(', ') +
+      '. They are fabricated. Delete them or set draft: true.'
+  );
+}
 
 // ── Report ──────────────────────────────────────────────────────────────
 
@@ -157,12 +167,14 @@ if (errors.length > 0) {
   process.exit(1);
 }
 
+console.log(`✓ Route check passed. ${notes.join(' ')}`);
+
+// Printed after the pass line so it's the last thing in the log, not something
+// scrolled past on the way to a green check.
 if (samples.length > 0) {
   console.warn(
     `\n⚠  ${samples.length} SAMPLE entr${samples.length === 1 ? 'y is' : 'ies are'} published — fabricated placeholder content:\n` +
       samples.map((s) => `     ${s.url}`).join('\n') +
-      `\n   Delete or replace before deploying. These are for layout review only.\n`
+      `\n   Fine for local and preview builds. A production deploy (VERCEL_ENV=production) fails on these.\n`
   );
 }
-
-console.log(`✓ Route check passed. ${notes.join(' ')}`);

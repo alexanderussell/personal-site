@@ -7,9 +7,16 @@ import { defineMiddleware } from 'astro:middleware';
  */
 const RETIRED_LAB_PATHS = new Set(['/lab/hold-to-provision', '/lab/bricklayer']);
 
-export const onRequest = defineMiddleware(({ request, rewrite, redirect }, next) => {
+export const onRequest = defineMiddleware(({ request, isPrerendered, rewrite, redirect }, next) => {
   const url = new URL(request.url);
-  const host = request.headers.get('host') || request.headers.get('x-forwarded-host') || url.hostname;
+  // Prerendered routes have no request headers, and reading them logs a
+  // warning per page per build — ~40 lines that buried the route check's
+  // sample-content alarm. request.url already carries the host in dev (so
+  // vinyl.localhost still works), and at build time the header lookup fell
+  // back to url.hostname anyway.
+  const host = isPrerendered
+    ? url.hostname
+    : request.headers.get('host') || request.headers.get('x-forwarded-host') || url.hostname;
   const hostWithoutPort = host.split(':')[0];
 
   // Rewrite vinyl subdomain → /lab/vinyl
