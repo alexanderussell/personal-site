@@ -7,7 +7,7 @@ interface Props {
 }
 
 const messages: Record<'success' | 'already_subscribed' | 'error', string> = {
-  success: "You're on the list — I'll be in touch.",
+  success: "You're on the list. I'll be in touch.",
   already_subscribed: "You're already signed up.",
   error: 'Something went wrong. Try again.',
 };

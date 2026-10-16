@@ -1,5 +1,5 @@
 ---
-import Nav from '../components/Nav.astro';
+import Sidebar from '../components/Sidebar.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 import Analytics from '@vercel/analytics/astro';
@@ -12,8 +12,8 @@ interface Props {
 }
 
 const {
-  title = 'Alex Russell — UX Engineer',
-  description = 'Portfolio and writing site for Alex Russell, UX Engineer. Logs, guides, and experiments.',
+  title = 'Alex Russell — Design Engineer',
+  description = 'Alex Russell, design engineer. Case studies, live experiments, and essays.',
   ogImage = '/images/og-default.png',
 } = Astro.props;
 
@@ -50,8 +50,11 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageURL} />
 
+    <!-- Pre-paint colors. Literals because this runs before the stylesheet
+         loads — they must equal --color-bg-primary / --color-text-primary in
+         src/styles/global.css. When a token changes there, change it here. -->
     <style is:inline>
-      html.dark { background-color: oklch(21.6% .006 56.043); color: oklch(92.3% .003 48.717); }
+      html.dark { background-color: oklch(14.5% .005 52); color: oklch(93% .003 48.717); }
       html:not(.dark) { background-color: oklch(97% .003 56); color: oklch(21.6% .006 56.043); }
     </style>
     <script is:inline>
@@ -59,7 +62,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
         // Gate entrance-animation hidden states on JS being present,
         // so content stays visible for no-JS visitors and crawlers.
         document.documentElement.classList.add('js');
-        var stored = localStorage.getItem('theme');
+        var stored = null;
+        try {
+          stored = localStorage.getItem('theme');
+        } catch (e) {
+          // Storage blocked (private mode, site data disabled): follow the OS.
+        }
         if (stored === 'light') {
           document.documentElement.classList.remove('dark');
         } else if (stored === 'dark') {
@@ -73,10 +81,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <SpeedInsights />
   </head>
   <body class="bg-bg-primary text-text-primary min-h-screen font-body antialiased transition-colors duration-200">
-    <Nav />
-    <main class="mx-auto mt-8 max-w-4xl px-4">
-      <slot />
-    </main>
-    <Footer />
+    <Sidebar />
+    <div class="site-shell">
+      <main class="mx-auto mt-8 max-w-4xl px-4">
+        <slot />
+      </main>
+      <Footer />
+    </div>
   </body>
 </html>

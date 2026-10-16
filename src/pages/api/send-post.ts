@@ -10,14 +10,30 @@ import { fileURLToPath } from 'node:url';
 type PostType = 'note' | 'guide' | 'experiment';
 const VALID_TYPES: PostType[] = ['note', 'guide', 'experiment'];
 
+/**
+ * Post type → content directory and URL segment.
+ *
+ * These used to be derived as `${type}s`, which broke when the `experiments`
+ * collection was renamed to `lab`: the directory lookup missed and sends 404'd,
+ * and the email URL pointed at a path that only resolves via redirect.
+ *
+ * The type vocabulary stays 'experiment' because it is reader-facing — it is the
+ * word in the email subject and the type tag. Only the path differs.
+ */
+const SEGMENT: Record<PostType, string> = {
+  note: 'notes',
+  guide: 'guides',
+  experiment: 'lab',
+};
+
 function isValidType(t: string): t is PostType {
   return VALID_TYPES.includes(t as PostType);
 }
 
 // Read a post file once — returns title, description, and body content
-function readPost(type: string, slug: string): { title: string; description: string; content: string } | null {
+function readPost(type: PostType, slug: string): { title: string; description: string; content: string } | null {
   const __dirname = path.dirname(fileURLToPath(import.meta.url));
-  const contentDir = path.resolve(__dirname, `../../content/${type}s`);
+  const contentDir = path.resolve(__dirname, `../../content/${SEGMENT[type]}`);
 
   for (const ext of ['.mdx', '.md']) {
     const filePath = path.join(contentDir, `${slug}${ext}`);
@@ -90,7 +106,7 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
 
-  const postUrl = `https://alexanderussell.com/${type}s/${slug}`;
+  const postUrl = `https://alexanderussell.com/${SEGMENT[type]}/${slug}`;
   const convex = getConvex();
 
   // Idempotency: check if this post was already sent

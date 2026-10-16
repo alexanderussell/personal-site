@@ -8,14 +8,10 @@ const guides = (await getCollection('guides', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 ---
 
-<BaseLayout title="Guides — Alex Russell" description="Playbooks, practical frameworks, and tactical deep dives.">
+<BaseLayout title="Guides — Alex Russell" description="Workflows and systems, written down after they worked more than once.">
   <section class="py-16">
-    <p class="font-mono text-sm font-semibold tracking-tight uppercase text-text-secondary">Guides</p>
-    <h1 class="font-heading mt-3 text-xl leading-snug sm:text-2xl sm:leading-[1.35]">
-      Practical frameworks and repeatable systems for shipping better product work.
-    </h1>
-
-    <div class="mt-12">
+    <h1 class="section-title">Guides</h1>
+    <p class="section-lede">Repeatable systems and frameworks, written down after they worked more than once.</p><div class="mt-12">
       {guides.map((guide, index) => (
         <TimelineItem
           href={`/guides/${guide.id}`}

@@ -1,0 +1,51 @@
+---
+import LabMotif from './LabMotif.astro';
+import GrowthStage from './GrowthStage.astro';
+
+interface Props {
+  id: string;
+  href: string;
+  title: string;
+  description: string;
+  date: Date;
+  status?: 'seedling' | 'growing' | 'evergreen';
+  /** Whether this experiment has a renderable preview component. */
+  hasPreview?: boolean;
+}
+
+const { id, href, title, description, date, status, hasPreview = true } = Astro.props;
+---
+
+<article class="card-surface lab-card">
+  {hasPreview && (
+    <div class="card-surface__media">
+      <LabMotif id={id} />
+    </div>
+  )}
+
+  <div class="card-surface__body">
+    <div class="flex items-baseline gap-3">
+      <time
+        class="text-text-secondary font-mono text-[13px]"
+        datetime={date.toISOString()}
+      >
+        {date.toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' })}
+      </time>
+      {status && <GrowthStage status={status} />}
+    </div>
+
+    <h2 class="mt-2 text-lg font-semibold">
+      <a href={href} class="card-surface__link">{title}</a>
+    </h2>
+    <p class="text-text-secondary mt-1 text-sm leading-relaxed">{description}</p>
+  </div>
+</article>
+
+<style>
+  /* Everything structural lives in .card-surface. The only Lab-specific note is
+     the hover accent, which uses the experiment content-type colour. */
+  .lab-card:hover,
+  .lab-card:focus-within {
+    border-color: var(--color-type-experiment);
+  }
+</style>

@@ -23,10 +23,10 @@ type Pool = {
   tags: string[];
 };
 
-const [allNotes, allGuides, allExperiments] = await Promise.all([
+const [allNotes, allGuides, allLab] = await Promise.all([
   getCollection('notes', ({ data }) => !data.draft),
   getCollection('guides', ({ data }) => !data.draft),
-  getCollection('experiments', ({ data }) => !data.draft),
+  getCollection('lab', ({ data }) => !data.draft),
 ]);
 
 const toPool = (collection: string, type: Pool['type'], entries: typeof allNotes): Pool[] =>
@@ -41,7 +41,7 @@ const toPool = (collection: string, type: Pool['type'], entries: typeof allNotes
 const pool: Pool[] = [
   ...toPool('notes', 'note', allNotes),
   ...toPool('guides', 'guide', allGuides),
-  ...toPool('experiments', 'experiment', allExperiments),
+  ...toPool('lab', 'experiment', allLab),
 ];
 
 const byRef = new Map(pool.map((item) => [item.ref, item]));

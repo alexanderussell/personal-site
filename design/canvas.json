@@ -1,0 +1,27 @@
+{
+  "pages": [
+    { "id": "screens", "name": "Screens" },
+    { "id": "system", "name": "System" }
+  ],
+  "artboards": [
+    { "file": "Main.dc.html",        "page": "screens", "x": 0,    "y": 0,    "w": 1440, "h": 1560, "title": "Home" },
+    { "file": "About.dc.html",       "page": "screens", "x": 1560, "y": 0,    "w": 1440, "h": 2180, "title": "About" },
+    { "file": "Work.dc.html",        "page": "screens", "x": 3120, "y": 0,    "w": 1440, "h": 1500, "title": "Work" },
+    { "file": "Writing.dc.html",     "page": "screens", "x": 0,    "y": 2320, "w": 1440, "h": 1660, "title": "Writing" },
+    { "file": "Lab.dc.html",         "page": "screens", "x": 1560, "y": 2320, "w": 1440, "h": 900,  "title": "Lab" },
+    { "file": "Post.dc.html",        "page": "screens", "x": 3120, "y": 2320, "w": 1440, "h": 1720, "title": "Post detail" },
+
+    { "file": "Navigation.dc.html",  "page": "system",  "x": 0,    "y": 0,    "w": 1180, "h": 760,  "title": "Navigation states" },
+    { "file": "Foundations.dc.html", "page": "system",  "x": 1300, "y": 0,    "w": 1120, "h": 1560, "title": "Foundations" },
+    { "file": "Components.dc.html",  "page": "system",  "x": 0,    "y": 880,  "w": 1180, "h": 1500, "title": "Components" }
+  ],
+  "annotations": [
+    { "id": "screens-note", "page": "screens", "x": 0, "y": -150, "w": 460,
+      "text": "Live site as it stands after the copy pass and the sidebar rebuild.\n\nEvery artboard has a Theme tweak above it — flip any one to light to check the other palette." },
+    { "id": "post-note", "page": "screens", "x": 3120, "y": -150, "w": 420,
+      "text": "Post header is the one place the display face runs at full size. The prose column is 672px inside a 1440px page." },
+    { "id": "system-note", "page": "system", "x": 0, "y": -150, "w": 460,
+      "text": "Tokens lifted from src/styles/global.css — resolved oklch values, not approximations.\n\nEdit a component here first, then carry it into the screens." }
+  ],
+  "launch": { "view": "canvas", "page": "screens" }
+}

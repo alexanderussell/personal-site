@@ -1,0 +1,57 @@
+---
+interface Props {
+  /** Section label, e.g. "Work". */
+  label: string;
+  /** Where "View all" points. */
+  href: string;
+  /** Link text. Defaults to "View all". */
+  linkLabel?: string;
+}
+
+const { label, href, linkLabel = 'View all' } = Astro.props;
+---
+
+<section class="section-preview">
+  <div class="section-preview__header">
+    <h2 class="font-mono text-[13px] uppercase tracking-[0.12em] text-text-secondary">
+      {label}
+    </h2>
+    <a href={href} class="section-preview__link font-mono text-[13px]">
+      {linkLabel} <span aria-hidden="true">→</span>
+    </a>
+  </div>
+
+  <div class="section-preview__body">
+    <slot />
+  </div>
+</section>
+
+<style>
+  .section-preview {
+    padding-block: 2.5rem;
+  }
+
+  .section-preview__header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent);
+  }
+
+  .section-preview__link {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.3s ease;
+  }
+
+  .section-preview__link:hover {
+    color: var(--color-text-primary);
+  }
+
+  .section-preview__body {
+    margin-top: 1.5rem;
+  }
+</style>

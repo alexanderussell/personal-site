@@ -1,0 +1,96 @@
+---
+/**
+ * Figma embed — files, prototypes, and Slides decks.
+ *
+ * Fails the build on a non-Figma URL rather than rendering a broken frame.
+ * A silent empty iframe on a case study is worse than a build error.
+ */
+interface Props {
+  url: string;
+  title?: string;
+}
+
+const { url, title = 'Figma embed' } = Astro.props;
+
+let host: string;
+try {
+  host = new URL(url).hostname;
+} catch {
+  throw new Error(`[FigmaEmbed] "${url}" is not a valid URL.`);
+}
+
+if (!/(^|\.)figma\.com$/.test(host)) {
+  throw new Error(
+    `[FigmaEmbed] expected a figma.com URL, got "${host}". ` +
+      `Use the Share → Copy link value from Figma.`
+  );
+}
+
+const embedSrc = `https://www.figma.com/embed?embed_host=share&url=${encodeURIComponent(url)}`;
+---
+
+<figure class="media-embed">
+  <div class="media-embed__frame">
+    <iframe
+      src={embedSrc}
+      title={title}
+      loading="lazy"
+      allowfullscreen
+      referrerpolicy="no-referrer"
+    ></iframe>
+  </div>
+
+  <figcaption class="media-embed__caption font-mono">
+    <a href={url} target="_blank" rel="noopener noreferrer">
+      Open in Figma <span aria-hidden="true">↗</span>
+    </a>
+  </figcaption>
+</figure>
+
+<style>
+  .media-embed {
+    margin: 2rem 0;
+  }
+
+  /* 10px = the system's "frame" radius, matching experiment stages and photos. */
+  .media-embed__frame {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--color-bg-secondary);
+  }
+
+  .media-embed__frame iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+
+  .media-embed__caption {
+    margin-top: 0.625rem;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .media-embed__caption a {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: color 150ms ease;
+  }
+
+  .media-embed__caption a:hover {
+    color: var(--color-text-primary);
+  }
+
+  .media-embed__caption a:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+</style>

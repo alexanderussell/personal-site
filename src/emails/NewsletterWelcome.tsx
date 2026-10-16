@@ -15,18 +15,18 @@ export function NewsletterWelcome() {
   return (
     <Html lang="en">
       <Head />
-      <Preview>You're in — I'll let you know when something new goes up.</Preview>
+      <Preview>You're in. I'll let you know when something new goes up.</Preview>
       <Body style={body}>
         <Container style={container}>
           <Text style={heading}>You're in.</Text>
           <Text style={paragraph}>
             Thanks for subscribing. I write notes, guides, and the occasional
-            experiment — things I'm building, figuring out, or just find worth
+            experiment: things I'm building, figuring out, or just find worth
             documenting.
           </Text>
           <Text style={paragraph}>
             I'll drop you a note when something new goes up. No digest, no
-            noise — just a heads up when it's worth your time.
+            noise, nothing on a schedule.
           </Text>
           <Hr style={hr} />
           <Text style={footer}>

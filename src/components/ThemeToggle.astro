@@ -1,32 +1,51 @@
 ---
+/**
+ * Theme cycle: system → light → dark → system.
+ *
+ * Addressed by data attribute rather than by id. The component renders twice
+ * (sidebar and mobile bar), and with ids the second instance was unreachable
+ * via getElementById — every icon stayed `hidden` and the button collapsed to
+ * 0×0. Astro bundles this script once no matter how many instances exist, so
+ * one querySelectorAll pass drives all of them.
+ */
+import { Sun, Moon, Monitor } from 'lucide-astro';
 ---
 
 <button
-  id="theme-toggle"
+  data-theme-toggle
   type="button"
   aria-label="Toggle theme"
   class="text-text-secondary hover:text-text-primary cursor-pointer transition-colors"
 >
-  <!-- Light mode: Sun -->
-  <svg id="light-icon" class="hidden size-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-    <path d="M11 1h2v4h-2zm0 22h2v-4h-2zM9 5h2v4H9zm0 14h2v-4H9zm4-14h2v4h-2zm0 14h2v-4h-2zM5 9h4v2H5zm14 0h-4v2h4zM1 11h4v2H1zm22 0h-4v2h4zM5 13h4v2H5zm14 0h-4v2h4z"/>
-  </svg>
-
-  <!-- Dark mode: Crescent moon with stars -->
-  <svg id="dark-icon" class="hidden size-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-    <path d="M18 22H8v-2h10v2ZM8 20H6v-2h2v2Zm12 0h-2v-2h2v2ZM6 18H4v-2h2v2Zm16 0h-2v-4h-2v-2h2v-2h2v8ZM4 16H2V6h2v10Zm14 0h-6v-2h6v2Zm-6-2h-2v-2h2v2Zm-2-2H8V6h2v6ZM6 6H4V4h2v2Zm8-2h-2v2h-2V4H6V2h8v2Z"/>
-  </svg>
-
-  <!-- System mode: Classic Mac -->
-  <svg id="system-icon" class="hidden size-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-    <path d="M4 2h16v2H4zm0 14h16v2H4zM2 4h2v12H2zm18 0h2v12h-2zm-9 14h2v2h-2zm-3 2h8v2H8z"/>
-  </svg>
+  <Sun data-theme-icon="light" class="hidden size-5" aria-hidden="true" />
+  <Moon data-theme-icon="dark" class="hidden size-5" aria-hidden="true" />
+  <Monitor data-theme-icon="system" class="hidden size-5" aria-hidden="true" />
 </button>
 
 <script>
+  // In-memory copy so the toggle still works for the session when storage is
+  // blocked (private mode, site data disabled) — it just won't persist.
+  let memoryTheme: string | null = null;
+
   function getTheme() {
-    return localStorage.getItem('theme') || 'system';
+    try {
+      return localStorage.getItem('theme') || 'system';
+    } catch {
+      return memoryTheme || 'system';
+    }
   }
+
+  function storeTheme(theme: string) {
+    memoryTheme = theme === 'system' ? null : theme;
+    try {
+      if (theme === 'system') localStorage.removeItem('theme');
+      else localStorage.setItem('theme', theme);
+    } catch {
+      // Storage unavailable; memoryTheme carries it.
+    }
+  }
+
+  const NEXT: Record<string, string> = { system: 'light', light: 'dark', dark: 'system' };
 
   function applyTheme(theme: string) {
     if (theme === 'dark') {
@@ -42,25 +61,26 @@
     }
   }
 
+  // Every instance shows the same state, so all of them update together. The
+  // label names the current theme and what a press does, since the icon alone
+  // doesn't tell a screen reader user either.
   function updateIcons() {
     const theme = getTheme();
-    document.getElementById('light-icon')?.classList.toggle('hidden', theme !== 'light');
-    document.getElementById('dark-icon')?.classList.toggle('hidden', theme !== 'dark');
-    document.getElementById('system-icon')?.classList.toggle('hidden', theme !== 'system');
+    document.querySelectorAll<HTMLElement>('[data-theme-icon]').forEach((icon) => {
+      icon.classList.toggle('hidden', icon.dataset.themeIcon !== theme);
+    });
+    document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
+      button.setAttribute('aria-label', `Theme: ${theme}. Switch to ${NEXT[theme]}`);
+    });
   }
 
-  document.getElementById('theme-toggle')?.addEventListener('click', () => {
-    const current = getTheme();
-    const next = current === 'system' ? 'light' : current === 'light' ? 'dark' : 'system';
-
-    if (next === 'system') {
-      localStorage.removeItem('theme');
-    } else {
-      localStorage.setItem('theme', next);
-    }
-
-    applyTheme(next);
-    updateIcons();
+  document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
+    button.addEventListener('click', () => {
+      const next = NEXT[getTheme()] ?? 'system';
+      storeTheme(next);
+      applyTheme(next);
+      updateIcons();
+    });
   });
 
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
@@ -71,3 +91,11 @@
 
   updateIcons();
 </script>
+
+<style>
+  /* Without JS every icon stays hidden and a press does nothing, which leaves
+     an invisible, focusable dead button. Remove it; the OS theme still applies. */
+  html:not(.js) [data-theme-toggle] {
+    display: none;
+  }
+</style>

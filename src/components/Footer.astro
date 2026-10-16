@@ -1,10 +1,27 @@
 ---
+/**
+ * Mobile-only footer. Above 768px the sidebar carries the copyright, socials,
+ * and location/time, so rendering this too would duplicate all three. The
+ * local-time script lives in Sidebar.astro and updates every `[data-local-time]`
+ * on the page, including this one.
+ */
+import { site, hasLocation } from '../data/site';
+
 const year = new Date().getFullYear();
 ---
 
-<footer>
+<footer class="md:hidden">
   <div class="mx-auto flex max-w-4xl items-center justify-between px-4 py-8">
-    <p class="text-secondary text-sm">&copy; {year} Alex Russell</p>
+    <div class="flex flex-col gap-1">
+      <p class="text-secondary text-sm">&copy; {year} Alex Russell</p>
+      {hasLocation && (
+        <p class="footer-locale font-mono">
+          {site.location}
+          <span aria-hidden="true"> · </span>
+          <time data-local-time data-timezone={site.timeZone}></time>
+        </p>
+      )}
+    </div>
     <div class="flex items-center gap-4">
       <a
         href="https://github.com/alexanderussell"
@@ -31,3 +48,21 @@ const year = new Date().getFullYear();
     </div>
   </div>
 </footer>
+
+<style>
+  .footer-locale {
+    font-size: 0.6875rem;
+    color: var(--color-text-secondary);
+    letter-spacing: 0.02em;
+  }
+
+  /* Hidden until the script fills it, so no-JS visitors see the location
+     alone rather than a stray separator with nothing after it. */
+  .footer-locale time:empty {
+    display: none;
+  }
+
+  .footer-locale time:empty + * {
+    display: none;
+  }
+</style>

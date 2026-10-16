@@ -1,0 +1,71 @@
+---
+import TypeIcon from './TypeIcon.astro';
+import GrowthStage from './GrowthStage.astro';
+import type { WritingEntry } from '../lib/writing';
+
+interface Props {
+  entry: WritingEntry;
+}
+
+const { entry } = Astro.props;
+---
+
+<a href={entry.href} class={`writing-row writing-row--${entry.kind} group`}>
+  <div class="writing-row__meta">
+    <span class="writing-row__icon" aria-hidden="true">
+      <TypeIcon type={entry.kind} class="size-4" />
+    </span>
+    <span class="text-text-secondary font-mono text-[11px] font-semibold uppercase tracking-[0.08em]">
+      {entry.kind}
+    </span>
+    <time class="text-text-secondary font-mono text-[13px]" datetime={entry.date.toISOString()}>
+      {entry.date.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        timeZone: 'UTC',
+      })}
+    </time>
+    {entry.status && <GrowthStage status={entry.status} />}
+  </div>
+
+  <h2 class="text-text-primary mt-1.5 text-lg font-semibold transition-colors">{entry.title}</h2>
+  <p class="text-text-secondary mt-1 text-sm leading-relaxed">{entry.description}</p>
+</a>
+
+<style>
+  .writing-row {
+    display: block;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-border) 60%, transparent);
+    text-decoration: none;
+  }
+
+  .writing-row:last-child {
+    border-bottom: none;
+  }
+
+  .writing-row__meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .writing-row__icon {
+    color: var(--color-text-secondary);
+    transition: color 0.3s ease;
+  }
+
+  .writing-row--note:hover .writing-row__icon {
+    color: var(--color-type-note);
+  }
+
+  .writing-row--guide:hover .writing-row__icon {
+    color: var(--color-type-guide);
+  }
+
+  .writing-row:hover h2 {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>
